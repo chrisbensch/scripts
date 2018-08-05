@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)https://highon.coffee/blog/systemd-cheat-sheet/ -->
+<html lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title>Systemd Cheat Sheet</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="generator" content="Jekyll v2.4.0">
+<script id="twitter-wjs" src="./SystemdCheatSheet_files/widgets.js"></script><script type="text/javascript" async="" src="./SystemdCheatSheet_files/"></script><script type="text/javascript">
+//<![CDATA[
+try{if (!window.CloudFlare) {var CloudFlare=[{verbose:0,p:0,byc:0,owlid:"cf",bag2:1,mirage2:0,oracle:0,paths:{cloudflare:"/cdn-cgi/nexp/dok3v=1613a3a185/"},atok:"6d45fa1175a7f450ee591a05a99f1127",petok:"f78ad66060230d764180db83d729fbd0877d143e-1457953931-1800",zone:"highon.coffee",rocket:"a",apps:{"ga_key":{"ua":"UA-55017594-1","ga_bs":"2"}},sha2test:0}];document.write('<script type="text/javascript" src="//ajax.cloudflare.com/cdn-cgi/nexp/dok3v=fb690a32f5/cloudflare.min.js"><'+'\/script>');}}catch(e){};
+//]]>
+</script><script type="text/javascript" src="./SystemdCheatSheet_files/cloudflare.min.js"></script><style type="text/css"></style><style type="text/css">.cf-hidden { display: none; } .cf-invisible { visibility: hidden; }</style><script data-module="cloudflare/rocket" id="cfjs_block_99e14661b9" onload="CloudFlare.__cfjs_block_99e14661b9_load()" onerror="CloudFlare.__cfjs_block_99e14661b9_error()" onreadystatechange="CloudFlare.__cfjs_block_99e14661b9_readystatechange()" type="text/javascript" src="./SystemdCheatSheet_files/rocket.js"></script>
+<link rel="alternate" type="application/rss+xml" title="highon.coffee - pen testing, hacking and coffee" href="https://highon.coffee/feed.xml">
+<link rel="stylesheet" href="./SystemdCheatSheet_files/css">
+<link rel="stylesheet" href="./SystemdCheatSheet_files/screen.css">
+<link href="./SystemdCheatSheet_files/font-awesome.min.css" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="https://highon.coffee/favicon.ico">
+<!--[if lt IE 9]>
+  <script src="/js/html5shiv.min.js"></script>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
+<script type="text/javascript">
+/* <![CDATA[ */
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-55017594-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
+(function(b){(function(a){"__CF"in b&&"DJS"in b.__CF?b.__CF.DJS.push(a):"addEventListener"in b?b.addEventListener("load",a,!1):b.attachEvent("onload",a)})(function(){"FB"in b&&"Event"in FB&&"subscribe"in FB.Event&&(FB.Event.subscribe("edge.create",function(a){_gaq.push(["_trackSocial","facebook","like",a])}),FB.Event.subscribe("edge.remove",function(a){_gaq.push(["_trackSocial","facebook","unlike",a])}),FB.Event.subscribe("message.send",function(a){_gaq.push(["_trackSocial","facebook","send",a])}));"twttr"in b&&"events"in twttr&&"bind"in twttr.events&&twttr.events.bind("tweet",function(a){if(a){var b;if(a.target&&a.target.nodeName=="IFRAME")a:{if(a=a.target.src){a=a.split("#")[0].match(/[^?=&]+=([^&]*)?/g);b=0;for(var c;c=a[b];++b)if(c.indexOf("url")===0){b=unescape(c.split("=")[1]);break a}}b=void 0}_gaq.push(["_trackSocial","twitter","tweet",b])}})})})(window);
+/* ]]> */
+</script>
+<link rel="stylesheet" type="text/css" href="chrome-extension://pkehgijcmpdhfbdbbnkijodmdjhbjlgp/skin/socialwidgets.css"></head>
+<body class="wrap">
+<header>
+<nav class="mobile-nav show-on-mobiles">
+<ul>
+<li class="">
+<a href="https://highon.coffee/">Home</a>
+</li>
+<li class="current">
+<a href="https://highon.coffee/blog/">Blog</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/about/"><span class="hide-on-mobiles">About</span></a>
+</li>
+<li class="">
+<a href="https://highon.coffee/services/"><span class="hide-on-mobiles">Services</span></a>
+</li>
+</ul>
+</nav>
+<div class="grid">
+<div class="unit one-third center-on-mobiles">
+<h1>
+<a href="https://highon.coffee/">
+<span>HighOn.Coffee</span>
+<img src="./SystemdCheatSheet_files/highoncoffee.png" width="300" height="115" alt="Logo">
+</a>
+</h1>
+</div>
+<nav class="main-nav unit two-thirds hide-on-mobiles">
+<ul>
+<li class="">
+<a href="https://highon.coffee/">Home</a>
+</li>
+<li class="current">
+<a href="https://highon.coffee/blog/">Blog</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/about/"><span class="hide-on-mobiles">About</span></a>
+</li>
+<li class="">
+<a href="https://highon.coffee/services/"><span class="hide-on-mobiles">Services</span></a>
+</li>
+</ul>
+</nav>
+</div>
+</header>
+<section class="blog">
+<div class="grid">
+<div class="docs-nav-mobile unit whole show-on-mobiles">
+<select onchange="if (this.value) window.location.href=this.value">
+<option value="">Navigate the blog…</option>
+<option value="/blog/">Home</option>
+<optgroup label="v1.x">
+<option value="/blog/insomnihack-ctf-teaser-smartcat2-writeup/">InsomniHack CTF Teaser - Smartcat2 Writeup</option>
+<option value="/blog/insomnihack-ctf-teaser-smartcat1-writeup/">InsomniHack CTF Teaser - Smartcat1 Writeup</option>
+<option value="/blog/fristileaks-walkthrough/">FristiLeaks 1.3 Walkthrough</option>
+<option value="/blog/sickos-1-walkthrough/">SickOS 1.1 - Walkthrough</option>
+<option value="/blog/the-wall-walkthrough/">The Wall Boot2Root Walkthrough</option>
+<option value="/blog/sleepy-ctf-walkthrough/">/dev/random: Sleepy Walkthrough CTF</option>
+<option value="/blog/pipe-ctf-walkthrough/">/dev/random Pipe walkthrough</option>
+<option value="/blog/lord-of-the-root-walkthrough/">Lord of the Root Walkthrough CTF</option>
+<option value="/blog/vi-cheat-sheet/">Vi Cheat Sheet</option>
+<option value="/blog/jenkins-api-unauthenticated-rce-exploit/">Jenkins RCE via Unauthenticated API</option>
+<option value="/blog/skytower-walkthrough/">SkyTower - Walkthrough</option>
+<option value="/blog/zorz-walkthrough/">Zorz Walkthrough</option>
+<option value="/blog/systemd-cheat-sheet/">Systemd Cheat Sheet</option>
+<option value="/blog/freshly-walkthrough/">Freshly Walkthrough</option>
+<option value="/blog/macbook-post-install-check-list/">MacBook - Post Install Config + Apps</option>
+<option value="/blog/fartknocker-walkthrough/">FartKnocker - Walkthrough</option>
+<option value="/blog/reverse-shell-cheat-sheet/">Reverse Shell Cheat Sheet</option>
+<option value="/blog/nbtscan-cheat-sheet/">nbtscan Cheat Sheet</option>
+<option value="/blog/enum4linux-cheat-sheet/">enum4linux Cheat Sheet</option>
+<option value="/blog/linux-local-enumeration-script/">Linux Local Enumeration Script</option>
+<option value="/blog/security-harden-centos-7/">Security Harden CentOS 7</option>
+<option value="/blog/ssh-meterpreter-pivoting-techniques/">SSH &amp; Meterpreter Pivoting Techniques</option>
+<option value="/blog/howto-install-quassel-ubuntu/">HowTo Install Quassel on Ubuntu</option>
+<option value="/blog/sokar-walkthrough/">Sokar - Walkthrough</option>
+<option value="/blog/tr0ll-2-walkthrough/">Tr0ll 2 Walkthrough</option>
+<option value="/blog/tr0ll-1-walkthrough/">Tr0ll 1 Walkthrough</option>
+<option value="/blog/nmap-cheat-sheet/">Nmap Cheat Sheet</option>
+<option value="/blog/linux-commands-cheat-sheet/">Linux Commands Cheat Sheet</option>
+<option value="/blog/shellshock-pen-testers-lab-walkthrough/">Pen Testers Lab: Shellshock CVE-2014-6271 - Walkthrough</option>
+<option value="/blog/keepnote-macbook-install-instructions/">HowTo Install KeepNote on OSX Mavericks</option>
+<option value="/blog/lamp-security-ctf8-walkthrough/">LAMP Security CTF8 - Walkthrough</option>
+<option value="/blog/kioptrix-level-2014-walkthrough/">Kioptrix Level 2014 Walkthrough</option>
+<option value="/blog/lamp-security-ctf7-walkthrough/">LAMP Security CTF7 - Walkthrough</option>
+<option value="/blog/lamp-security-ctf6-walkthrough/">LAMP Security CTF6 - Walkthrough</option>
+<option value="/blog/lamp-security-ctf5-walkthrough/">LAMP Security CTF5 - Walkthrough</option>
+<option value="/blog/lamp-security-ctf4-walkthrough/">LAMP Security CTF4 - Walkthrough</option>
+<option value="/blog/kioptrix-level-1-2-walkthrough/">Kioptrix Level 1.2 Walkthrough</option>
+<option value="/blog/kioptrix-level-1-1-walkthrough/">Kioptrix Level 1.1 Walkthrough</option>
+<option value="/blog/kioptrix-level-1-walkthrough/">Kioptrix Level 1 Walkthrough</option>
+</optgroup>
+</select>
+</div>
+<div class="unit four-fifths">
+<article>
+<h2>
+Systemd Cheat Sheet
+<a href="https://highon.coffee/blog/systemd-cheat-sheet/" class="permalink" title="Permalink">∞</a>
+</h2>
+<span class="post-category">
+<span class="label">
+cheat-sheet
+</span>
+</span>
+<div class="post-meta">
+<span class="post-date">
+29 Jun 2015
+</span>
+<a href="https://twitter.com/Arr0way" class="post-author">
+<img src="./SystemdCheatSheet_files/Arr0way.png" class="avatar" alt="Arr0way" width="24" height="24">
+Arr0way
+</a>
+</div>
+<div class="post-content">
+<p>Systemd is now the default in RHEL / CentOS 7, the following post is a cheat
+sheet for systemd commands, useful for local system enumeration.</p>
+<div class="note tip">
+<h5>Systemd is becoming the default on most distros</h5>
+<p>Systemd is becoming the default in many distros, <b>RHEL, CentOS, Ubuntu 15</b>
+and it offers a single command to manage your system, instead of switching
+between <code>chkconfig</code> or running init scripts.</p>
+</div>
+<h2 id="systemd-service-commands">Systemd Service Commands<a class="header-link" href="https://highon.coffee/blog/systemd-cheat-sheet/#systemd-service-commands"><i class="fa fa-link"></i></a></h2>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>systemctl stop service-name</code></p>
+</td>
+<td>
+<p>systemd stop running service</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl start service-name</code></p>
+</td>
+<td>
+<p>systemctl start service</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl restart service-name</code></p>
+</td>
+<td>
+<p>systemd restart running service</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl reload service-name</code></p>
+</td>
+<td>
+<p>reloads all config files for service</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl status service-name</code></p>
+</td>
+<td>
+<p>systemctl show if service is running</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl enable service-name</code></p>
+</td>
+<td>
+<p>systemctl start service at boot</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctrl disable service-name</code></p>
+</td>
+<td>
+<p>systemctl - disable service at boot</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl show service-name</code></p>
+</td>
+<td>
+<p>show systemctl service info</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl -H target command service-name</code></p>
+</td>
+<td>
+<p>run systemctl commands remotely</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="systemd-information-commands">Systemd Information Commands<a class="header-link" href="https://highon.coffee/blog/systemd-cheat-sheet/#systemd-information-commands"><i class="fa fa-link"></i></a></h2>
+<p>Systemd commands that show useful system information.</p>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>systemctl list-dependencies</code></p>
+</td>
+<td>
+<p>show and units dependencies</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl list-sockets</code></p>
+</td>
+<td>
+<p>systemd list sockets and activities</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl list-jobs</code></p>
+</td>
+<td>
+<p>view active systemd jobs</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl list-unit-files</code></p>
+</td>
+<td>
+<p>systemctl list unit files and their states</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl list-units</code></p>
+</td>
+<td>
+<p>systemctl list default target (like run level)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="changing-system-state">Changing System State<a class="header-link" href="https://highon.coffee/blog/systemd-cheat-sheet/#changing-system-state"><i class="fa fa-link"></i></a></h2>
+<p>systemd reboot, shutdown, default target etc</p>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>systemctl reboot</code></p>
+</td>
+<td>
+<p>systemctl reboot the system</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl poweroff</code></p>
+</td>
+<td>
+<p>systemctl shutdown (power off the system)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl emergency</code></p>
+</td>
+<td>
+<p>Put in emergency mode</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>systemctl default</code></p>
+</td>
+<td>
+<p>systemctl default mode</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="systemctl-viewing-log-messages">Systemctl Viewing Log Messages<a class="header-link" href="https://highon.coffee/blog/systemd-cheat-sheet/#systemctl-viewing-log-messages"><i class="fa fa-link"></i></a></h2>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>journalctl</code></p>
+</td>
+<td>
+<p>show all collected log messages</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>journalctl -u sshd.service</code></p>
+</td>
+<td>
+<p>see sshd service messages</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>journelctl -f</code></p>
+</td>
+<td>
+<p>follow messages as they appear</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>journelctl -k</code></p>
+</td>
+<td>
+<p>show kernel messages only</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p>Follow <a href="https://twitter.com/Arr0way">@Arr0way</a> - resistence is futile...</p>
+<div>
+<img src="chrome-extension://pkehgijcmpdhfbdbbnkijodmdjhbjlgp/skin/socialwidgets/Twitter.svg" class="privacyBadgerReplacementButton" title="PrivacyBadger has replaced this Twitter button.">
+<script data-cfasync="false">!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+</div>
+</div>
+</article>
+</div>
+<div class="unit one-fifth hide-on-mobiles">
+<aside>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/">All Blog</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/cheat-sheet/">Cheat Sheets</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/techniques/">Techniques</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/tools/">Tools</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/security-hardening/">Security Hardening</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/walkthroughs/">WalkThroughs</a>
+</li>
+</ul>
+<h4>Cheat Sheets</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/vi-cheat-sheet/">Vi Cheat Sheet</a>
+</li>
+<li class="current">
+<a href="https://highon.coffee/blog/systemd-cheat-sheet/">Systemd Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/reverse-shell-cheat-sheet/">Reverse Shell Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/nbtscan-cheat-sheet/">nbtscan Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/enum4linux-cheat-sheet/">enum4linux Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/nmap-cheat-sheet/">Nmap Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/linux-commands-cheat-sheet/">Linux Commands Cheat Sheet</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/cheat-sheet/">More »</a>
+</li>
+</ul>
+<h4>WalkThroughs</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/insomnihack-ctf-teaser-smartcat2-writeup/">InsomniHack CTF Teaser - Smartcat2 Writeup</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/insomnihack-ctf-teaser-smartcat1-writeup/">InsomniHack CTF Teaser - Smartcat1 Writeup</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/fristileaks-walkthrough/">FristiLeaks 1.3 Walkthrough</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/sickos-1-walkthrough/">SickOS 1.1 - Walkthrough</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/the-wall-walkthrough/">The Wall Boot2Root Walkthrough</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/walkthroughs/">More »</a>
+</li>
+</ul>
+<h4>Techniques</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/">SSH &amp; Meterpreter Pivoting Techniques</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/techniques/">More »</a>
+</li>
+</ul>
+<h4>Tools</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/linux-local-enumeration-script/">Linux Local Enumeration Script</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/tools/">More »</a>
+</li>
+</ul>
+<h4>Security Hardening</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/security-harden-centos-7/">Security Harden CentOS 7</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/security-hardening/">More »</a>
+</li>
+</ul>
+<h4>/dev/urandom</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/macbook-post-install-check-list/">MacBook - Post Install Config + Apps</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/urandom/">More »</a>
+</li>
+</ul>
+<h4>Other Blog</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/jenkins-api-unauthenticated-rce-exploit/">Jenkins RCE via Unauthenticated API</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/macbook-post-install-check-list/">MacBook - Post Install Config + Apps</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/howto-install-quassel-ubuntu/">HowTo Install Quassel on Ubuntu</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/keepnote-macbook-install-instructions/">HowTo Install KeepNote on OSX Mavericks</a>
+</li>
+</ul>
+</aside>
+</div>
+<div class="clear"></div>
+</div>
+</section>
+<footer>
+<div class="grid">
+<div class="unit one-third center-on-mobiles">
+<p>The contents of this website are ©&nbsp;2016 <a href="http://highon.coffee/">HighOn.Coffee</a></p>
+</div>
+<div class="unit two-thirds align-right center-on-mobiles">
+<p>
+Proudly hosted by
+<a href="https://github.com/">
+<img src="./SystemdCheatSheet_files/footer-logo.png" width="100" height="30" alt="GitHub • Social coding">
+</a>
+</p>
+</div>
+</div>
+</footer>
+<script type="text/rocketscript" data-rocketoptimized="true">
+  var anchorForId = function (id) {
+    var anchor = document.createElement("a");
+    anchor.className = "header-link";
+    anchor.href      = "#" + id;
+    anchor.innerHTML = "<i class=\"fa fa-link\"></i>";
+    return anchor;
+  };
+
+  var linkifyAnchors = function (level, containingElement) {
+    var headers = containingElement.getElementsByTagName("h" + level);
+    for (var h = 0; h < headers.length; h++) {
+      var header = headers[h];
+
+      if (typeof header.id !== "undefined" && header.id !== "") {
+        header.appendChild(anchorForId(header.id));
+      }
+    }
+  };
+
+  document.onreadystatechange = function () {
+    if (this.readyState === "complete") {
+      var contentBlock = document.getElementsByClassName("docs")[0] || document.getElementsByClassName("blog")[0];
+      if (!contentBlock) {
+        return;
+      }
+      for (var level = 1; level <= 6; level++) {
+        linkifyAnchors(level, contentBlock);
+      }
+    }
+  };
+</script>
+
+
+</body></html>

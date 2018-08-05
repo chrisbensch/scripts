@@ -1,0 +1,8 @@
+port knock with nmap
+
+nmap -r -p 1,2,3 192.168.1.150
+
+-r = raw
+-p = specified ports only
+
+knocks on ports 1, 2, 3

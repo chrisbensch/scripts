@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)https://highon.coffee/blog/linux-commands-cheat-sheet/ -->
+<html lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title>Linux Commands Cheat Sheet</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="generator" content="Jekyll v2.4.0">
+<style type="text/css"></style><script id="twitter-wjs" src="./LinuxCommandsCheatSheet_files/widgets.js"></script><script type="text/javascript" async="" src="./LinuxCommandsCheatSheet_files/"></script><script type="text/javascript">
+//<![CDATA[
+try{if (!window.CloudFlare) {var CloudFlare=[{verbose:0,p:0,byc:0,owlid:"cf",bag2:1,mirage2:0,oracle:0,paths:{cloudflare:"/cdn-cgi/nexp/dok3v=1613a3a185/"},atok:"6d45fa1175a7f450ee591a05a99f1127",petok:"4e179f5323d399369af9b1189cf2d0e63cbdea53-1457953934-1800",zone:"highon.coffee",rocket:"a",apps:{"ga_key":{"ua":"UA-55017594-1","ga_bs":"2"}},sha2test:0}];document.write('<script type="text/javascript" src="//ajax.cloudflare.com/cdn-cgi/nexp/dok3v=fb690a32f5/cloudflare.min.js"><'+'\/script>');}}catch(e){};
+//]]>
+</script><script type="text/javascript" src="./LinuxCommandsCheatSheet_files/cloudflare.min.js"></script><style type="text/css">.cf-hidden { display: none; } .cf-invisible { visibility: hidden; }</style><script data-module="cloudflare/rocket" id="cfjs_block_68e2ba0359" onload="CloudFlare.__cfjs_block_68e2ba0359_load()" onerror="CloudFlare.__cfjs_block_68e2ba0359_error()" onreadystatechange="CloudFlare.__cfjs_block_68e2ba0359_readystatechange()" type="text/javascript" src="./LinuxCommandsCheatSheet_files/rocket.js"></script>
+<link rel="alternate" type="application/rss+xml" title="highon.coffee - pen testing, hacking and coffee" href="https://highon.coffee/feed.xml">
+<link rel="stylesheet" href="./LinuxCommandsCheatSheet_files/css">
+<link rel="stylesheet" href="./LinuxCommandsCheatSheet_files/screen.css">
+<link href="./LinuxCommandsCheatSheet_files/font-awesome.min.css" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="https://highon.coffee/favicon.ico">
+<!--[if lt IE 9]>
+  <script src="/js/html5shiv.min.js"></script>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
+<script type="text/javascript">
+/* <![CDATA[ */
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-55017594-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
+(function(b){(function(a){"__CF"in b&&"DJS"in b.__CF?b.__CF.DJS.push(a):"addEventListener"in b?b.addEventListener("load",a,!1):b.attachEvent("onload",a)})(function(){"FB"in b&&"Event"in FB&&"subscribe"in FB.Event&&(FB.Event.subscribe("edge.create",function(a){_gaq.push(["_trackSocial","facebook","like",a])}),FB.Event.subscribe("edge.remove",function(a){_gaq.push(["_trackSocial","facebook","unlike",a])}),FB.Event.subscribe("message.send",function(a){_gaq.push(["_trackSocial","facebook","send",a])}));"twttr"in b&&"events"in twttr&&"bind"in twttr.events&&twttr.events.bind("tweet",function(a){if(a){var b;if(a.target&&a.target.nodeName=="IFRAME")a:{if(a=a.target.src){a=a.split("#")[0].match(/[^?=&]+=([^&]*)?/g);b=0;for(var c;c=a[b];++b)if(c.indexOf("url")===0){b=unescape(c.split("=")[1]);break a}}b=void 0}_gaq.push(["_trackSocial","twitter","tweet",b])}})})})(window);
+/* ]]> */
+</script>
+<link rel="stylesheet" type="text/css" href="chrome-extension://pkehgijcmpdhfbdbbnkijodmdjhbjlgp/skin/socialwidgets.css"></head>
+<body class="wrap">
+<header>
+<nav class="mobile-nav show-on-mobiles">
+<ul>
+<li class="">
+<a href="https://highon.coffee/">Home</a>
+</li>
+<li class="current">
+<a href="https://highon.coffee/blog/">Blog</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/about/"><span class="hide-on-mobiles">About</span></a>
+</li>
+<li class="">
+<a href="https://highon.coffee/services/"><span class="hide-on-mobiles">Services</span></a>
+</li>
+</ul>
+</nav>
+<div class="grid">
+<div class="unit one-third center-on-mobiles">
+<h1>
+<a href="https://highon.coffee/">
+<span>HighOn.Coffee</span>
+<img src="./LinuxCommandsCheatSheet_files/highoncoffee.png" width="300" height="115" alt="Logo">
+</a>
+</h1>
+</div>
+<nav class="main-nav unit two-thirds hide-on-mobiles">
+<ul>
+<li class="">
+<a href="https://highon.coffee/">Home</a>
+</li>
+<li class="current">
+<a href="https://highon.coffee/blog/">Blog</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/about/"><span class="hide-on-mobiles">About</span></a>
+</li>
+<li class="">
+<a href="https://highon.coffee/services/"><span class="hide-on-mobiles">Services</span></a>
+</li>
+</ul>
+</nav>
+</div>
+</header>
+<section class="blog">
+<div class="grid">
+<div class="docs-nav-mobile unit whole show-on-mobiles">
+<select onchange="if (this.value) window.location.href=this.value">
+<option value="">Navigate the blog…</option>
+<option value="/blog/">Home</option>
+<optgroup label="v1.x">
+<option value="/blog/insomnihack-ctf-teaser-smartcat2-writeup/">InsomniHack CTF Teaser - Smartcat2 Writeup</option>
+<option value="/blog/insomnihack-ctf-teaser-smartcat1-writeup/">InsomniHack CTF Teaser - Smartcat1 Writeup</option>
+<option value="/blog/fristileaks-walkthrough/">FristiLeaks 1.3 Walkthrough</option>
+<option value="/blog/sickos-1-walkthrough/">SickOS 1.1 - Walkthrough</option>
+<option value="/blog/the-wall-walkthrough/">The Wall Boot2Root Walkthrough</option>
+<option value="/blog/sleepy-ctf-walkthrough/">/dev/random: Sleepy Walkthrough CTF</option>
+<option value="/blog/pipe-ctf-walkthrough/">/dev/random Pipe walkthrough</option>
+<option value="/blog/lord-of-the-root-walkthrough/">Lord of the Root Walkthrough CTF</option>
+<option value="/blog/vi-cheat-sheet/">Vi Cheat Sheet</option>
+<option value="/blog/jenkins-api-unauthenticated-rce-exploit/">Jenkins RCE via Unauthenticated API</option>
+<option value="/blog/skytower-walkthrough/">SkyTower - Walkthrough</option>
+<option value="/blog/zorz-walkthrough/">Zorz Walkthrough</option>
+<option value="/blog/systemd-cheat-sheet/">Systemd Cheat Sheet</option>
+<option value="/blog/freshly-walkthrough/">Freshly Walkthrough</option>
+<option value="/blog/macbook-post-install-check-list/">MacBook - Post Install Config + Apps</option>
+<option value="/blog/fartknocker-walkthrough/">FartKnocker - Walkthrough</option>
+<option value="/blog/reverse-shell-cheat-sheet/">Reverse Shell Cheat Sheet</option>
+<option value="/blog/nbtscan-cheat-sheet/">nbtscan Cheat Sheet</option>
+<option value="/blog/enum4linux-cheat-sheet/">enum4linux Cheat Sheet</option>
+<option value="/blog/linux-local-enumeration-script/">Linux Local Enumeration Script</option>
+<option value="/blog/security-harden-centos-7/">Security Harden CentOS 7</option>
+<option value="/blog/ssh-meterpreter-pivoting-techniques/">SSH &amp; Meterpreter Pivoting Techniques</option>
+<option value="/blog/howto-install-quassel-ubuntu/">HowTo Install Quassel on Ubuntu</option>
+<option value="/blog/sokar-walkthrough/">Sokar - Walkthrough</option>
+<option value="/blog/tr0ll-2-walkthrough/">Tr0ll 2 Walkthrough</option>
+<option value="/blog/tr0ll-1-walkthrough/">Tr0ll 1 Walkthrough</option>
+<option value="/blog/nmap-cheat-sheet/">Nmap Cheat Sheet</option>
+<option value="/blog/linux-commands-cheat-sheet/">Linux Commands Cheat Sheet</option>
+<option value="/blog/shellshock-pen-testers-lab-walkthrough/">Pen Testers Lab: Shellshock CVE-2014-6271 - Walkthrough</option>
+<option value="/blog/keepnote-macbook-install-instructions/">HowTo Install KeepNote on OSX Mavericks</option>
+<option value="/blog/lamp-security-ctf8-walkthrough/">LAMP Security CTF8 - Walkthrough</option>
+<option value="/blog/kioptrix-level-2014-walkthrough/">Kioptrix Level 2014 Walkthrough</option>
+<option value="/blog/lamp-security-ctf7-walkthrough/">LAMP Security CTF7 - Walkthrough</option>
+<option value="/blog/lamp-security-ctf6-walkthrough/">LAMP Security CTF6 - Walkthrough</option>
+<option value="/blog/lamp-security-ctf5-walkthrough/">LAMP Security CTF5 - Walkthrough</option>
+<option value="/blog/lamp-security-ctf4-walkthrough/">LAMP Security CTF4 - Walkthrough</option>
+<option value="/blog/kioptrix-level-1-2-walkthrough/">Kioptrix Level 1.2 Walkthrough</option>
+<option value="/blog/kioptrix-level-1-1-walkthrough/">Kioptrix Level 1.1 Walkthrough</option>
+<option value="/blog/kioptrix-level-1-walkthrough/">Kioptrix Level 1 Walkthrough</option>
+</optgroup>
+</select>
+</div>
+<div class="unit four-fifths">
+<article>
+<h2>
+Linux Commands Cheat Sheet
+<a href="https://highon.coffee/blog/linux-commands-cheat-sheet/" class="permalink" title="Permalink">∞</a>
+</h2>
+<span class="post-category">
+<span class="label">
+cheat-sheet
+</span>
+</span>
+<div class="post-meta">
+<span class="post-date">
+02 Nov 2014
+</span>
+<a href="https://twitter.com/Arr0way" class="post-author">
+<img src="./LinuxCommandsCheatSheet_files/Arr0way.png" class="avatar" alt="Arr0way" width="24" height="24">
+Arr0way
+</a>
+</div>
+<div class="post-content">
+<ul id="markdown-toc">
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-penetration-testing-commands" id="markdown-toc-linux-penetration-testing-commands">Linux Penetration Testing Commands</a> <ul>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-network-commands" id="markdown-toc-linux-network-commands">Linux Network Commands</a></li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#system-information-commands" id="markdown-toc-system-information-commands">System Information Commands</a> <ul>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#redhat--centos--rpm-based-distros" id="markdown-toc-redhat--centos--rpm-based-distros">Redhat / CentOS / RPM Based Distros</a></li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#yum-commands" id="markdown-toc-yum-commands">YUM Commands</a></li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#debian--ubuntu--deb-based-distros" id="markdown-toc-debian--ubuntu--deb-based-distros">Debian / Ubuntu / .deb Based Distros</a></li>
+</ul>
+</li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-user-management" id="markdown-toc-linux-user-management">Linux User Management</a></li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-decompression-commands" id="markdown-toc-linux-decompression-commands">Linux Decompression Commands</a></li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-compression-commands" id="markdown-toc-linux-compression-commands">Linux Compression Commands</a></li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-file-commands" id="markdown-toc-linux-file-commands">Linux File Commands</a></li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#samba-commands" id="markdown-toc-samba-commands">Samba Commands</a></li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#breaking-out-of-limited-shells" id="markdown-toc-breaking-out-of-limited-shells">Breaking Out of Limited Shells</a></li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#misc-commands" id="markdown-toc-misc-commands">Misc Commands</a></li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-file-system-permissions" id="markdown-toc-linux-file-system-permissions">Linux File System Permissions</a></li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-file-system" id="markdown-toc-linux-file-system">Linux File System</a></li>
+<li><a href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-interesting-files--dirs" id="markdown-toc-linux-interesting-files--dirs">Linux Interesting Files / Dir’s</a></li>
+</ul>
+</li>
+</ul>
+<p>A collection of hopefully useful Linux Commands for pen testers, this is not a complete list but a collection of commonly used commands + syntax as a sort of “cheatsheet”, this content will be constantly updated as I discover new awesomeness.</p>
+<h2 id="linux-penetration-testing-commands">Linux Penetration Testing Commands<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-penetration-testing-commands"><i class="fa fa-link"></i></a></h2>
+<h3 id="linux-network-commands">Linux Network Commands<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-network-commands"><i class="fa fa-link"></i></a></h3>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>netstat -tulpn</code></p>
+</td>
+<td>
+<p>
+Show Linux network ports with process ID's (PIDs)
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>watch ss -stplu</code></p>
+</td>
+<td>
+<p>
+Watch TCP, UDP open ports in real time with socket summary.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>lsof -i</code></p>
+</td>
+<td>
+<p>
+Show established connections.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>macchanger -m MACADDR INTR</code></p>
+</td>
+<td>
+<p>
+Change MAC address on KALI Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>ifconfig eth0 192.168.2.1/24</code></p>
+</td>
+<td>
+<p>
+Set IP address in Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>ifconfig eth0:1 192.168.2.3/24</code></p>
+</td>
+<td>
+<p>
+Add IP address to existing network interface in Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>ifconfig eth0 hw ether MACADDR</code></p>
+</td>
+<td>
+<p>
+Change MAC address in Linux using ifconfig.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>ifconfig eth0 mtu 1500</code></p>
+</td>
+<td>
+<p>
+Change MTU size Linux using ifconfig, change 1500 to your desired MTU.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>dig -x 192.168.1.1 </code></p>
+</td>
+<td>
+<p>
+Dig reverse lookup on an IP address.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>host 192.168.1.1 </code></p>
+</td>
+<td>
+<p>
+Reverse lookup on an IP address, in case dig is not installed.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>dig @192.168.2.2 domain.com -t AXFR</code></p>
+</td>
+<td>
+<p>
+Perform a DNS zone transfer using dig.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>host -l domain.com nameserver</code></p>
+</td>
+<td>
+<p>
+Perform a DNS zone transfer using host.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>nbtstat -A x.x.x.x</code></p>
+</td>
+<td>
+<p>
+Get hostname for IP address.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>ip addr add 192.168.2.22/24 dev eth0</code></p>
+</td>
+<td>
+<p>
+Adds a hidden IP address to Linux, does not show up when performing an ifconfig.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>tcpkill -9 host google.com</code></p>
+</td>
+<td>
+<p>
+Blocks access to google.com from the host machine.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>echo "1" &gt; /proc/sys/net/ipv4/ip_forward</code></p>
+</td>
+<td>
+<p>
+Enables IP forwarding, turns Linux box into a router - handy for routing traffic through a box.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>echo "8.8.8.8" &gt; /etc/resolv.conf</code></p>
+</td>
+<td>
+<p>
+Use Google DNS.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="system-information-commands">System Information Commands<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#system-information-commands"><i class="fa fa-link"></i></a></h3>
+<p>Useful for local enumeration.</p>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>whoami</code></p>
+</td>
+<td>
+<p>
+Shows currently logged in user on Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>id</code></p>
+</td>
+<td>
+<p>
+Shows currently logged in user and groups for the user.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>last</code></p>
+</td>
+<td>
+<p>
+Shows last logged in users.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>mount</code></p>
+</td>
+<td>
+<p>
+Show mounted drives.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>df -h</code></p>
+</td>
+<td>
+<p>
+Shows disk usage in human readable output.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>echo "user:passwd" | chpasswd</code></p>
+</td>
+<td>
+<p>
+Reset password in one line.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>getent passwd</code></p>
+</td>
+<td>
+<p>
+List users on Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>strings /usr/local/bin/blah</code></p>
+</td>
+<td>
+<p>
+Shows contents of none text files, e.g. whats in a binary.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>uname -ar</code></p>
+</td>
+<td>
+<p>
+Shows running kernel version.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>PATH=$PATH:/my/new-path</code></p>
+</td>
+<td>
+<p>
+Add a new PATH, handy for local FS manipulation.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>history</code></p>
+</td>
+<td>
+<p>
+Show bash history, commands the user has entered previously.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="redhat--centos--rpm-based-distros">Redhat / CentOS / RPM Based Distros<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#redhat--centos--rpm-based-distros"><i class="fa fa-link"></i></a></h4>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>cat /etc/redhat-release</code></p>
+</td>
+<td>
+<p>
+Shows Redhat / CentOS version number.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>rpm -qa</code></p>
+</td>
+<td>
+<p>
+List all installed RPM's on an RPM based Linux distro.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>rpm -q --changelog openvpn</code></p>
+</td>
+<td>
+<p>
+Check installed RPM is patched against CVE, grep the output for CVE.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="yum-commands">YUM Commands<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#yum-commands"><i class="fa fa-link"></i></a></h4>
+<p>Package manager used by RPM based systems, you can pull some usefull information about installed packages and or install additional tools.</p>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>yum update</code></p>
+</td>
+<td>
+<p>
+Update all RPM packages with YUM, also shows whats out of date.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum update httpd</code></p>
+</td>
+<td>
+<p>
+Update individual packages, in this example HTTPD (Apache).
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum install package</code></p>
+</td>
+<td>
+<p>
+Install a package using YUM.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum --exclude=package kernel* update</code></p>
+</td>
+<td>
+<p>
+Exclude a package from being updates with YUM.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum remove package</code></p>
+</td>
+<td>
+<p>
+Remove package with YUM.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum erase package</code></p>
+</td>
+<td>
+<p>
+Remove package with YUM.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum list package</code></p>
+</td>
+<td>
+<p>
+Lists info about yum package.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum provides httpd</code></p>
+</td>
+<td>
+<p>
+What a packages does, e.g Apache HTTPD Server.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum info httpd</code></p>
+</td>
+<td>
+<p>
+Shows package info, architecture, version etc.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum localinstall blah.rpm</code></p>
+</td>
+<td>
+<p>
+Use YUM to install local RPM, settles deps from repo.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum deplist package</code></p>
+</td>
+<td>
+<p>
+Shows deps for a package.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum list installed | more</code></p>
+</td>
+<td>
+<p>
+List all installed packages.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum grouplist | more</code></p>
+</td>
+<td>
+<p>
+Show all YUM groups.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>yum groupinstall 'Development Tools'</code></p>
+</td>
+<td>
+<p>
+Install YUM group.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="debian--ubuntu--deb-based-distros">Debian / Ubuntu / .deb Based Distros<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#debian--ubuntu--deb-based-distros"><i class="fa fa-link"></i></a></h4>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>cat /etc/debian_version</code></p>
+</td>
+<td>
+<p>
+Shows Debian version number.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>cat /etc/*-release</code></p>
+</td>
+<td>
+<p>
+Shows Ubuntu version number.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>dpkg -l</code></p>
+</td>
+<td>
+<p>
+List all installed packages on Debian / .deb based Linux distro.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="linux-user-management">Linux User Management<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-user-management"><i class="fa fa-link"></i></a></h3>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>useradd new-user</code></p>
+</td>
+<td>
+<p>
+Creates a new Linux user.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>passwd username</code></p>
+</td>
+<td>
+<p>
+Reset Linux user password, enter just <code>passwd</code> if you are root.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>deluser username</code></p>
+</td>
+<td>
+<p>
+Remove a Linux user.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="linux-decompression-commands">Linux Decompression Commands<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-decompression-commands"><i class="fa fa-link"></i></a></h3>
+<p>How to extract various archives (tar, zip, gzip, bzip2 etc) on Linux and some other tricks for searching inside of archives etc.</p>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>unzip archive.zip</code></p>
+</td>
+<td>
+<p>
+Extracts zip file on Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>zipgrep *.txt archive.zip</code></p>
+</td>
+<td>
+<p>
+Search inside a .zip archive.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>tar xf archive.tar</code></p>
+</td>
+<td>
+<p>
+Extract tar file Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>tar xvzf archive.tar.gz</code></p>
+</td>
+<td>
+<p>
+Extract a tar.gz file Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>tar xjf archive.tar.bz2</code></p>
+</td>
+<td>
+<p>
+Extract a tar.bz2 file Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>tar ztvf file.tar.gz | grep blah</code></p>
+</td>
+<td>
+<p>
+Search inside a tar.gz file.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>gzip -d archive.gz</code></p>
+</td>
+<td>
+<p>
+Extract a gzip file Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>zcat archive.gz</code></p>
+</td>
+<td>
+<p>
+Read a gz file Linux without decompressing.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>zless archive.gz</code></p>
+</td>
+<td>
+<p>
+Same function as the <code>less</code> command for .gz archives.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>zgrep 'blah' /var/log/maillog*.gz</code></p>
+</td>
+<td>
+<p>
+Search inside .gz archives on Linux, search inside of compressed log files.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>vim file.txt.gz</code></p>
+</td>
+<td>
+<p>
+Use vim to read .txt.gz files (my personal favorite).
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>upx -9 -o output.exe input.exe</code></p>
+</td>
+<td>
+<p>
+UPX compress .exe file Linux.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="linux-compression-commands">Linux Compression Commands<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-compression-commands"><i class="fa fa-link"></i></a></h3>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>zip -r file.zip /dir/*</code></p>
+</td>
+<td>
+<p>
+Creates a .zip file on Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>tar cf archive.tar files</code></p>
+</td>
+<td>
+<p>
+Creates a tar file on Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>tar czf archive.tar.gz files</code></p>
+</td>
+<td>
+<p>
+Creates a tar.gz file on Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>tar cjf archive.tar.bz2 files</code></p>
+</td>
+<td>
+<p>
+Creates a tar.bz2 file on Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>gzip file</code></p>
+</td>
+<td>
+<p>
+Creates a file.gz file on Linux.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="linux-file-commands">Linux File Commands<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-file-commands"><i class="fa fa-link"></i></a></h3>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>df -h blah</code></p>
+</td>
+<td>
+<p>
+Display size of file / dir Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>diff file1 file2</code></p>
+</td>
+<td>
+<p>
+Compare / Show differences between two files on Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>md5sum file</code></p>
+</td>
+<td>
+<p>
+Generate MD5SUM Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>md5sum -c blah.iso.md5</code></p>
+</td>
+<td>
+<p>
+Check file against MD5SUM on Linux, assuming both file and .md5 are in the same dir.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>file blah</code></p>
+</td>
+<td>
+<p>
+Find out the type of file on Linux, also displays if file is 32 or 64 bit.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>dos2unix</code></p>
+</td>
+<td>
+<p>
+Convert Windows line endings to Unix / Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>base64 &lt; input-file &gt; output-file</code></p>
+</td>
+<td>
+<p>
+Base64 encodes input file and outputs a Base64 encoded file called output-file.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>base64 -d &lt; input-file &gt; output-file</code></p>
+</td>
+<td>
+<p>
+Base64 decodes input file and outputs a Base64 decoded file called output-file.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>touch -r ref-file new-file</code></p>
+</td>
+<td>
+<p>
+Creates a new file using the timestamp data from the reference file, drop the -r to simply create a file.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>rm -rf</code></p>
+</td>
+<td>
+<p>
+Remove files and directories without prompting for confirmation.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="samba-commands">Samba Commands<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#samba-commands"><i class="fa fa-link"></i></a></h3>
+<p>Connect to a Samba share from Linux.</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>smbmount //server/share /mnt/win -o <span class="nv">user</span><span class="o">=</span>username,password<span class="o">=</span>password1
+<span class="nv">$ </span>smbclient -U user <span class="se">\\\\</span>server<span class="se">\\</span>share
+<span class="nv">$ </span>mount -t cifs -o <span class="nv">username</span><span class="o">=</span>user,password<span class="o">=</span>password //x.x.x.x/share /mnt/share</code></pre></div>
+<h3 id="breaking-out-of-limited-shells">Breaking Out of Limited Shells<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#breaking-out-of-limited-shells"><i class="fa fa-link"></i></a></h3>
+<p>Credit to G0tmi1k for these (or wherever he stole them from!).</p>
+<p>The Python trick:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s">'import pty;pty.spawn("/bin/bash")'</span></code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nb">echo </span>os.system<span class="o">(</span><span class="s1">'/bin/bash'</span><span class="o">)</span></code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">/bin/sh -i</code></pre></div>
+<h3 id="misc-commands">Misc Commands<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#misc-commands"><i class="fa fa-link"></i></a></h3>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>init 6</code></p>
+</td>
+<td>
+<p>
+Reboot Linux from the command line.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>gcc -o output.c input.c</code></p>
+</td>
+<td>
+<p>
+Compile C code.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>gcc -m32 -o output.c input.c</code></p>
+</td>
+<td>
+<p>
+Cross compile C code, compile 32 bit binary on 64 bit Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>unset HISTORYFILE</code></p>
+</td>
+<td>
+<p>
+Disable bash history logging.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>rdesktop X.X.X.X</code></p>
+</td>
+<td>
+<p>
+Connect to RDP server from Linux.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>kill -9 $$</code></p>
+</td>
+<td>
+<p>
+Kill current session.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>chown user:group blah</code></p>
+</td>
+<td>
+<p>
+Change owner of file or dir.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>chown -R user:group blah</code></p>
+</td>
+<td>
+<p>
+Change owner of file or dir and all underlying files / dirs - recersive chown.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>chmod 600 file</code></p>
+</td>
+<td>
+<p>
+Change file / dir permissions, see [Linux File System Permissons](#linux-file-system-permissions) for details.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Clear bash history:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ssh user@X.X.X.X <span class="p">|</span> cat /dev/null &gt; ~/.bash_history</code></pre></div>
+<h3 id="linux-file-system-permissions">Linux File System Permissions<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-file-system-permissions"><i class="fa fa-link"></i></a></h3>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>777</code></p>
+</td>
+<td>
+<p>
+<code>rwxrwxrwx</code> No restriction, global WRX any user can do anything.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>755</code></p>
+</td>
+<td>
+<p>
+<code>rwxr-xr-x</code> Owner has full access, others can read and execute the file.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>700</code></p>
+</td>
+<td>
+<p>
+<code>rwx------</code> Owner has full access, no one else has access.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>666</code></p>
+</td>
+<td>
+<p>
+<code>rw-rw-rw-</code> All users can read and write but not execute.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>644</code></p>
+</td>
+<td>
+<p>
+<code>rw-r--r--</code> Owner can read and write, everyone else can read.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>600</code></p>
+</td>
+<td>
+<p>
+<code>rw-------</code> Owner can read and write, everyone else has no access.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="linux-file-system">Linux File System<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-file-system"><i class="fa fa-link"></i></a></h3>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Directory</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>/</code></p>
+</td>
+<td>
+<p>
+/ also know as "slash" or the root.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/bin</code></p>
+</td>
+<td>
+<p>
+Common programs, shared by the system, the system administrator and the users.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/boot</code></p>
+</td>
+<td>
+<p>
+Boot files, boot loader (grub), kernels, vmlinuz
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/dev</code></p>
+</td>
+<td>
+<p>
+Contains references to system devices, files with special properties.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/etc</code></p>
+</td>
+<td>
+<p>
+Important system config files.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/home</code></p>
+</td>
+<td>
+<p>
+Home directories for system users.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/lib</code></p>
+</td>
+<td>
+<p>
+Library files, includes files for all kinds of programs needed by the system and the users.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/lost+found</code></p>
+</td>
+<td>
+<p>
+Files that were saved during failures are here.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/mnt</code></p>
+</td>
+<td>
+<p>
+Standard mount point for external file systems.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/media</code></p>
+</td>
+<td>
+<p>
+Mount point for external file systems (on some distros).
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/net</code></p>
+</td>
+<td>
+<p>
+Standard mount point for entire remote file systems - nfs.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/opt</code></p>
+</td>
+<td>
+<p>
+Typically contains extra and third party software.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/proc</code></p>
+</td>
+<td>
+<p>
+A virtual file system containing information about system resources.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/root</code></p>
+</td>
+<td>
+<p>
+root users home dir.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/sbin</code></p>
+</td>
+<td>
+<p>
+Programs for use by the system and the system administrator.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/tmp</code></p>
+</td>
+<td>
+<p>
+Temporary space for use by the system, cleaned upon reboot.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/usr</code></p>
+</td>
+<td>
+<p>
+Programs, libraries, documentation etc. for all user-related programs.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/var</code></p>
+</td>
+<td>
+<p>
+Storage for all variable files and temporary files created by users, such as log files, mail queue, print spooler. Web servers, Databases etc.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="linux-interesting-files--dirs">Linux Interesting Files / Dir’s<a class="header-link" href="https://highon.coffee/blog/linux-commands-cheat-sheet/#linux-interesting-files--dirs"><i class="fa fa-link"></i></a></h3>
+<p>Places that are worth a look if you are attempting to privilege escalate / perform post exploitation.</p>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Directory</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>/etc/passwd</code></p>
+</td>
+<td>
+<p>
+Contains local Linux users.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/etc/shadow</code></p>
+</td>
+<td>
+<p>
+Contains local account password hashes.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/etc/group</code></p>
+</td>
+<td>
+<p>
+Contains local account groups.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/etc/init.d/</code></p>
+</td>
+<td>
+<p>
+Contains service init script - worth a look to see whats installed.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/etc/hostname</code></p>
+</td>
+<td>
+<p>
+System hostname.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/etc/network/interfaces</code></p>
+</td>
+<td>
+<p>
+Network interfaces.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/etc/resolv.conf</code></p>
+</td>
+<td>
+<p>
+System DNS servers.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/etc/profile</code></p>
+</td>
+<td>
+<p>
+System environment variables.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>~/.ssh/</code></p>
+</td>
+<td>
+<p>
+SSH keys.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>~/.bash_history</code></p>
+</td>
+<td>
+<p>
+Users bash history log.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/var/log/</code></p>
+</td>
+<td>
+<p>
+Linux system log files are typically stored here.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/var/adm/</code></p>
+</td>
+<td>
+<p>
+UNIX system log files are typically stored here.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/var/log/apache2/access.log</code></p>
+<p><code>/var/log/httpd/access.log</code></p>
+</td>
+<td>
+<p>
+Apache access log file typical path.
+</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>/etc/fstab</code></p>
+</td>
+<td>
+<p>
+File system mounts.
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p>Follow <a href="https://twitter.com/Arr0way">@Arr0way</a> - resistence is futile...</p>
+<div>
+<img src="chrome-extension://pkehgijcmpdhfbdbbnkijodmdjhbjlgp/skin/socialwidgets/Twitter.svg" class="privacyBadgerReplacementButton" title="PrivacyBadger has replaced this Twitter button.">
+<script data-cfasync="false">!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+</div>
+</div>
+</article>
+</div>
+<div class="unit one-fifth hide-on-mobiles">
+<aside>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/">All Blog</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/cheat-sheet/">Cheat Sheets</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/techniques/">Techniques</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/tools/">Tools</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/security-hardening/">Security Hardening</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/walkthroughs/">WalkThroughs</a>
+</li>
+</ul>
+<h4>Cheat Sheets</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/vi-cheat-sheet/">Vi Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/systemd-cheat-sheet/">Systemd Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/reverse-shell-cheat-sheet/">Reverse Shell Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/nbtscan-cheat-sheet/">nbtscan Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/enum4linux-cheat-sheet/">enum4linux Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/nmap-cheat-sheet/">Nmap Cheat Sheet</a>
+</li>
+<li class="current">
+<a href="https://highon.coffee/blog/linux-commands-cheat-sheet/">Linux Commands Cheat Sheet</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/cheat-sheet/">More »</a>
+</li>
+</ul>
+<h4>WalkThroughs</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/insomnihack-ctf-teaser-smartcat2-writeup/">InsomniHack CTF Teaser - Smartcat2 Writeup</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/insomnihack-ctf-teaser-smartcat1-writeup/">InsomniHack CTF Teaser - Smartcat1 Writeup</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/fristileaks-walkthrough/">FristiLeaks 1.3 Walkthrough</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/sickos-1-walkthrough/">SickOS 1.1 - Walkthrough</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/the-wall-walkthrough/">The Wall Boot2Root Walkthrough</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/walkthroughs/">More »</a>
+</li>
+</ul>
+<h4>Techniques</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/">SSH &amp; Meterpreter Pivoting Techniques</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/techniques/">More »</a>
+</li>
+</ul>
+<h4>Tools</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/linux-local-enumeration-script/">Linux Local Enumeration Script</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/tools/">More »</a>
+</li>
+</ul>
+<h4>Security Hardening</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/security-harden-centos-7/">Security Harden CentOS 7</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/security-hardening/">More »</a>
+</li>
+</ul>
+<h4>/dev/urandom</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/macbook-post-install-check-list/">MacBook - Post Install Config + Apps</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/urandom/">More »</a>
+</li>
+</ul>
+<h4>Other Blog</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/jenkins-api-unauthenticated-rce-exploit/">Jenkins RCE via Unauthenticated API</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/macbook-post-install-check-list/">MacBook - Post Install Config + Apps</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/howto-install-quassel-ubuntu/">HowTo Install Quassel on Ubuntu</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/keepnote-macbook-install-instructions/">HowTo Install KeepNote on OSX Mavericks</a>
+</li>
+</ul>
+</aside>
+</div>
+<div class="clear"></div>
+</div>
+</section>
+<footer>
+<div class="grid">
+<div class="unit one-third center-on-mobiles">
+<p>The contents of this website are ©&nbsp;2016 <a href="http://highon.coffee/">HighOn.Coffee</a></p>
+</div>
+<div class="unit two-thirds align-right center-on-mobiles">
+<p>
+Proudly hosted by
+<a href="https://github.com/">
+<img src="./LinuxCommandsCheatSheet_files/footer-logo.png" width="100" height="30" alt="GitHub • Social coding">
+</a>
+</p>
+</div>
+</div>
+</footer>
+<script type="text/rocketscript" data-rocketoptimized="true">
+  var anchorForId = function (id) {
+    var anchor = document.createElement("a");
+    anchor.className = "header-link";
+    anchor.href      = "#" + id;
+    anchor.innerHTML = "<i class=\"fa fa-link\"></i>";
+    return anchor;
+  };
+
+  var linkifyAnchors = function (level, containingElement) {
+    var headers = containingElement.getElementsByTagName("h" + level);
+    for (var h = 0; h < headers.length; h++) {
+      var header = headers[h];
+
+      if (typeof header.id !== "undefined" && header.id !== "") {
+        header.appendChild(anchorForId(header.id));
+      }
+    }
+  };
+
+  document.onreadystatechange = function () {
+    if (this.readyState === "complete") {
+      var contentBlock = document.getElementsByClassName("docs")[0] || document.getElementsByClassName("blog")[0];
+      if (!contentBlock) {
+        return;
+      }
+      for (var level = 1; level <= 6; level++) {
+        linkifyAnchors(level, contentBlock);
+      }
+    }
+  };
+</script>
+
+
+</body></html>

