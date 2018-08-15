@@ -5,17 +5,13 @@
 
 $packages = @(
     "sublimetext3"
-    "googlechrome"
     "adobereader"
     "jre8"
     "firefox"
-    "7zip.install"
     "git.install"
     "putty.install"
-    "ccleaner"
     "sysinternals"
     "filezilla"
-    "keepass.install"
     "python2"
     "conemu"
     "wireshark"
@@ -23,10 +19,12 @@ $packages = @(
     "poshgit"
     "nmap"
     "tightvnc"
-    "tor-browser"
     "mremoteng"
     "dbeaver"
     "visualstudio2017community"
+    "mobaxterm"
+    "ollydbg"
+    "ida-free"
 )
 
 echo "Setting up Chocolatey software package manager"
