@@ -770,13 +770,71 @@ git config --global mergetool.prompt false
 
 
 ###### Setup firefox
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}firefox${RESET} ~ GUI web browser"
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}firefox${RESET} #~ GUI web browser"
+#export DISPLAY=:0.0
+#timeout 15 firefox >/dev/null 2>&1                # Start and kill. Files needed for first time run
+#timeout 5 killall -9 -q -w firefox-esr >/dev/null
+#
+#ffpath="$(find ~/.mozilla/firefox/*.default*/ -maxdepth 0 -mindepth 0 -type d -name '*.default*' -print -#quit)"
+#cp -f /opt/scripts/misc/places.* $ffpath
+
+
+#--- Configure firefox
 export DISPLAY=:0.0
 timeout 15 firefox >/dev/null 2>&1                # Start and kill. Files needed for first time run
 timeout 5 killall -9 -q -w firefox-esr >/dev/null
+#--- Wipe session (due to force close)
+find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'sessionstore.*' -delete
+#
+file=$(find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'prefs.js' -print -quit)
+[ -e "${file}" ] \
+  && cp -n $file{,.bkup}   #/etc/firefox-esr/pref/*.js
+([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
 
-ffpath="$(find ~/.mozilla/firefox/*.default*/ -maxdepth 0 -mindepth 0 -type d -name '*.default*' -print -quit)"
-cp -f /opt/scripts/misc/places.* $ffpath
+sed -i 's/^.network.proxy.socks_remote_dns.*/user_pref("network.proxy.socks_remote_dns", true);' "${file}" 2>/dev/null \
+  || echo 'user_pref("network.proxy.socks_remote_dns", true);' >> "${file}"
+sed -i 's/^.browser.safebrowsing.enabled.*/user_pref("browser.safebrowsing.enabled", false);' "${file}" 2>/dev/null \
+  || echo 'user_pref("browser.safebrowsing.enabled", false);' >> "${file}"
+sed -i 's/^.browser.safebrowsing.malware.enabled.*/user_pref("browser.safebrowsing.malware.enabled", false);' "${file}" 2>/dev/null \
+  || echo 'user_pref("browser.safebrowsing.malware.enabled", false);' >> "${file}"
+sed -i 's/^.browser.safebrowsing.remoteLookups.enabled.*/user_pref("browser.safebrowsing.remoteLookups.enabled", false);' "${file}" 2>/dev/null \
+  || echo 'user_pref("browser.safebrowsing.remoteLookups.enabled", false);' >> "${file}"
+sed -i 's/^.*browser.startup.page.*/user_pref("browser.startup.page", 0);' "${file}" 2>/dev/null \
+  || echo 'user_pref("browser.startup.page", 0);' >> "${file}"
+sed -i 's/^.*privacy.donottrackheader.enabled.*/user_pref("privacy.donottrackheader.enabled", true);' "${file}" 2>/dev/null \
+  || echo 'user_pref("privacy.donottrackheader.enabled", true);' >> "${file}"
+sed -i 's/^.*browser.showQuitWarning.*/user_pref("browser.showQuitWarning", true);' "${file}" 2>/dev/null \
+  || echo 'user_pref("browser.showQuitWarning", true);' >> "${file}"
+sed -i 's/^.*extensions.https_everywhere._observatory.popup_shown.*/user_pref("extensions.https_everywhere._observatory.popup_shown", true);' "${file}" 2>/dev/null \
+  || echo 'user_pref("extensions.https_everywhere._observatory.popup_shown", true);' >> "${file}"
+sed -i 's/^.network.security.ports.banned.override/user_pref("network.security.ports.banned.override", "1-65455");' "${file}" 2>/dev/null \
+  || echo 'user_pref("network.security.ports.banned.override", "1-65455");' >> "${file}"
+
+# Show Bookmamrks Toolbar
+timeout 10 firefox >/dev/null 2>&1
+filedir=$(find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -print -quit)
+#echo $filedir
+touch "${filedir}/xulstore.json"
+file=$(find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'xulstore.json' -print -quit)
+#echo $file
+cat <<EOF > "${file}" \
+ || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+{"chrome://browser/content/browser.xul":{"PersonalToolbar":{"collapsed":"false"},"navigator-toolbox":{"iconsize":"small"},"main-window":{"screenX":"638","screenY":"102","width":"1280","height":"914","sizemode":"normal"},"sidebar-title":{"value":""}}}
+EOF
+
+#--- Clear bookmark cache
+find ~/.mozilla/firefox/*.default*/bookmarkbackups/ -type f -delete
+#--- Set firefox for XFCE's default
+mkdir -p ~/.config/xfce4/
+file=~/.config/xfce4/helpers.rc; [ -e "${file}" ] && cp -n $file{,.bkup}    #exo-preferred-applications   #xdg-mime default
+([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+sed -i 's#^WebBrowser=.*#WebBrowser=firefox#' "${file}" 2>/dev/null \
+  || echo -e 'WebBrowser=firefox' >> "${file}"
+
+#--- Restore Bookmarks
+file=$(find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'places.sqlite' -print -quit)
+sqlite3 "${file}" ".restore /opt/scripts/misc/places.sqlite.backup"
+
 
 ##### Install Burp Suite
 #if [[ "${burpFree}" != "false" ]]; then
