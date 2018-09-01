@@ -350,10 +350,6 @@ cat <<EOF > "${file}" \
 EOF
 
 
-##### Cosmetics (themes & wallpapers)
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Cosmetics${RESET}${RESET} ~ Giving it a personal touch"
-export DISPLAY=:0.0
-
 ##### Configure bash - all users
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}bash${RESET} ~ CLI shell"
 file=/etc/bash.bashrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.bashrc
@@ -756,7 +752,6 @@ git config --global mergetool.prompt false
 
 ###### Setup firefox
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}firefox${RESET}GUI web browser"
-export DISPLAY=:0.0
 timeout 15 firefox >/dev/null 2>&1                # Start and kill. Files needed for first time run
 timeout 5 killall -9 -q -w firefox-esr >/dev/null
 #--- Wipe session (due to force close)
@@ -1745,9 +1740,6 @@ apt -y -qq install veil-evasion \
 apt -y -qq install upx-ucl curl \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 mkdir -p /opt/packers/
-#echo -n '[1/3]'; timeout 600 curl --progress -k -L -f "http://www.eskimo.com/~scottlu/win/cexe.exe" > /opt/packers/cexe.exe \
-#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading cexe.exe" 1>&2            #***!!! hardcoded version! Need to manually check for updates
-cp /opt/scripts/tools/misc/cexe.exe /opt/packers/
 echo -n '[2/3]'; timeout 600 curl --progress -k -L -f "http://www.farbrausch.de/~fg/kkrunchy/kkrunchy_023a2.zip" > /opt/packers/kkrunchy.zip \
   && unzip -q -o -d /opt/packers/ /opt/packers/kkrunchy.zip \
   || echo -e ' '${RED}'[!]'${RESET}" Issue downloading kkrunchy.zip" 1>&2        #***!!! hardcoded version! Need to manually check for updates
