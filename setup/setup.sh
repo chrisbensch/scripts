@@ -85,9 +85,9 @@ export DISPLAY=:0.0
 export TERM=xterm
 
 
-###### Get BurpSuitePro Archive Password
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL})BurpSuitePro Archive Password ${GREEN}${RESET}"
-read -sp "Password: " BURPPASS
+####### Get BurpSuitePro Archive Password
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL})BurpSuitePro Archive Password ${GREEN}${RESET}"
+#read -sp "Password: " BURPPASS
 
 
 ###### Enable default network repositories ~ http://docs.kali.org/general-use/kali-linux-sources-list-repositories
@@ -770,16 +770,7 @@ git config --global mergetool.prompt false
 
 
 ###### Setup firefox
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}firefox${RESET} #~ GUI web browser"
-#export DISPLAY=:0.0
-#timeout 15 firefox >/dev/null 2>&1                # Start and kill. Files needed for first time run
-#timeout 5 killall -9 -q -w firefox-esr >/dev/null
-#
-#ffpath="$(find ~/.mozilla/firefox/*.default*/ -maxdepth 0 -mindepth 0 -type d -name '*.default*' -print -#quit)"
-#cp -f /opt/scripts/misc/places.* $ffpath
-
-
-#--- Configure firefox
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}firefox${RESET} #~ GUI web browser"
 export DISPLAY=:0.0
 timeout 15 firefox >/dev/null 2>&1                # Start and kill. Files needed for first time run
 timeout 5 killall -9 -q -w firefox-esr >/dev/null
@@ -788,7 +779,7 @@ find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'sessionstore.*' -
 #
 file=$(find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'prefs.js' -print -quit)
 [ -e "${file}" ] \
-  && cp -n $file{,.bkup}   #/etc/firefox-esr/pref/*.js
+  && cp -n $file{,.bkup}
 ([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
 
 sed -i 's/^.network.proxy.socks_remote_dns.*/user_pref("network.proxy.socks_remote_dns", true);' "${file}" 2>/dev/null \
@@ -836,76 +827,11 @@ file=$(find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'places.sql
 sqlite3 "${file}" ".restore /opt/scripts/misc/places.sqlite.backup"
 
 
-##### Install Burp Suite
-#if [[ "${burpFree}" != "false" ]]; then
-#  (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${S TAGE}/${TOTAL}) Installing ${GREEN}Burp Suite (#Community Edition)${RESET} ~ web application proxy"
-#  apt -y -qq install burpsuite curl \
-#    || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#  mkdir -p ~/.java/.userPrefs/burp/
-#  file=~/.java/.userPrefs/burp/prefs.xml;   #[ -e "${file}" ] && cp -n $file{,.bkup}
-#  [ -e "${file}" ] \
-#    || cat <<EOF > "${file}"
-#<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-#<!DOCTYPE map SYSTEM "http://java.sun.com/dtd/preferences.dtd" >
-#<map MAP_XML_VERSION="1.0">
-#  <entry key="eulafree" value="2"/>
-#  <entry key="free.suite.feedbackReportingEnabled" value="false"/>
-#</map>
-#EOF
-#  #--- Extract CA
-#  find /tmp/ -maxdepth 1 -name 'burp*.tmp' -delete
-#  export DISPLAY=:0.0
-#  timeout 120 burpsuite >/dev/null 2>&1 &
-#  PID=$!
-#  sleep 15s
-#  #echo "-----BEGIN CERTIFICATE-----" > /tmp/PortSwiggerCA \
-#  #  && awk -F '"' '/caCert/ {print $4}' ~/.java/.userPrefs/burp/prefs.xml | fold -w 64 >> /tmp/#PortSwiggerCA \
-#  #  && echo "-----END CERTIFICATE-----" >> /tmp/PortSwiggerCA
-#  export http_proxy="http://127.0.0.1:8080"
-#  rm -f /tmp/burp.crt
-#  while test -d /proc/${PID}; do
-#    sleep 1s
-#    curl --progress -k -L -f "http://burp/cert" -o /tmp/burp.crt 2>/dev/null      # || echo -e ' #'${RED}'[!]'${RESET}" Issue downloading burp.crt" 1>&2
-#    [ -f /tmp/burp.crt ] && break
-#  done
-#  timeout 5 kill ${PID} 2>/dev/null \
-#    || echo -e ' '${RED}'[!]'${RESET}" Failed to kill ${RED}burpsuite${RESET}"
-#  unset http_proxy
-#  #--- Installing CA
-#  if [[ -f /tmp/burp.crt ]]; then
-#    apt -y -qq install libnss3-tools \
-#      || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#    folder=$(find ~/.mozilla/firefox/ -maxdepth 1 -type d -name '*.default' -print -quit)
-#    certutil -A -n Burp -t "CT,c,c" -d "${folder}" -i /tmp/burp.crt
-#    timeout 15 firefox >/dev/null 2>&1
-#    timeout 5 killall -9 -q -w firefox-esr >/dev/null
-#    #mkdir -p /usr/share/ca-certificates/burp/
-#    #cp -f /tmp/burp.crt /usr/share/ca-certificates/burp/
-#    #dpkg-reconfigure ca-certificates    # Not automated
-#    echo -e " ${YELLOW}[i]${RESET} Installed ${YELLOW}Burp Suite CA${RESET}"
-#  else
-#    echo -e ' '${RED}'[!]'${RESET}' Did not install Burp Suite Certificate Authority (CA)' 1>&2
-#    echo -e ' '${RED}'[!]'${RESET}' Skipping...' 1>&2
-#  fi
-#  #--- Remove old temp files
-#  sleep 2s
-#  find /tmp/ -maxdepth 1 -name 'burp*.tmp' -delete 2>/dev/null
-#  find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'sessionstore.*' -delete
-#  unset http_proxy
-#else
-#  echo -e "\n\n ${YELLOW}[i]${RESET} ${YELLOW}Skipping Burp Suite${RESET} (missing: '$0 #${BOLD}--burp${RESET}')..." 1>&2
-#fi
-
 ##### Install metasploit ~ http://docs.kali.org/general-use/starting-metasploit-framework-in-kali
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}metasploit${RESET} ~ exploit framework"
 apt -y -qq install metasploit-framework \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 mkdir -p ~/.msf4/modules/{auxiliary,exploits,payloads,post}/
-#--- ASCII art
-#export GOCOW=1   # Always a cow logo ;)   Others: THISISHALLOWEEN (Halloween), APRILFOOLSPONIES (My Little Pony)
-#file=~/.bashrc; [ -e "${file}" ] && cp -n $file{,.bkup}
-#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-#grep -q '^GOCOW' "${file}" 2>/dev/null || echo 'GOCOW=1' >> "${file}"
 #--- Fix any port issues
 file=$(find /etc/postgresql/*/main/ -maxdepth 1 -type f -name postgresql.conf -print -quit);
 [ -e "${file}" ] && cp -n $file{,.bkup}
@@ -953,7 +879,7 @@ setg EnableStageEncoding true
 setg LHOST 0.0.0.0
 setg LPORT 443
 use exploit/multi/handler
-setg AutoRunScript 'multi_console_command -rc "~/.msf4/msf_autorunscript.rc"'
+#setg AutoRunScript 'multi_console_command -rc "~/.msf4/msf_autorunscript.rc"'
 set PAYLOAD windows/meterpreter/reverse_https
 EOF
 fi
@@ -1149,12 +1075,6 @@ Alias /rips /opt/rips-git
 EOF
 ln -sf /etc/apache2/conf-available/rips.conf /etc/apache2/conf-enabled/rips.conf
 systemctl restart apache2
-
-
-###### Install libreoffice
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${S TAGE}/${TOTAL}) Installing ${GREEN}LibreOffice${RESET} ~ GUI office #suite"
-#apt -y -qq install libreoffice \
-#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install ipcalc & sipcalc
@@ -1948,19 +1868,6 @@ ln -sf /usr/share/sqlmap/txt/wordlist.txt /usr/share/wordlists/sqlmap.txt
 #find / \( -iname '*wordlist*' -or -iname '*passwords*' \) #-exec ls -l {} \;
 
 
-##### Install apt-file
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}apt-file${RESET} ~ which package includes a specific file"
-apt -y -qq install apt-file \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-apt-file update
-
-
-##### Install apt-show-versions
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}apt-show-versions${RESET} ~ which package version in repo"
-apt -y -qq install apt-show-versions \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install Babel scripts
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Babel scripts${RESET} ~ post exploitation scripts"
 apt -y -qq install \
@@ -2075,8 +1982,6 @@ popd >/dev/null
 
 ##### Install Empire
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Empire${RESET} ~ PowerShell post-exploitation"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/PowerShellEmpire/Empire.git /opt/empire-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/empire-git/ >/dev/null
@@ -2656,12 +2561,12 @@ pathbar_mode_buttons=0
 EOF
 
 
-##### Install BurpSuitePro
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}BurpSuitePro${RESET} ~ Web App Proxy"
-cp /opt/scripts/tools/burpsuite_pro_linux_current.7z /tmp
-cd /tmp
-7z x burpsuite_pro_linux_current.7z -p$BURPPASS
-bash burpsuite_pro_linux_current.sh -q
+###### Install BurpSuitePro
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}BurpSuitePro${RESET} ~ Web App Proxy"
+#cp /opt/scripts/tools/burpsuite_pro_linux_current.7z /tmp
+#cd /tmp
+#7z x burpsuite_pro_linux_current.7z -p$BURPPASS
+#bash burpsuite_pro_linux_current.sh -q
 
 
 ##### Install winetricks
