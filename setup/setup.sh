@@ -609,9 +609,7 @@ EOF
 
 
 ##### Install tmux - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}tmux${RESET} ~ multiplex virtual consoles"
-apt -y -qq install tmux \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}tmux${RESET} ~ multiplex virtual consoles"
 file=~/.tmux.conf; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/tmux.conf
 #--- Configure tmux
 cat <<EOF > "${file}" \
@@ -697,9 +695,7 @@ source "${file}" || source ~/.zshrc
 
 
 ##### Install vim - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}vim${RESET} ~ CLI text editor"
-apt -y -qq install vim \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}vim${RESET} ~ CLI text editor"
 #--- Configure vim
 file=/etc/vim/vimrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.vimrc
 ([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
@@ -808,9 +804,7 @@ sqlite3 "${file}" ".restore /opt/scripts/misc/places.sqlite.backup"
 
 
 ##### Install metasploit ~ http://docs.kali.org/general-use/starting-metasploit-framework-in-kali
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}metasploit${RESET} ~ exploit framework"
-apt -y -qq install metasploit-framework \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}metasploit${RESET} ~ exploit framework"
 mkdir -p ~/.msf4/modules/{auxiliary,exploits,payloads,post}/
 #--- Fix any port issues
 file=$(find /etc/postgresql/*/main/ -maxdepth 1 -type f -name postgresql.conf -print -quit);
@@ -1005,14 +999,9 @@ EOF
 #--- Apply new configs
 source "${file}" || source ~/.zshrc
 
-##### Install sparta
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}sparta${RESET} ~ GUI automatic wrapper"
-apt -y -qq install sparta \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
 
 ##### Install wireshark
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Wireshark${RESET} ~ GUI network protocol analyzer"
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Wireshark${RESET} ~ GUI network protocol analyzer"
 #--- Hide running as root warning
 mkdir -p ~/.wireshark/
 file=~/.wireshark/recent_common;   #[ -e "${file}" ] && cp -n $file{,.bkup}
@@ -1075,21 +1064,9 @@ apt -y -qq install flameshot \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install psmisc ~ allows for 'killall command' to be used
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}psmisc${RESET} ~ suite to help with running processes"
-apt -y -qq install psmisc \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ###### Setup pipe viewer
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pipe viewer${RESET} ~ CLI progress bar"
 apt -y -qq install pv \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-###### Setup pwgen
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pwgen${RESET} ~ password generator"
-apt -y -qq install pwgen \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
@@ -1105,12 +1082,6 @@ apt -y -qq install iotop \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install ca-certificates
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}ca-certificates${RESET} ~ HTTPS/SSL/TLS"
-apt -y -qq install ca-certificates \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install testssl
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}testssl${RESET} ~ Testing TLS/SSL encryption"
 apt -y -qq install testssl.sh \
@@ -1118,9 +1089,7 @@ apt -y -qq install testssl.sh \
 
 
 ##### Install UACScript
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}UACScript${RESET} ~ UAC Bypass for Windows 7"
-apt -y -qq install windows-binaries \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}UACScript${RESET} ~ UAC Bypass for Windows 7"
 git clone -q -b master https://github.com/Vozzie/uacscript.git /opt/uacscript-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/uacscript-git/ >/dev/null
@@ -1131,8 +1100,6 @@ ln -sf /usr/share/windows-binaries/uac-win7 /opt/uacscript-git/
 
 ##### Install MiniReverse_Shell_With_Parameters
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MiniReverse_Shell_With_Parameters${RESET} ~ Generate shellcode for a reverse shell"
-apt -y -qq install windows-binaries \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/xillwillx/MiniReverse_Shell_With_Parameters.git /opt/minireverse-shell-with-parameters-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/minireverse-shell-with-parameters-git/ >/dev/null
@@ -1141,27 +1108,9 @@ popd >/dev/null
 ln -sf /usr/share/windows-binaries/MiniReverse /opt/minireverse-shell-with-parameters-git/
 
 
-##### Install gparted
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}GParted${RESET} ~ GUI partition manager"
-apt -y -qq install gparted \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install filezilla
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}FileZilla${RESET} ~ GUI file transfer"
 apt -y -qq install filezilla \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install p7zip
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}p7zip${RESET} ~ CLI file extractor"
-apt -y -qq install p7zip-full \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install zip & unzip
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}zip${RESET} & ${GREEN}unzip${RESET} ~ CLI file extractors"
-apt -y -qq install zip unzip \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
@@ -1171,12 +1120,6 @@ for FILE in network-manager-openvpn network-manager-pptp network-manager-vpnc ne
   apt -y -qq install "${FILE}" \
     || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 done
-
-
-##### Install hashid
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}hashid${RESET} ~ identify hash types"
-apt -y -qq install hashid \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install httprint
@@ -1224,23 +1167,6 @@ source "${file}" || source ~/.zshrc
 cp /opt/scripts/misc/nmap-mac-prefixes /usr/share/nmap/ \
   || echo -e ' '${RED}'[!] Issue downloading nmap-mac-prefixes'${RESET} 1>&2
 
-##### Install reaver (community fork)
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}reaver (community fork)${RESET} ~ WPS pin brute force + Pixie Attack"
-apt -y -qq install reaver pixiewps \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install bully
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}bully${RESET} ~ WPS pin brute force"
-apt -y -qq install bully \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install wifite
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}wifite${RESET} ~ automated Wi-Fi tool"
-apt -y -qq install wifite \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
 
 ##### Install vulscan script for nmap
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}vulscan script for nmap${RESET} ~ vulnerability scanner add-on"
@@ -1256,16 +1182,8 @@ cp /opt/vulscan/vulscan.nse /usr/share/nmap/scripts/vulscan/
 chmod -R 0755 /usr/share/nmap/scripts/; find /usr/share/nmap/scripts/ -type f -exec chmod 0644 {} \;
 
 
-##### Install unicornscan
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}unicornscan${RESET} ~ fast port scanner"
-apt -y -qq install unicornscan \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install onetwopunch
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}onetwopunch${RESET} ~ unicornscan & nmap wrapper"
-apt -y -qq install nmap unicornscan \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/superkojiman/onetwopunch.git /opt/onetwopunch-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/onetwopunch-git/ >/dev/null
@@ -1285,8 +1203,6 @@ chmod +x "${file}"
 
 ##### Install Gnmap-Parser (fork)
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Gnmap-Parser (fork)${RESET} ~ Parse Nmap exports into various plain-text formats"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/nullmode/gnmap-parser.git /opt/gnmap-parser-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/gnmap-parser-git/ >/dev/null
@@ -1297,16 +1213,8 @@ chmod +x /opt/gnmap-parser-git/gnmap-parser.sh
 ln -sf /opt/gnmap-parser-git/gnmap-parser.sh /usr/local/bin/gnmap-parser-git
 
 
-##### Install clusterd
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}clusterd${RESET} ~ clustered attack toolkit (JBoss, ColdFusion, WebLogic, Tomcat etc)"
-apt -y -qq install clusterd \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install azazel
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}azazel${RESET} ~ Linux userland rootkit"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/chokepoint/azazel.git /opt/azazel-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/azazel-git/ >/dev/null
@@ -1316,8 +1224,6 @@ popd >/dev/null
 
 ##### Install Babadook
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Babadook${RESET} ~ connection-less powershell backdoor"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/jseidl/Babadook.git /opt/babadook-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/babadook-git/ >/dev/null
@@ -1327,8 +1233,6 @@ popd >/dev/null
 
 ##### Install pupy
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pupy${RESET} ~ Remote Administration Tool"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/n1nj4sec/pupy.git /opt/pupy-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/pupy-git/ >/dev/null
@@ -1350,8 +1254,6 @@ pushd /opt/regeorg-git/ >/dev/null
 git pull -q
 popd >/dev/null
 #--- Link to others
-apt -y -qq install webshells \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 ln -sf /opt/reGeorg-git /usr/share/webshells/reGeorg
 
 
@@ -1371,24 +1273,14 @@ apt -y -qq install webshells \
 ln -sf /opt/b374k-git /usr/share/webshells/php/b374k
 
 
-##### Install WeBaCoo
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WeBaCoo${RESET} ~ Web backdoor cookie"
-apt -y -qq install webacoo \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install cmdsql
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}cmdsql${RESET} ~ (ASPX) web shell"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/NetSPI/cmdsql.git /opt/cmdsql-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/cmdsql-git/ >/dev/null
 git pull -q
 popd >/dev/null
 #--- Link to others
-apt -y -qq install webshells \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 ln -sf /opt/cmdsql-git /usr/share/webshells/aspx/cmdsql
 
 
@@ -1401,8 +1293,6 @@ aria2c http://www.vonloesch.de/files/browser.zip -d /tmp \
   || echo -e ' '${RED}'[!]'${RESET}" Issue downloading browser.zip" 1>&2
 unzip -q -o -d /opt/jsp-filebrowser/ /tmp/browser.zip
 #--- Link to others
-apt -y -qq install webshells \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 ln -sf /opt/jsp-filebrowser /usr/share/webshells/jsp/jsp-filebrowser
 
 
@@ -1414,8 +1304,6 @@ apt -y -qq install htshells \
 
 ##### Install python-pty-shells
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}python-pty-shells${RESET} ~ PTY shells"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/infodox/python-pty-shells.git /opt/python-pty-shells-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/python-pty-shells-git/ >/dev/null
@@ -1436,8 +1324,6 @@ fi
 
 ##### Install WPA2-HalfHandshake-Crack
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WPA2-HalfHandshake-Crack${RESET} ~ Rogue AP for handshakes without a AP"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/dxa4481/WPA2-HalfHandshake-Crack.git /opt/wpa2-halfhandshake-crack-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/wpa2-halfhandshake-crack-git/ >/dev/null
@@ -1447,8 +1333,6 @@ popd >/dev/null
 
 ##### Install HT-WPS-Breaker
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}HT-WPS-Breaker${RESET} ~ Auto WPS tool"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/SilentGhostX/HT-WPS-Breaker.git /opt/ht-wps-breaker-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/ht-wps-breaker-git/ >/dev/null
@@ -1458,8 +1342,6 @@ popd >/dev/null
 
 ##### Install dot11decrypt
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dot11decrypt${RESET} ~ On-the-fly WEP/WPA2 decrypter"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/mfontanini/dot11decrypt.git /opt/dot11decrypt-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/dot11decrypt-git/ >/dev/null
@@ -1468,9 +1350,7 @@ popd >/dev/null
 
 
 ##### Install mana toolkit
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MANA toolkit${RESET} ~ Rogue AP for MITM Wi-Fi"
-apt -y -qq install mana-toolkit \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}MANA toolkit${RESET} ~ Rogue AP for MITM Wi-Fi"
 #--- Disable profile
 a2dissite 000-mana-toolkit; a2ensite 000-default
 #--- Setup alias
@@ -1485,8 +1365,6 @@ source "${file}" || source ~/.zshrc
 
 ##### Install wifiphisher
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}wifiphisher${RESET} ~ Automated Wi-Fi phishing"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/sophron/wifiphisher.git /opt/wifiphisher-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/wifiphisher-git/ >/dev/null
@@ -1506,8 +1384,6 @@ chmod +x "${file}"
 
 ##### Install hostapd-wpe-extended
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}hostapd-wpe-extended${RESET} ~ Rogue AP for WPA-Enterprise"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/NerdyProjects/hostapd-wpe-extended.git /opt/hostapd-wpe-extended-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/hostapd-wpe-extended-git/ >/dev/null
@@ -1517,8 +1393,6 @@ popd >/dev/null
 
 ##### Install proxychains-ng (https://bugs.kali.org/view.php?id=2037)
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}proxychains-ng${RESET} ~ Proxifier"
-apt -y -qq install gcc \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/rofl0r/proxychains-ng.git /opt/proxychains-ng-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/proxychains-ng-git/ >/dev/null
@@ -1532,18 +1406,8 @@ mkdir -p /usr/local/bin/
 ln -sf /usr/bin/proxychains4 /usr/local/bin/proxychains-ng
 
 
-##### Install sshuttle
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}sshuttle${RESET} ~ VPN over SSH"
-apt -y -qq install sshuttle \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#--- Example
-#sshuttle --dns --remote root@123.9.9.9 0/0 -vv
-
-
 ##### Install pfi
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pfi${RESET} ~ Port Forwarding Interceptor"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/s7ephen/pfi.git /opt/pfi-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/pfi-git/ >/dev/null
@@ -1553,8 +1417,6 @@ popd >/dev/null
 
 ##### Install icmpsh
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}icmpsh${RESET} ~ Reverse ICMP shell"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/inquisb/icmpsh.git /opt/icmpsh-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/icmpsh-git/ >/dev/null
@@ -1564,8 +1426,6 @@ popd >/dev/null
 
 ##### Install dnsftp
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dnsftp${RESET} ~ Transfer files over DNS"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/breenmachine/dnsftp.git /opt/dnsftp-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/dnsftp-git/ >/dev/null
@@ -1573,18 +1433,8 @@ git pull -q
 popd >/dev/null
 
 
-##### Install iodine
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}iodine${RESET} ~ DNS tunnelling (IP over DNS)"
-apt -y -qq install iodine \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#iodined -f -P password1 10.0.0.1 dns.mydomain.com
-#iodine -f -P password1 123.9.9.9 dns.mydomain.com; ssh -C -D 8081 root@10.0.0.1
-
-
 ##### Install dns2tcp
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dns2tcp${RESET} ~ DNS tunnelling (TCP over DNS)"
-apt -y -qq install dns2tcp \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}dns2tcp${RESET} ~ DNS tunnelling (TCP over DNS)"
 #--- Daemon
 file=/etc/dns2tcpd.conf; [ -e "${file}" ] && cp -n $file{,.bkup};
 cat <<EOF > "${file}" \
@@ -1612,31 +1462,10 @@ EOF
 #dns2tcpc -f /etc/dns2tcpc.conf 178.62.206.227; ssh -C -D 8081 -p 8000 root@127.0.0.1
 
 
-##### Install ptunnel
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}ptunnel${RESET} ~ ICMP tunnelling"
-apt -y -qq install ptunnel \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#--- Example
-#ptunnel -x password1
-#ptunnel -x password1 -p 123.9.9.9 -lp 8000 -da 127.0.0.1 -dp 22; ssh -C -D 8081 -p 8000 root@127.0.0.1
-
-
 ##### Install stunnel
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}stunnel${RESET} ~ SSL wrapper"
-apt -y -qq install stunnel \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}stunnel${RESET} ~ SSL wrapper"
 #--- Remove from start up
 systemctl disable stunnel4
-
-
-##### Install zerofree
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}zerofree${RESET} ~ CLI nulls free blocks on a HDD"
-apt -y -qq install zerofree \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#--- Example
-#fdisk -l
-#zerofree -v /dev/sda1
-#for i in $(mount | grep sda | grep ext | cut -b 9); do  mount -o remount,ro /dev/sda${i} && zerofree -v /dev/sda${i} && mount -o remount,rw /dev/sda${i}; done
 
 
 ##### Install gcc & multilib
@@ -1648,7 +1477,7 @@ done
 
 ##### Install MinGW ~ cross compiling suite
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MinGW${RESET} ~ cross compiling suite"
-for FILE in mingw-w64 binutils-mingw-w64 gcc-mingw-w64 cmake mingw-w64-x86-64-dev mingw-w64-tools gcc-mingw-w64-i686 gcc-mingw-w64-x86-64   mingw32; do
+for FILE in mingw-w64 binutils-mingw-w64 gcc-mingw-w64 cmake mingw-w64-x86-64-dev mingw-w64-tools gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 mingw32; do
   apt -y -qq install "${FILE}" 2>/dev/null
 done
 
@@ -1680,8 +1509,6 @@ echo -e 'application/x-ms-dos-executable=wine.desktop' >> "${file}"
 
 ##### Install MinGW (Windows) ~ cross compiling suite
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MinGW (Windows)${RESET} ~ cross compiling suite"
-apt -y -qq install wine curl unzip \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 aria2c https://jaist.dl.sourceforge.net/project/mingw/Installer/mingw-get/mingw-get-0.6.2-beta-20131004-1/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip -d /tmp
 mv /tmp/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip /tmp/mingw-get.zip \
   || echo -e ' '${RED}'[!]'${RESET}" Issue downloading mingw-get.zip" 1>&2       #***!!! hardcoded path!
@@ -1699,12 +1526,10 @@ grep -q '^"PATH"=.*C:\\\\MinGW\\\\bin' ~/.wine/system.reg \
 
 ##### Downloading PsExec.exe
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Downloading ${GREEN}PsExec.exe${RESET} ~ Pass The Hash 'phun'"
-apt -y -qq install curl windows-binaries unzip unrar \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 echo -n '[1/2]'; aria2c https://download.sysinternals.com/files/PSTools.zip -d /tmp \
   || echo -e ' '${RED}'[!]'${RESET}" Issue downloading pstools.zip" 1>&2
 unzip -q -o -d /usr/share/windows-binaries/pstools/ /tmp/PSTools.zip
-unrar x -y /opt/scripts/tools/pshtoolkit.rar /usr/share/windows-binaries/ >/dev/null
+#unrar x -y /opt/scripts/tools/pshtoolkit.rar /usr/share/windows-binaries/ >/dev/null
 
 
 ##### Install Python (Windows via WINE)
@@ -1737,8 +1562,6 @@ apt -y -qq install veil-evasion \
 
 ##### Install OP packers
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}OP packers${RESET} ~ bypassing anti-virus"
-apt -y -qq install upx-ucl curl \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 mkdir -p /opt/packers/
 echo -n '[2/3]'; timeout 600 curl --progress -k -L -f "http://www.farbrausch.de/~fg/kkrunchy/kkrunchy_023a2.zip" > /opt/packers/kkrunchy.zip \
   && unzip -q -o -d /opt/packers/ /opt/packers/kkrunchy.zip \
@@ -1747,15 +1570,7 @@ echo -n '[3/3]'; timeout 600 wget --show-progress --no-check-certificate -O /opt
   && unzip -q -o -d /opt/packers/ /opt/packers/PEScrambler.zip \
   || echo -e ' '${RED}'[!]'${RESET}" Issue downloading PEScrambler.zip" 1>&2     #***!!! hardcoded version! Need to manually check for updates
 #--- Link to others
-apt -y -qq install windows-binaries \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 ln -sf /opt/packers/ /usr/share/windows-binaries/packers
-
-
-##### Install hyperion
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}hyperion${RESET} ~ bypassing anti-virus"
-apt -y -qq install unzip windows-binaries \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install shellter
@@ -1764,21 +1579,9 @@ apt -y -qq install shellter \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install the backdoor factory
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Backdoor Factory${RESET} ~ bypassing anti-virus"
-apt -y -qq install backdoor-factory \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install Backdoor Factory Proxy (BDFProxy)
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Backdoor Factory Proxy (BDFProxy)${RESET} ~ patches binaries files during a MITM"
-apt -y -qq install bdfproxy \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install BetterCap
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}BetterCap${RESET} ~ MITM framework"
-apt -y -qq install ruby-dev libpcap-dev \
+apt -y -qq install libpcap-dev \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/evilsocket/bettercap.git /opt/bettercap-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
@@ -1787,18 +1590,6 @@ git pull -q
 gem build bettercap.gemspec
 gem install bettercap*.gem
 popd >/dev/null
-
-
-##### Install mitmf
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MITMf${RESET} ~ framework for MITM attacks"
-apt -y -qq install mitmf \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install responder
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Responder${RESET} ~ rogue server"
-apt -y -qq install responder \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install SecLists
@@ -1822,10 +1613,6 @@ apt -y -qq install wordlists curl \
   && gzip -dc < /usr/share/wordlists/rockyou.txt.gz > /usr/share/wordlists/rockyou.txt
 #--- Add 10,000 Top/Worst/Common Passwords
 mkdir -p /usr/share/wordlists/
-#(curl --progress -k -L -f "http://xato.net/files/10k most common.zip" > /tmp/10kcommon.zip 2>/dev/null \
-#  || curl --progress -k -L -f "http://download.g0tmi1k.com/wordlists/common-10k_most_common.zip" > /tmp/10kcommon.zip 2>/dev/null) \
-#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading 10kcommon.zip" 1>&2
-#unzip -q -o -d /usr/share/wordlists/ /tmp/10kcommon.zip 2>/dev/null   #***!!! hardcoded version! Need to manually check for updates
 cp /opt/SecLists-git/Passwords/10k_most_common.txt /usr/share/wordlists/
 #mv -f /usr/share/wordlists/10k{\ most\ ,_most_}common.txt
 #--- Linking to more - folders
@@ -1841,8 +1628,6 @@ ln -sf /usr/share/sqlmap/txt/wordlist.txt /usr/share/wordlists/sqlmap.txt
 
 ##### Install Babel scripts
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Babel scripts${RESET} ~ post exploitation scripts"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/attackdebris/babel-sf.git /opt/babel-sf-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/babel-sf-git/ >/dev/null
@@ -1852,8 +1637,6 @@ popd >/dev/null
 
 ##### Install checksec
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}checksec${RESET} ~ check *nix OS for security features"
-apt -y -qq install curl \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 mkdir -p /usr/share/checksec/
 file=/usr/share/checksec/checksec.sh
 timeout 600 curl --progress -k -L -f "http://www.trapkit.de/tools/checksec.sh" > "${file}" \
@@ -1863,8 +1646,6 @@ chmod +x "${file}"
 
 ##### Install shellconv
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}shellconv${RESET} ~ shellcode disassembler"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/hasherezade/shellconv.git /opt/shellconv-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/shellconv-git/ >/dev/null
@@ -1900,28 +1681,8 @@ apt -y -qq install lnav \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install commix
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}commix${RESET} ~ automatic command injection"
-apt -y -qq install commix \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install fimap
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}fimap${RESET} ~ automatic LFI/RFI tool"
-apt -y -qq install fimap \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install smbmap
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}smbmap${RESET} ~ SMB enumeration tool"
-apt -y -qq install smbmap \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install smbspider
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}smbspider${RESET} ~ search network shares"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/T-S-A/smbspider.git /opt/smbspider-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/smbspider-git/ >/dev/null
@@ -1942,8 +1703,6 @@ apt -y -qq install crackmapexec \
 
 ##### Install credcrack
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}credcrack${RESET} ~ credential harvester via Samba"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/gojhonny/CredCrack.git /opt/credcrack-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/credcrack-git/ >/dev/null
@@ -1962,8 +1721,6 @@ popd >/dev/null
 
 ##### Install wig (https://bugs.kali.org/view.php?id=1932)
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}wig${RESET} ~ web application detection"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/jekyc/wig.git /opt/wig-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/wig-git/ >/dev/null
@@ -1983,8 +1740,6 @@ chmod +x "${file}"
 
 ##### Install CMSmap
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CMSmap${RESET} ~ CMS detection"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/Dionach/CMSmap.git /opt/cmsmap-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/cmsmap-git/ >/dev/null
@@ -2004,8 +1759,6 @@ chmod +x "${file}"
 
 ##### Install droopescan
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}DroopeScan${RESET} ~ Drupal vulnerability scanner"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/droope/droopescan.git /opt/droopescan-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/droopescan-git/ >/dev/null
@@ -2024,9 +1777,7 @@ chmod +x "${file}"
 
 
 ##### Install BeEF XSS
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}BeEF XSS${RESET} ~ XSS framework"
-apt -y -qq install beef-xss \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}BeEF XSS${RESET} ~ XSS framework"
 #--- Configure beef
 file=/usr/share/beef-xss/config.yaml; [ -e "${file}" ] && cp -n $file{,.bkup}
 username="root"
@@ -2042,8 +1793,6 @@ echo -e " ${YELLOW}[i]${RESET} Edit: /usr/share/beef-xss/config.yaml"
 
 ##### Install patator (GIT)
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}patator${RESET} (GIT) ~ brute force"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/lanjelot/patator.git /opt/patator-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/patator-git/ >/dev/null
@@ -2063,7 +1812,7 @@ chmod +x "${file}"
 
 ##### Install crowbar
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}crowbar${RESET} ~ brute force"
-apt -y -qq install openvpn freerdp2-x11 tigervnc-viewer \
+apt -y -qq install tigervnc-viewer \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/galkan/crowbar.git /opt/crowbar-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
@@ -2082,24 +1831,9 @@ EOF
 chmod +x "${file}"
 
 
-##### Install xprobe
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}xprobe${RESET} ~ OS fingerprinting"
-apt -y -qq install xprobe \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install p0f
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}p0f${RESET} ~ OS fingerprinting"
-apt -y -qq install p0f \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#p0f -i eth0 -p & curl 192.168.0.1
-
-
 ##### Install nbtscan ~ http://unixwiz.net/tools/nbtscan.html vs http://inetcat.org/software/nbtscan.html (see http://sectools.org/tool/nbtscan/)
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}nbtscan${RESET} (${GREEN}inetcat${RESET} & ${GREEN}unixwiz${RESET}) ~ netbios scanner"
 #--- inetcat - 1.5.x
-apt -y -qq install nbtscan \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 #--- Examples
 #nbtscan -r 192.168.0.1/24
 #nbtscan -r 192.168.0.1/24 -v
@@ -2120,9 +1854,7 @@ ln -sf /usr/local/src/nbtscan-unixwiz/nbtscan /usr/local/bin/nbtscan-uw
 
 
 ##### Setup tftp client & server
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Setting up ${GREEN}tftp client${RESET} & ${GREEN}server${RESET} ~ file transfer methods"
-apt -y -qq install tftp atftpd \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}tftp client${RESET} & ${GREEN}server${RESET} ~ file transfer methods"
 #--- Configure atftpd
 file=/etc/default/atftpd; [ -e "${file}" ] && cp -n $file{,.bkup}
 echo -e 'USE_INETD=false\nOPTIONS="--tftpd-timeout 600 --retry-timeout 5 --maxthread 100 --verbose=5 --daemon --port 69 /var/tftp"' > "${file}"
@@ -2194,8 +1926,6 @@ systemctl disable pure-ftpd
 ##### Install samba
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}samba${RESET} ~ file transfer method"
 #--- Installing samba
-apt -y -qq install samba \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 apt -y -qq install cifs-utils \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 #--- Create samba user
@@ -2248,9 +1978,7 @@ source "${file}" || source ~/.zshrc
 
 
 ##### Install apache2 & php
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}apache2${RESET} & ${GREEN}php${RESET} ~ web server"
-apt -y -qq install apache2 php php-cli php-curl \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}apache2${RESET} & ${GREEN}php${RESET} ~ web server"
 touch /var/www/html/favicon.ico
 grep -q '<title>Apache2 Debian Default Page: It works</title>' /var/www/html/index.html 2>/dev/null \
   && rm -f /var/www/html/index.html \
@@ -2278,12 +2006,6 @@ user=root
 host=localhost
 password=
 EOF
-
-
-##### Install xsltproc
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}xsltproc${RESET} ~ xslt processor"
-apt -y -qq install xsltproc \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install rsh-client
@@ -2336,8 +2058,6 @@ apt -y -qq install putty-tools \
 
 ##### Install impacket
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}impacket${RESET} ~ network protocols via python"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/CoreSecurity/impacket.git /opt/impacket-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/impacket-git/ >/dev/null
@@ -2347,8 +2067,6 @@ popd >/dev/null
 
 ##### Install gotty
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}gotty${RESET} ~ terminal via the web"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/yudai/gotty.git /opt/gotty-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/gotty-git/ >/dev/null
