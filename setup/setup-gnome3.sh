@@ -23,10 +23,6 @@ STAGE=0                                                       # Where are we up 
 TOTAL=$(grep '(${STAGE}/${TOTAL})' $0 | wc -l);(( TOTAL-- ))  # How many things have we got todo
 
 
-##### Fix display output for GUI programs (when connecting via SSH)
-export DISPLAY=:0.0
-export TERM=xterm
-
 ##### Are we using GNOME?
 #--- Installing  Gconf2
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Gconf2${RESET} Gnome Configurator"
@@ -51,7 +47,7 @@ apt -y -qq install bc
  gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'
  gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed 'true'
  gsettings set org.gnome.shell.extensions.dash-to-dock show-running 'true'
- gsettings set org.gnome.shell favorite-apps "['gnome-terminal.desktop', 'firefox-esr.desktop', 'kali-faraday.desktop', 'kali-zenmap.desktop','kali-zaproxy.desktop', 'kali-burpsuite.desktop', 'kali-msfconsole.desktop', 'keepnote.desktop', 'sublime_text.desktop', 'org.gnome.gedit.desktop','org.gnome.Nautilus.desktop']"
+ gsettings set org.gnome.shell favorite-apps "['terminator.desktop', 'firefox-esr.desktop', 'kali-zaproxy.desktop', 'kali-burpsuite.desktop', 'kali-msfconsole.desktop', 'sublime_text.desktop', 'org.gnome.Nautilus.desktop']"
  
  #--- Workspaces
  gsettings set org.gnome.shell.overrides dynamic-workspaces false                         # Static
@@ -79,7 +75,7 @@ EOF
 #gsettings set org.gnome.desktop.interface gtk-theme "Dark-Aurora"
 
 #-- Gnome Flat-Plat & GDM
-apt-get install -y libxml2-utils tidy libglib2.0-dev
+apt-get install -y -qq tidy libglib2.0-dev
 
 cd /tmp && wget -qO - https://github.com/nana-4/materia-theme/archive/master.tar.gz | tar xz
 cd materia-theme-master
