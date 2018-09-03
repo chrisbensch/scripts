@@ -123,10 +123,8 @@ fi
 if (dmidecode | grep -iq vmware); then
   ##### Install virtual machines tools ~ http://docs.kali.org/general-use/install-vmware-tools-kali-guest
   (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}VMware's (open) virtual machine tools${RESET}"
-  apt -y -qq install open-vm-tools-desktop open-vm-tools fuse \
+  apt -y -qq install open-vm-tools-desktop open-vm-tools \
     || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-  apt -y -qq install make \
-    || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2    # There's a nags afterwards
   ## Shared folders support for Open-VM-Tools (some odd bug)
   file=/usr/local/sbin/mount-shared-folders; [ -e "${file}" ] && cp -n $file{,.bkup}
   cat <<EOF > "${file}" \
@@ -184,7 +182,7 @@ else
   echo -e "\n\n ${YELLOW}[i]${RESET} ${YELLOW}Skipping time zone${RESET} (missing: '$0 ${BOLD}--timezone <value>${RESET}')..." 1>&2
 fi
 #--- Installing ntp tools
-apt -y -qq install ntp ntpdate \
+apt -y -qq install ntpdate \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 #--- Update time
 ntpdate -b -s -u pool.ntp.org
@@ -223,9 +221,14 @@ if [[ "${_TMP}" -gt 1 ]]; then
 fi
 
 
+##### Install build essential tools
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}build-essential${RESET}"
+apt -y -qq install build-essential \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+
 ##### Install kernel headers
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}kernel headers${RESET}"
-apt -y -qq install make gcc "linux-headers-$(uname -r)" \
+apt -y -qq install "linux-headers-$(uname -r)" \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 if [[ $? -ne 0 ]]; then
   echo -e ' '${RED}'[!]'${RESET}" There was an ${RED}issue installing kernel headers${RESET}" 1>&2
@@ -2193,7 +2196,7 @@ git clone -q https://github.com/pentestmonkey/unix-privesc-check.git /opt/unix-p
 
 
 ##### Install apt2
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}ap2${RESET} ~ Automated Penetration Testing Tool"
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}apt2${RESET} ~ Automated Penetration Testing Tool"
 git clone -q https://github.com/MooseDojo/apt2.git /opt/apt2-git \
   || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
 
@@ -2263,6 +2266,11 @@ EOF
 apt -y -qq install winetricks \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
+
+##### Configure Java default jre
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Java 8${RESET} ~ default JavaVM"
+update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
+  || echo -e ' '${RED}'[!] Issue with configuration'${RESET} 1>&2
 
 ##### Clean the system
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Cleaning${RESET} the system"

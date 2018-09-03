@@ -29,7 +29,7 @@ TOTAL=$(grep '(${STAGE}/${TOTAL})' $0 | wc -l);(( TOTAL-- ))  # How many things 
 apt -y -qq install gconf2
 
 #--- Installing  Gconf2
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}gc${RESET} tool"
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}bc${RESET} tool"
 apt -y -qq install bc
   
  ##### Disable its auto notification package updater
@@ -47,7 +47,7 @@ apt -y -qq install bc
  gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'
  gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed 'true'
  gsettings set org.gnome.shell.extensions.dash-to-dock show-running 'true'
- gsettings set org.gnome.shell favorite-apps "['terminator.desktop', 'firefox-esr.desktop', 'kali-zaproxy.desktop', 'kali-burpsuite.desktop', 'kali-msfconsole.desktop', 'sublime_text.desktop', 'org.gnome.Nautilus.desktop']"
+ gsettings set org.gnome.shell favorite-apps "['terminator.desktop', 'firefox-esr.desktop', 'kali-burpsuite.desktop', 'kali-msfconsole.desktop', 'sublime_text.desktop', 'org.gnome.Nautilus.desktop']"
  
  #--- Workspaces
  gsettings set org.gnome.shell.overrides dynamic-workspaces false                         # Static
