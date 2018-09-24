@@ -2225,6 +2225,12 @@ apt -y -qq install nload \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
+##### Install byobu
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}byobu${RESET} ~ text-based window manager and terminal multiplexer"
+apt -y -qq install byobu \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+
+
 ##### Install PCManFM
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pcmanfm${RESET} ~ PCMAN File Manager"
 apt -y -qq install pcmanfm \

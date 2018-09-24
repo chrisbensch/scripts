@@ -33,7 +33,7 @@ apt -y -qq install gconf2
 apt -y -qq install bc
   
  ##### Disable its auto notification package updater
- (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Disabling ${GREEN}notification package updater${RESET} service ~ in case it runs during thisscript"
+ (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Disabling ${GREEN}notification package updater${RESET} service ~ in case it runs during this script"
  export DISPLAY=:1
  timeout 5 killall -w /usr/lib/apt/methods/http >/dev/null 2>&1
  ##### Disable screensaver
