@@ -48,7 +48,9 @@ apt -y -qq install bc
  gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed 'true'
  gsettings set org.gnome.shell.extensions.dash-to-dock show-running 'true'
  gsettings set org.gnome.shell favorite-apps "['terminator.desktop', 'firefox-esr.desktop', 'kali-burpsuite.desktop', 'kali-armitage.desktop', 'sublime_text.desktop', 'org.gnome.Nautilus.desktop']"
- 
+ #--- Background
+ gsettings get org.gnome.desktop.background picture-uri
+'file:///usr/share/desktop-base/kali-theme/lockscreen/contents/images/1920x1080.svg'
  #--- Workspaces
  gsettings set org.gnome.shell.overrides dynamic-workspaces false                         # Static
  gsettings set org.gnome.desktop.wm.preferences num-workspaces 4                          # Increase workspaces count to 4
