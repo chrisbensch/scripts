@@ -142,10 +142,21 @@ sleep 2s
 EOF
   chmod +x "${file}"
   ln -sf "${file}" /root/Desktop/mount-shared-folders.sh
+  ## Restart Open-VM-Tools
+file=/usr/local/sbin/restart-vm-tools; [ -e "${file}" ] && cp -n $file{,.bkup}
+  cat <<EOF > "${file}" \
+    || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+#!/bin/bash
+killall -q -w vmtoolsd
+vmware-user-suid-wrapper vmtoolsd -n vmusr 2>/dev/null
+vmtoolsd -b /var/run/vmroot 2>/dev/null
+EOF
+  chmod +x "${file}"
+  ln -sf "${file}" /root/Desktop/restart-vm-tools.sh
 elif (dmidecode | grep -iq virtualbox); then
   ##### Installing VirtualBox Guest Additions.   Note: Need VirtualBox 4.2.xx+ for the host (http://docs.kali.org/general-use/kali-linux-virtual-box-guest)
   (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}VirtualBox's guest additions${RESET}"
-  apt -y -qq install virtualbox-guest-x11 \
+  apt -y -qq install virtualbox-guest-x11 virtualbox-guest-utils virtualbox-guest-dkms \
     || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 fi
 
@@ -1582,17 +1593,17 @@ apt -y -qq install shellter \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install BetterCap
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}BetterCap${RESET} ~ MITM framework"
-apt -y -qq install libpcap-dev \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-git clone -q -b master https://github.com/evilsocket/bettercap.git /opt/bettercap-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/bettercap-git/ >/dev/null
-git pull -q
-gem build bettercap.gemspec
-gem install bettercap*.gem
-popd >/dev/null
+###### Install BetterCap
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}BetterCap${RESET} ~ MITM framework"
+#apt -y -qq install libpcap-dev \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#git clone -q -b master https://github.com/bettercap/bettercap.git /opt/bettercap-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/bettercap-git/ >/dev/null
+#git pull -q
+#gem build bettercap.gemspec
+#gem install bettercap*.gem
+#popd >/dev/null
 
 
 ##### Install SecLists
@@ -2093,7 +2104,7 @@ apt -y -qq install openssh-server \
 rm -f /etc/ssh/ssh_host_*
 find ~/.ssh/ -type f ! -name authorized_keys -delete 2>/dev/null
 #--- Generate new keys
-ssh-keygen -b 4096 -t rsa1 -f /etc/ssh/ssh_host_key -P "" >/dev/null
+#ssh-keygen -b 4096 -t rsa1 -f /etc/ssh/ssh_host_key -P "" >/dev/null
 ssh-keygen -b 4096 -t rsa -f /etc/ssh/ssh_host_rsa_key -P "" >/dev/null
 ssh-keygen -b 1024 -t dsa -f /etc/ssh/ssh_host_dsa_key -P "" >/dev/null
 ssh-keygen -b 521 -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key -P "" >/dev/null
