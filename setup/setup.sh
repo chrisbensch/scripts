@@ -1845,28 +1845,6 @@ EOF
 chmod +x "${file}"
 
 
-##### Install nbtscan ~ http://unixwiz.net/tools/nbtscan.html vs http://inetcat.org/software/nbtscan.html (see http://sectools.org/tool/nbtscan/)
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}nbtscan${RESET} (${GREEN}inetcat${RESET} & ${GREEN}unixwiz${RESET}) ~ netbios scanner"
-#--- inetcat - 1.5.x
-#--- Examples
-#nbtscan -r 192.168.0.1/24
-#nbtscan -r 192.168.0.1/24 -v
-#--- unixwiz - 1.0.x
-mkdir -p /usr/local/src/nbtscan-unixwiz/
-timeout 600 curl --progress -k -L -f "http://unixwiz.net/tools/nbtscan-source-1.0.35.tgz" > /usr/local/src/nbtscan-unixwiz/nbtscan.tgz \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading nbtscan.tgz" 1>&2    #***!!! hardcoded version! Need to manually check for updates
-tar -zxf /usr/local/src/nbtscan-unixwiz/nbtscan.tgz -C /usr/local/src/nbtscan-unixwiz/
-pushd /usr/local/src/nbtscan-unixwiz/ >/dev/null
-make -s clean;
-make -s 2>/dev/null    # bad, I know
-popd >/dev/null
-#--- Add to path
-mkdir -p /usr/local/bin/
-ln -sf /usr/local/src/nbtscan-unixwiz/nbtscan /usr/local/bin/nbtscan-uw
-#--- Examples
-#nbtscan-uw -f 192.168.0.1/24
-
-
 ##### Setup tftp client & server
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}tftp client${RESET} & ${GREEN}server${RESET} ~ file transfer methods"
 #--- Configure atftpd
@@ -2284,10 +2262,22 @@ apt -y -qq install winetricks \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
+##### Install Vanquish
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Vanquish${RESET} ~ automated enumeration orchestrator"
+apt -y -qq install nbtscan-unixwiz \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+git clone -q https://github.com/frizb/Vanquish.git /opt/vanquish/ \
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#--- Vanquish install
+cd /opt/vanquish/
+python Vanquish2.py -install
+
+
 ##### Configure Java default jre
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Java 8${RESET} ~ default JavaVM"
 update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
   || echo -e ' '${RED}'[!] Issue with configuration'${RESET} 1>&2
+
 
 ##### Clean the system
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Cleaning${RESET} the system"
