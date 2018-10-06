@@ -89,3 +89,10 @@ msfdb reinit
 echo "Started at: $(date)"
 msfdb start
 msfconsole -q -x 'version;db_status;sleep 310;exit'
+
+
+
+
+# /usr/share/veil/setup/setup.sh
+# First run of maltego, then
+#	canari install-package sploitego
