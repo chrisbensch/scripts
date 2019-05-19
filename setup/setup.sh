@@ -98,11 +98,11 @@ file=/etc/apt/sources.list; [ -e "${file}" ] && cp -n $file{,.bkup}
 ##--- Main
 #grep -q '^deb .* kali-rolling' "${file}" 2>/dev/null \
 #  || echo -e "\n\n# Kali Rolling\ndeb https://mirrors.ocf.berkeley.edu/kali kali-rolling main contrib non-free" >> "${file}"
-echo -e "\n\n# Kali Rolling\ndeb https://mirrors.ocf.berkeley.edu/kali kali-rolling main contrib non-free" > "${file}"
+echo -e "\n\n# Kali Rolling\ndeb https://kali.download/kali kali-rolling main contrib non-free" > "${file}"
 ##--- Source
 #grep -q '^deb-src .* kali-rolling' "${file}" 2>/dev/null \
 #  || echo -e "deb-src https://mirrors.ocf.berkeley.edu/kali kali-rolling main contrib non-free" >> "${file}"
-echo -e "deb-src https://mirrors.ocf.berkeley.edu/kali kali-rolling main contrib non-free" >> "${file}"
+echo -e "deb-src https://kali.download/kali kali-rolling main contrib non-free" >> "${file}"
 ##--- Disable CD repositories
 sed -i '/kali/ s/^\( \|\t\|\)deb cdrom/#deb cdrom/g' "${file}"
 #--- incase we were interrupted
@@ -819,7 +819,7 @@ sqlite3 "${file}" ".restore /opt/scripts/misc/places.sqlite.backup"
 
 ##### Install metasploit ~ http://docs.kali.org/general-use/starting-metasploit-framework-in-kali
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}metasploit${RESET} ~ exploit framework"
-mkdir -p ~/.msf4/modules/{auxiliary,exploits,payloads,post}/
+mkdir -p ~/.msf5/modules/{auxiliary,exploits,payloads,post}/
 #--- Fix any port issues
 file=$(find /etc/postgresql/*/main/ -maxdepth 1 -type f -name postgresql.conf -print -quit);
 [ -e "${file}" ] && cp -n $file{,.bkup}
@@ -832,7 +832,7 @@ systemctl start postgresql
 msfdb reinit
 sleep 5s
 #--- Autorun Metasploit commands each startup
-file=~/.msf4/msf_autorunscript.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
+file=~/.msf5/msf_autorunscript.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
 if [[ -f "${file}" ]]; then
   echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
 else
@@ -846,7 +846,7 @@ else
 #run post/windows/gather/smart_hashdump
 EOF
 fi
-file=~/.msf4/msfconsole.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
+file=~/.msf5/msfconsole.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
 if [[ -f "${file}" ]]; then
   echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
 else
@@ -867,7 +867,7 @@ setg EnableStageEncoding true
 setg LHOST 0.0.0.0
 setg LPORT 443
 use exploit/multi/handler
-#setg AutoRunScript 'multi_console_command -rc "~/.msf4/msf_autorunscript.rc"'
+#setg AutoRunScript 'multi_console_command -rc "~/.msf5/msf_autorunscript.rc"'
 set PAYLOAD windows/meterpreter/reverse_https
 EOF
 fi
@@ -881,38 +881,38 @@ grep -q '^alias msfconsole=' "${file}" 2>/dev/null \
   || echo -e 'alias msfconsole="systemctl start postgresql; msfdb start; msfconsole \"\$@\""\n' >> "${file}"
 #--- Aliases to speed up msfvenom (create static output)
 grep -q "^alias msfvenom-list-all" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-all='cat ~/.msf4/msfvenom/all'" >> "${file}"
+  || echo "alias msfvenom-list-all='cat ~/.msf5/msfvenom/all'" >> "${file}"
 grep -q "^alias msfvenom-list-nops" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-nops='cat ~/.msf4/msfvenom/nops'" >> "${file}"
+  || echo "alias msfvenom-list-nops='cat ~/.msf5/msfvenom/nops'" >> "${file}"
 grep -q "^alias msfvenom-list-payloads" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-payloads='cat ~/.msf4/msfvenom/payloads'" >> "${file}"
+  || echo "alias msfvenom-list-payloads='cat ~/.msf5/msfvenom/payloads'" >> "${file}"
 grep -q "^alias msfvenom-list-encoders" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-encoders='cat ~/.msf4/msfvenom/encoders'" >> "${file}"
+  || echo "alias msfvenom-list-encoders='cat ~/.msf5/msfvenom/encoders'" >> "${file}"
 grep -q "^alias msfvenom-list-formats" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-formats='cat ~/.msf4/msfvenom/formats'" >> "${file}"
+  || echo "alias msfvenom-list-formats='cat ~/.msf5/msfvenom/formats'" >> "${file}"
 grep -q "^alias msfvenom-list-generate" "${file}" 2>/dev/null \
   || echo "alias msfvenom-list-generate='_msfvenom-list-generate'" >> "${file}"
 grep -q "^function _msfvenom-list-generate" "${file}" 2>/dev/null \
   || cat <<EOF >> "${file}" \
     || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
 function _msfvenom-list-generate {
-  mkdir -p ~/.msf4/msfvenom/
-  msfvenom --list all > ~/.msf4/msfvenom/all
-  msfvenom --list nops > ~/.msf4/msfvenom/nops
-  msfvenom --list payloads > ~/.msf4/msfvenom/payloads
-  msfvenom --list encoders > ~/.msf4/msfvenom/encoders
-  msfvenom --help-formats 2> ~/.msf4/msfvenom/formats
+  mkdir -p ~/.msf5/msfvenom/
+  msfvenom --list all > ~/.msf5/msfvenom/all
+  msfvenom --list nops > ~/.msf5/msfvenom/nops
+  msfvenom --list payloads > ~/.msf5/msfvenom/payloads
+  msfvenom --list encoders > ~/.msf5/msfvenom/encoders
+  msfvenom --help-formats 2> ~/.msf5/msfvenom/formats
 }
 EOF
 #--- Apply new aliases
 source "${file}" || source ~/.zshrc
 #--- Generate (Can't call alias)
-mkdir -p ~/.msf4/msfvenom/
-msfvenom --list all > ~/.msf4/msfvenom/all
-msfvenom --list nops > ~/.msf4/msfvenom/nops
-msfvenom --list payloads > ~/.msf4/msfvenom/payloads
-msfvenom --list encoders > ~/.msf4/msfvenom/encoders
-msfvenom --help-formats 2> ~/.msf4/msfvenom/formats
+mkdir -p ~/.msf5/msfvenom/
+msfvenom --list all > ~/.msf5/msfvenom/all
+msfvenom --list nops > ~/.msf5/msfvenom/nops
+msfvenom --list payloads > ~/.msf5/msfvenom/payloads
+msfvenom --list encoders > ~/.msf5/msfvenom/encoders
+msfvenom --help-formats 2> ~/.msf5/msfvenom/formats
 #--- First time run with Metasploit
 (( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Starting Metasploit for the first time${RESET} ~ this ${BOLD}will take a ~350 seconds${RESET} (~6 mintues)"
 echo "Started at: $(date)"
@@ -962,9 +962,9 @@ if [[ "${openVAS}" != "false" ]]; then
   sleep 3s
   openvas-check-setup
   #--- Remove from start up
-  #systemctl disable openvas-manager
-  #systemctl disable openvas-scanner
-  #systemctl disable greenbone-security-assistant
+  systemctl disable openvas-manager
+  systemctl disable openvas-scanner
+  systemctl disable greenbone-security-assistant
   #--- Setup alias
   file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
   grep -q '^## openvas' "${file}" 2>/dev/null \
@@ -1032,44 +1032,44 @@ apt -y -qq install silversearcher-ag \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install rips
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}rips${RESET} ~ source code scanner"
-apt -y -qq install apache2 php git \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-git clone -q -b master https://github.com/ripsscanner/rips.git /opt/rips-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/rips-git/ >/dev/null
-git pull -q
-popd >/dev/null
-#--- Add to path
-file=/etc/apache2/conf-available/rips.conf
-[ -e "${file}" ] \
-  || cat <<EOF > "${file}"
-Alias /rips /opt/rips-git
-
-<Directory /opt/rips-git/ >
-  Options FollowSymLinks
-  AllowOverride None
-  Order deny,allow
-  Deny from all
-  Allow from 127.0.0.0/255.0.0.0 ::1/128
-  Require all granted
-</Directory>
-EOF
-ln -sf /etc/apache2/conf-available/rips.conf /etc/apache2/conf-enabled/rips.conf
-systemctl restart apache2
-
-
-##### Install ipcalc & sipcalc
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}ipcalc${RESET} & ${GREEN}sipcalc${RESET} ~ CLI subnet calculators"
-apt -y -qq install ipcalc sipcalc \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+###### Install rips
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}rips${RESET} ~ source code scanner"
+#apt -y -qq install apache2 php git \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#git clone -q -b master https://github.com/ripsscanner/rips.git /opt/rips-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/rips-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
+##--- Add to path
+#file=/etc/apache2/conf-available/rips.conf
+#[ -e "${file}" ] \
+#  || cat <<EOF > "${file}"
+#Alias /rips /opt/rips-git
+#
+#<Directory /opt/rips-git/ >
+#  Options FollowSymLinks
+#  AllowOverride None
+#  Order deny,allow
+#  Deny from all
+#  Allow from 127.0.0.0/255.0.0.0 ::1/128
+#  Require all granted
+#</Directory>
+#EOF
+#ln -sf /etc/apache2/conf-available/rips.conf /etc/apache2/conf-enabled/rips.conf
+#systemctl restart apache2
 
 
-##### Install asciinema
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}asciinema${RESET} ~ CLI terminal recorder"
-apt -y -qq install asciinema \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+###### Install ipcalc & sipcalc
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}ipcalc${RESET} & ${GREEN}sipcalc${RESET} ~ CLI subnet #calculators"
+#apt -y -qq install ipcalc sipcalc \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#
+#
+###### Install asciinema
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}asciinema${RESET} ~ CLI terminal recorder"
+#apt -y -qq install asciinema \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install flameshot
@@ -1112,14 +1112,14 @@ popd >/dev/null
 ln -sf /usr/share/windows-binaries/uac-win7 /opt/uacscript-git/
 
 
-##### Install MiniReverse_Shell_With_Parameters
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MiniReverse_Shell_With_Parameters${RESET} ~ Generate shellcode for a reverse shell"
-git clone -q -b master https://github.com/xillwillx/MiniReverse_Shell_With_Parameters.git /opt/minireverse-shell-with-parameters-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/minireverse-shell-with-parameters-git/ >/dev/null
-git pull -q
-popd >/dev/null
-ln -sf /usr/share/windows-binaries/MiniReverse /opt/minireverse-shell-with-parameters-git/
+###### Install MiniReverse_Shell_With_Parameters
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MiniReverse_Shell_With_Parameters${RESET} ~ Generate #shellcode for a reverse shell"
+#git clone -q -b master https://github.com/xillwillx/MiniReverse_Shell_With_Parameters.git /opt/minireverse-shell-with-parameters-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/minireverse-shell-with-parameters-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
+#ln -sf /usr/share/windows-binaries/MiniReverse /opt/minireverse-shell-with-parameters-git/
 
 
 ##### Install filezilla
@@ -1136,15 +1136,15 @@ for FILE in network-manager-openvpn network-manager-pptp network-manager-vpnc ne
 done
 
 
-##### Install httprint
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}httprint${RESET} ~ GUI web server fingerprint"
-apt -y -qq install httprint \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+###### Install httprint
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}httprint${RESET} ~ GUI web server fingerprint"
+#apt -y -qq install httprint \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install wafw00f
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}wafw00f${RESET} ~ WAF detector"
-apt -y -qq install wafw00f \
+git clone https://github.com/EnableSecurity/wafw00f.git /opt/wafw00f-git \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 ##### Install aria2c
@@ -1187,11 +1187,10 @@ cp /opt/scripts/misc/nmap-mac-prefixes /usr/share/nmap/ \
 apt -y -qq install nmap curl \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 mkdir -p /usr/share/nmap/scripts/vulscan/
-cd /opt
-git clone https://github.com/scipag/vulscan.git \
+git clone https://github.com/scipag/vulscan.git /opt/vulscan-git \
   || echo -e ' '${RED}'[!]'${RESET}" Issue cloning repo" 1>&2      #***!!! hardcoded version! Need to manually check for updates
-cp /opt/vulscan/*.csv /usr/share/nmap/scripts/vulscan/
-cp /opt/vulscan/vulscan.nse /usr/share/nmap/scripts/vulscan/
+cp /opt/vulscan-git/*.csv /usr/share/nmap/scripts/vulscan/
+cp /opt/vulscan-git/vulscan.nse /usr/share/nmap/scripts/vulscan/
 #--- Fix permissions (by default its 0777)
 chmod -R 0755 /usr/share/nmap/scripts/; find /usr/share/nmap/scripts/ -type f -exec chmod 0644 {} \;
 
@@ -1215,34 +1214,34 @@ EOF
 chmod +x "${file}"
 
 
-##### Install Gnmap-Parser (fork)
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Gnmap-Parser (fork)${RESET} ~ Parse Nmap exports into various plain-text formats"
-git clone -q -b master https://github.com/nullmode/gnmap-parser.git /opt/gnmap-parser-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/gnmap-parser-git/ >/dev/null
-git pull -q
-popd >/dev/null
-#--- Add to path
-chmod +x /opt/gnmap-parser-git/gnmap-parser.sh
-ln -sf /opt/gnmap-parser-git/gnmap-parser.sh /usr/local/bin/gnmap-parser-git
+###### Install Gnmap-Parser (fork)
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Gnmap-Parser (fork)${RESET} ~ Parse Nmap exports into #various plain-text formats"
+#git clone -q -b master https://github.com/nullmode/gnmap-parser.git /opt/gnmap-parser-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/gnmap-parser-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
+##--- Add to path
+#chmod +x /opt/gnmap-parser-git/gnmap-parser.sh
+#ln -sf /opt/gnmap-parser-git/gnmap-parser.sh /usr/local/bin/gnmap-parser-git
 
 
-##### Install azazel
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}azazel${RESET} ~ Linux userland rootkit"
-git clone -q -b master https://github.com/chokepoint/azazel.git /opt/azazel-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/azazel-git/ >/dev/null
-git pull -q
-popd >/dev/null
+###### Install azazel
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}azazel${RESET} ~ Linux userland rootkit"
+#git clone -q -b master https://github.com/chokepoint/azazel.git /opt/azazel-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/azazel-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
 
 
-##### Install Babadook
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Babadook${RESET} ~ connection-less powershell backdoor"
-git clone -q -b master https://github.com/jseidl/Babadook.git /opt/babadook-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/babadook-git/ >/dev/null
-git pull -q
-popd >/dev/null
+###### Install Babadook
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Babadook${RESET} ~ connection-less powershell backdoor#"
+#git clone -q -b master https://github.com/jseidl/Babadook.git /opt/babadook-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/babadook-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
 
 
 ##### Install pupy
@@ -1260,69 +1259,69 @@ apt -y -qq install gobuster \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install reGeorg
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}reGeorg${RESET} ~ pivot via web shells"
-git clone -q -b master https://github.com/sensepost/reGeorg.git /opt/regeorg-git \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/regeorg-git/ >/dev/null
-git pull -q
-popd >/dev/null
-#--- Link to others
-ln -sf /opt/reGeorg-git /usr/share/webshells/reGeorg
+###### Install reGeorg
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}reGeorg${RESET} ~ pivot via web shells"
+#git clone -q -b master https://github.com/sensepost/reGeorg.git /opt/regeorg-git \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/regeorg-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
+##--- Link to others
+#ln -sf /opt/reGeorg-git /usr/share/webshells/reGeorg
 
 
-##### Install b374k (https://bugs.kali.org/view.php?id=1097)
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}b374k${RESET} ~ (PHP) web shell"
-apt -y -qq install php-cli \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-git clone -q -b master https://github.com/b374k/b374k.git /opt/b374k-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/b374k-git/ >/dev/null
-git pull -q
-php index.php -o b374k.php -s
-popd >/dev/null
-#--- Link to others
-apt -y -qq install webshells \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-ln -sf /opt/b374k-git /usr/share/webshells/php/b374k
+###### Install b374k (https://bugs.kali.org/view.php?id=1097)
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}b374k${RESET} ~ (PHP) web shell"
+#apt -y -qq install php-cli \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#git clone -q -b master https://github.com/b374k/b374k.git /opt/b374k-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/b374k-git/ >/dev/null
+#git pull -q
+#php index.php -o b374k.php -s
+#popd >/dev/null
+##--- Link to others
+#apt -y -qq install webshells \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#ln -sf /opt/b374k-git /usr/share/webshells/php/b374k
 
 
-##### Install cmdsql
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}cmdsql${RESET} ~ (ASPX) web shell"
-git clone -q -b master https://github.com/NetSPI/cmdsql.git /opt/cmdsql-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/cmdsql-git/ >/dev/null
-git pull -q
-popd >/dev/null
-#--- Link to others
-ln -sf /opt/cmdsql-git /usr/share/webshells/aspx/cmdsql
+###### Install cmdsql
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}cmdsql${RESET} ~ (ASPX) web shell"
+#git clone -q -b master https://github.com/NetSPI/cmdsql.git /opt/cmdsql-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/cmdsql-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
+##--- Link to others
+#ln -sf /opt/cmdsql-git /usr/share/webshells/aspx/cmdsql
 
 
-##### Install JSP file browser
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}JSP file browser${RESET} ~ (JSP) web shell"
-apt -y -qq install curl \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-mkdir -p /opt/jsp-filebrowser/
-aria2c http://www.vonloesch.de/files/browser.zip -d /tmp \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading browser.zip" 1>&2
-unzip -q -o -d /opt/jsp-filebrowser/ /tmp/browser.zip
-#--- Link to others
-ln -sf /opt/jsp-filebrowser /usr/share/webshells/jsp/jsp-filebrowser
+###### Install JSP file browser
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}JSP file browser${RESET} ~ (JSP) web shell"
+#apt -y -qq install curl \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#mkdir -p /opt/jsp-filebrowser/
+#aria2c http://www.vonloesch.de/files/browser.zip -d /tmp \
+#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading browser.zip" 1>&2
+#unzip -q -o -d /opt/jsp-filebrowser/ /tmp/browser.zip
+##--- Link to others
+#ln -sf /opt/jsp-filebrowser /usr/share/webshells/jsp/jsp-filebrowser
 
 
-##### Install htshells
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}htShells${RESET} ~ (htdocs/apache) web shells"
-apt -y -qq install htshells \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+###### Install htshells
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}htShells${RESET} ~ (htdocs/apache) web shells"
+#apt -y -qq install htshells \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install python-pty-shells
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}python-pty-shells${RESET} ~ PTY shells"
-git clone -q -b master https://github.com/infodox/python-pty-shells.git /opt/python-pty-shells-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/python-pty-shells-git/ >/dev/null
-git pull -q
-popd >/dev/null
+###### Install python-pty-shells
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}python-pty-shells${RESET} ~ PTY shells"
+#git clone -q -b master https://github.com/infodox/python-pty-shells.git /opt/python-pty-shells-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/python-pty-shells-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
 
 
 ##### Install FruityWifi
@@ -1336,73 +1335,73 @@ if [[ -e /var/www/html/index.nginx-debian.html ]]; then
 fi
 
 
-##### Install WPA2-HalfHandshake-Crack
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WPA2-HalfHandshake-Crack${RESET} ~ Rogue AP for handshakes without a AP"
-git clone -q -b master https://github.com/dxa4481/WPA2-HalfHandshake-Crack.git /opt/wpa2-halfhandshake-crack-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/wpa2-halfhandshake-crack-git/ >/dev/null
-git pull -q
-popd >/dev/null
+###### Install WPA2-HalfHandshake-Crack
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WPA2-HalfHandshake-Crack${RESET} ~ Rogue AP for #handshakes without a AP"
+#git clone -q -b master https://github.com/dxa4481/WPA2-HalfHandshake-Crack.git /opt/wpa2-halfhandshake-crack-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/wpa2-halfhandshake-crack-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
 
 
-##### Install HT-WPS-Breaker
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}HT-WPS-Breaker${RESET} ~ Auto WPS tool"
-git clone -q -b master https://github.com/SilentGhostX/HT-WPS-Breaker.git /opt/ht-wps-breaker-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/ht-wps-breaker-git/ >/dev/null
-git pull -q
-popd >/dev/null
+###### Install HT-WPS-Breaker
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}HT-WPS-Breaker${RESET} ~ Auto WPS tool"
+#git clone -q -b master https://github.com/SilentGhostX/HT-WPS-Breaker.git /opt/ht-wps-breaker-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/ht-wps-breaker-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
 
 
-##### Install dot11decrypt
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dot11decrypt${RESET} ~ On-the-fly WEP/WPA2 decrypter"
-git clone -q -b master https://github.com/mfontanini/dot11decrypt.git /opt/dot11decrypt-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/dot11decrypt-git/ >/dev/null
-git pull -q
-popd >/dev/null
+###### Install dot11decrypt
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dot11decrypt${RESET} ~ On-the-fly WEP/WPA2 decrypter"
+#git clone -q -b master https://github.com/mfontanini/dot11decrypt.git /opt/dot11decrypt-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/dot11decrypt-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
 
 
-##### Install mana toolkit
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}MANA toolkit${RESET} ~ Rogue AP for MITM Wi-Fi"
-#--- Disable profile
-a2dissite 000-mana-toolkit; a2ensite 000-default
-#--- Setup alias
-file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^## mana-toolkit' "${file}" 2>/dev/null \
-  || (echo -e '## mana-toolkit\nalias mana-toolkit-start="a2ensite 000-mana-toolkit;a2dissite 000-default; systemctl restart apache2"' >> "${file}" \
-    && echo -e 'alias mana-toolkit-stop="a2dissite 000-mana-toolkit; a2ensite 000-default; systemctl restart apache2"\n' >> "${file}" )
-#--- Apply new alias
-source "${file}" || source ~/.zshrc
+###### Install mana toolkit
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}MANA toolkit${RESET} ~ Rogue AP for MITM Wi-Fi"
+##--- Disable profile
+#a2dissite 000-mana-toolkit; a2ensite 000-default
+##--- Setup alias
+#file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
+#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+#grep -q '^## mana-toolkit' "${file}" 2>/dev/null \
+#  || (echo -e '## mana-toolkit\nalias mana-toolkit-start="a2ensite 000-mana-toolkit;a2dissite 000-default; systemctl restart apache2"' >> "${#file}" \
+#    && echo -e 'alias mana-toolkit-stop="a2dissite 000-mana-toolkit; a2ensite 000-default; systemctl restart apache2"\n' >> "${file}" )
+##--- Apply new alias
+#source "${file}" || source ~/.zshrc
 
 
-##### Install wifiphisher
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}wifiphisher${RESET} ~ Automated Wi-Fi phishing"
-git clone -q -b master https://github.com/sophron/wifiphisher.git /opt/wifiphisher-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/wifiphisher-git/ >/dev/null
-git pull -q
-popd >/dev/null
-#--- Add to path
-mkdir -p /usr/local/bin/
-file=/usr/local/bin/wifiphisher-git
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-#!/bin/bash
+###### Install wifiphisher
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}wifiphisher${RESET} ~ Automated Wi-Fi phishing"
+#git clone -q -b master https://github.com/sophron/wifiphisher.git /opt/wifiphisher-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/wifiphisher-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
+##--- Add to path
+#mkdir -p /usr/local/bin/
+#file=/usr/local/bin/wifiphisher-git
+#cat <<EOF > "${file}" \
+#  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+##!/bin/bash
+#
+#cd /opt/wifiphisher-git/ && python wifiphisher.py "\$@"
+#EOF
+#chmod +x "${file}"
 
-cd /opt/wifiphisher-git/ && python wifiphisher.py "\$@"
-EOF
-chmod +x "${file}"
 
-
-##### Install hostapd-wpe-extended
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}hostapd-wpe-extended${RESET} ~ Rogue AP for WPA-Enterprise"
-git clone -q -b master https://github.com/NerdyProjects/hostapd-wpe-extended.git /opt/hostapd-wpe-extended-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/hostapd-wpe-extended-git/ >/dev/null
-git pull -q
-popd >/dev/null
+###### Install hostapd-wpe-extended
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}hostapd-wpe-extended${RESET} ~ Rogue AP for #WPA-Enterprise"
+#git clone -q -b master https://github.com/NerdyProjects/hostapd-wpe-extended.git /opt/hostapd-wpe-extended-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/hostapd-wpe-extended-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
 
 
 ##### Install proxychains-ng (https://bugs.kali.org/view.php?id=2037)
@@ -1420,66 +1419,60 @@ mkdir -p /usr/local/bin/
 ln -sf /usr/bin/proxychains4 /usr/local/bin/proxychains-ng
 
 
-##### Install pfi
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pfi${RESET} ~ Port Forwarding Interceptor"
-git clone -q -b master https://github.com/s7ephen/pfi.git /opt/pfi-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/pfi-git/ >/dev/null
-git pull -q
-popd >/dev/null
+###### Install pfi
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pfi${RESET} ~ Port Forwarding Interceptor"
+#git clone -q -b master https://github.com/s7ephen/pfi.git /opt/pfi-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/pfi-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
 
 
-##### Install icmpsh
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}icmpsh${RESET} ~ Reverse ICMP shell"
-git clone -q -b master https://github.com/inquisb/icmpsh.git /opt/icmpsh-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/icmpsh-git/ >/dev/null
-git pull -q
-popd >/dev/null
+###### Install icmpsh
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}icmpsh${RESET} ~ Reverse ICMP shell"
+#git clone -q -b master https://github.com/inquisb/icmpsh.git /opt/icmpsh-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/icmpsh-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
 
 
-##### Install dnsftp
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dnsftp${RESET} ~ Transfer files over DNS"
-git clone -q -b master https://github.com/breenmachine/dnsftp.git /opt/dnsftp-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/dnsftp-git/ >/dev/null
-git pull -q
-popd >/dev/null
+###### Install dnsftp
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dnsftp${RESET} ~ Transfer files over DNS"
+#git clone -q -b master https://github.com/breenmachine/dnsftp.git /opt/dnsftp-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/dnsftp-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
 
 
-##### Install dns2tcp
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}dns2tcp${RESET} ~ DNS tunnelling (TCP over DNS)"
-#--- Daemon
-file=/etc/dns2tcpd.conf; [ -e "${file}" ] && cp -n $file{,.bkup};
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-listen = 0.0.0.0
-port = 53
-user = nobody
-chroot = /tmp
-domain = dnstunnel.mydomain.com
-key = password1
-ressources = ssh:127.0.0.1:22
-EOF
-#--- Client
-file=/etc/dns2tcpc.conf; [ -e "${file}" ] && cp -n $file{,.bkup};
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-domain = dnstunnel.mydomain.com
-key = password1
-resources = ssh
-local_port = 8000
-debug_level=1
-EOF
-#--- Example
-#dns2tcpd -F -d 1 -f /etc/dns2tcpd.conf
-#dns2tcpc -f /etc/dns2tcpc.conf 178.62.206.227; ssh -C -D 8081 -p 8000 root@127.0.0.1
-
-
-##### Install stunnel
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}stunnel${RESET} ~ SSL wrapper"
-#--- Remove from start up
-systemctl disable stunnel4
+###### Install dns2tcp
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}dns2tcp${RESET} ~ DNS tunnelling (TCP over DNS)"
+##--- Daemon
+#file=/etc/dns2tcpd.conf; [ -e "${file}" ] && cp -n $file{,.bkup};
+#cat <<EOF > "${file}" \
+#  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+#listen = 0.0.0.0
+#port = 53
+#user = nobody
+#chroot = /tmp
+#domain = dnstunnel.mydomain.com
+#key = password1
+#ressources = ssh:127.0.0.1:22
+#EOF
+##--- Client
+#file=/etc/dns2tcpc.conf; [ -e "${file}" ] && cp -n $file{,.bkup};
+#cat <<EOF > "${file}" \
+#  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+#domain = dnstunnel.mydomain.com
+#key = password1
+#resources = ssh
+#local_port = 8000
+#debug_level=1
+#EOF
+##--- Example
+##dns2tcpd -F -d 1 -f /etc/dns2tcpd.conf
+##dns2tcpc -f /etc/dns2tcpc.conf 178.62.206.227; ssh -C -D 8081 -p 8000 root@127.0.0.1
 
 
 ##### Install gcc & multilib
@@ -1574,17 +1567,17 @@ apt -y -qq install veil-evasion \
 #sed -i 's/TERMINAL_CLEAR=".*"/TERMINAL_CLEAR="false"/' /etc/veil/settings.py
 
 
-##### Install OP packers
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}OP packers${RESET} ~ bypassing anti-virus"
-mkdir -p /opt/packers/
-echo -n '[2/3]'; timeout 600 curl --progress -k -L -f "http://www.farbrausch.de/~fg/kkrunchy/kkrunchy_023a2.zip" > /opt/packers/kkrunchy.zip \
-  && unzip -q -o -d /opt/packers/ /opt/packers/kkrunchy.zip \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading kkrunchy.zip" 1>&2        #***!!! hardcoded version! Need to manually check for updates
-echo -n '[3/3]'; timeout 600 wget --show-progress --no-check-certificate -O /opt/packers/PEScrambler.zip "https://media.defcon.org/DEF%20CON%2016/DEF%20CON%2016%20tools/PEScrambler_v0_1.zip" \
-  && unzip -q -o -d /opt/packers/ /opt/packers/PEScrambler.zip \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading PEScrambler.zip" 1>&2     #***!!! hardcoded version! Need to manually check for updates
-#--- Link to others
-ln -sf /opt/packers/ /usr/share/windows-binaries/packers
+###### Install OP packers
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}OP packers${RESET} ~ bypassing anti-virus"
+#mkdir -p /opt/packers/
+#echo -n '[2/3]'; timeout 600 curl --progress -k -L -f "http://www.farbrausch.de/~fg/kkrunchy/kkrunchy_023a2.zip" > /opt/packers/kkrunchy.zip \
+#  && unzip -q -o -d /opt/packers/ /opt/packers/kkrunchy.zip \
+#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading kkrunchy.zip" 1>&2        #***!!! hardcoded version! Need to manually check for updates
+#echo -n '[3/3]'; timeout 600 wget --show-progress --no-check-certificate -O /opt/packers/PEScrambler.zip "https://media.defcon.org/#DEF%20CON%2016/DEF%20CON%2016%20tools/PEScrambler_v0_1.zip" \
+#  && unzip -q -o -d /opt/packers/ /opt/packers/PEScrambler.zip \
+#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading PEScrambler.zip" 1>&2     #***!!! hardcoded version! Need to manually check for updates
+##--- Link to others
+#ln -sf /opt/packers/ /usr/share/windows-binaries/packers
 
 
 ##### Install shellter
@@ -1608,14 +1601,14 @@ apt -y -qq install shellter \
 
 ##### Install SecLists
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}SecLists${RESET} ~ pentester's companion"
-apt -y -qq install \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-git clone -q -b master https://github.com/danielmiessler/SecLists.git /opt/SecLists-git/ \
+#apt -y -qq install \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+git clone -q -b master https://github.com/danielmiessler/SecLists.git /opt/seclists-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/SecLists-git/ >/dev/null
+pushd /opt/seclists-git/ >/dev/null
 git pull -q
 popd >/dev/null
-ln -sf /opt/SecLists-git /usr/share/wordlists/seclists
+ln -sf /opt/seclists-git /usr/share/wordlists/seclists
 
 
 ##### Update wordlists
@@ -1640,13 +1633,13 @@ ln -sf /usr/share/sqlmap/txt/wordlist.txt /usr/share/wordlists/sqlmap.txt
 #find / \( -iname '*wordlist*' -or -iname '*passwords*' \) #-exec ls -l {} \;
 
 
-##### Install Babel scripts
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Babel scripts${RESET} ~ post exploitation scripts"
-git clone -q -b master https://github.com/attackdebris/babel-sf.git /opt/babel-sf-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/babel-sf-git/ >/dev/null
-git pull -q
-popd >/dev/null
+###### Install Babel scripts
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Babel scripts${RESET} ~ post exploitation scripts"
+#git clone -q -b master https://github.com/attackdebris/babel-sf.git /opt/babel-sf-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/babel-sf-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
 
 
 ##### Install checksec
@@ -1658,23 +1651,23 @@ timeout 600 curl --progress -k -L -f "http://www.trapkit.de/tools/checksec.sh" >
 chmod +x "${file}"
 
 
-##### Install shellconv
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}shellconv${RESET} ~ shellcode disassembler"
-git clone -q -b master https://github.com/hasherezade/shellconv.git /opt/shellconv-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/shellconv-git/ >/dev/null
-git pull -q
-popd >/dev/null
-#--- Add to path
-mkdir -p /usr/local/bin/
-file=/usr/local/bin/shellconv-git
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-#!/bin/bash
-
-cd /opt/shellconv-git/ && python shellconv.py "\$@"
-EOF
-chmod +x "${file}"
+###### Install shellconv
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}shellconv${RESET} ~ shellcode disassembler"
+#git clone -q -b master https://github.com/hasherezade/shellconv.git /opt/shellconv-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/shellconv-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
+##--- Add to path
+#mkdir -p /usr/local/bin/
+#file=/usr/local/bin/shellconv-git
+#cat <<EOF > "${file}" \
+#  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+##!/bin/bash
+#
+#cd /opt/shellconv-git/ && python shellconv.py "\$@"
+#EOF
+#chmod +x "${file}"
 
 
 ##### Install bless
@@ -1683,45 +1676,45 @@ apt -y -qq install bless \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install dhex
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dhex${RESET} ~ CLI hex compare"
-apt -y -qq install dhex \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+###### Install dhex
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dhex${RESET} ~ CLI hex compare"
+#apt -y -qq install dhex \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install lnav
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}lnav${RESET} ~ CLI log veiwer"
-apt -y -qq install lnav \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+###### Install lnav
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}lnav${RESET} ~ CLI log veiwer"
+#apt -y -qq install lnav \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install smbspider
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}smbspider${RESET} ~ search network shares"
-git clone -q -b master https://github.com/T-S-A/smbspider.git /opt/smbspider-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/smbspider-git/ >/dev/null
-git pull -q
-popd >/dev/null
-
-
-##### Install CrackMapExec
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec${RESET} ~ Swiss army knife for Windows environments"
-apt -y -qq install crackmapexec \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#git clone -q -b master https://github.com/byt3bl33d3r/CrackMapExec.git /opt/crackmapexec-git/ \
-  #|| echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-#pushd /opt/crackmapexec-git/ >/dev/null
+###### Install smbspider
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}smbspider${RESET} ~ search network shares"
+#git clone -q -b master https://github.com/T-S-A/smbspider.git /opt/smbspider-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/smbspider-git/ >/dev/null
 #git pull -q
 #popd >/dev/null
 
 
-##### Install credcrack
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}credcrack${RESET} ~ credential harvester via Samba"
-git clone -q -b master https://github.com/gojhonny/CredCrack.git /opt/credcrack-git/ \
+##### Install CrackMapExec
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec${RESET} ~ Swiss army knife for Windows environments"
+#apt -y -qq install crackmapexec \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+git clone -q -b master https://github.com/byt3bl33d3r/CrackMapExec.git /opt/crackmapexec-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/credcrack-git/ >/dev/null
+pushd /opt/crackmapexec-git/ >/dev/null
 git pull -q
 popd >/dev/null
+
+
+###### Install credcrack
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}credcrack${RESET} ~ credential harvester via Samba"
+#git clone -q -b master https://github.com/gojhonny/CredCrack.git /opt/credcrack-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/credcrack-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
 
 
 ##### Install Empire
@@ -1733,23 +1726,23 @@ git pull -q
 popd >/dev/null
 
 
-##### Install wig (https://bugs.kali.org/view.php?id=1932)
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}wig${RESET} ~ web application detection"
-git clone -q -b master https://github.com/jekyc/wig.git /opt/wig-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/wig-git/ >/dev/null
-git pull -q
-popd >/dev/null
-#--- Add to path
-mkdir -p /usr/local/bin/
-file=/usr/local/bin/wig-git
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-#!/bin/bash
-
-cd /opt/wig-git/ && python wig.py "\$@"
-EOF
-chmod +x "${file}"
+###### Install wig (https://bugs.kali.org/view.php?id=1932)
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}wig${RESET} ~ web application detection"
+#git clone -q -b master https://github.com/jekyc/wig.git /opt/wig-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/wig-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
+##--- Add to path
+#mkdir -p /usr/local/bin/
+#file=/usr/local/bin/wig-git
+#cat <<EOF > "${file}" \
+#  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+##!/bin/bash
+#
+#cd /opt/wig-git/ && python wig.py "\$@"
+#EOF
+#chmod +x "${file}"
 
 
 ##### Install CMSmap
@@ -1824,149 +1817,149 @@ EOF
 chmod +x "${file}"
 
 
-##### Install crowbar
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}crowbar${RESET} ~ brute force"
-apt -y -qq install tigervnc-viewer \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-git clone -q -b master https://github.com/galkan/crowbar.git /opt/crowbar-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/crowbar-git/ >/dev/null
-git pull -q
-popd >/dev/null
-#--- Add to path
-mkdir -p /usr/local/bin/
-file=/usr/local/bin/crowbar-git
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-#!/bin/bash
-
-cd /opt/crowbar-git/ && python crowbar.py "\$@"
-EOF
-chmod +x "${file}"
-
-
-##### Setup tftp client & server
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}tftp client${RESET} & ${GREEN}server${RESET} ~ file transfer methods"
-#--- Configure atftpd
-file=/etc/default/atftpd; [ -e "${file}" ] && cp -n $file{,.bkup}
-echo -e 'USE_INETD=false\nOPTIONS="--tftpd-timeout 600 --retry-timeout 5 --maxthread 100 --verbose=5 --daemon --port 69 /var/tftp"' > "${file}"
-mkdir -p /var/tftp/
-chown -R nobody\:root /var/tftp/
-chmod -R 0755 /var/tftp/
-#--- Setup alias
-file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^## tftp' "${file}" 2>/dev/null \
-  || echo -e '## tftp\nalias tftproot="cd /var/tftp/"\n' >> "${file}"
-#--- Apply new alias
-source "${file}" || source ~/.zshrc
-#--- Remove from start up
-systemctl disable atftpd
-#--- Disabling IPv6 can help
-#echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
-#echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6
+###### Install crowbar
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}crowbar${RESET} ~ brute force"
+#apt -y -qq install tigervnc-viewer \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#git clone -q -b master https://github.com/galkan/crowbar.git /opt/crowbar-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/crowbar-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
+##--- Add to path
+#mkdir -p /usr/local/bin/
+#file=/usr/local/bin/crowbar-git
+#cat <<EOF > "${file}" \
+#  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+##!/bin/bash
+#
+#cd /opt/crowbar-git/ && python crowbar.py "\$@"
+#EOF
+#chmod +x "${file}"
 
 
-##### Install Pure-FTPd
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Pure-FTPd${RESET} ~ FTP server/file transfer method"
-apt -y -qq install pure-ftpd \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#--- Setup pure-ftpd
-mkdir -p /var/ftp/
-groupdel ftpgroup 2>/dev/null;
-groupadd ftpgroup
-userdel ftp 2>/dev/null;
-useradd -r -M -d /var/ftp/ -s /bin/false -c "FTP user" -g ftpgroup ftp
-chown -R ftp\:ftpgroup /var/ftp/
-chmod -R 0755 /var/ftp/
-pure-pw userdel ftp 2>/dev/null;
-echo -e '\n' | pure-pw useradd ftp -u ftp -d /var/ftp/
-pure-pw mkdb
-#--- Configure pure-ftpd
-echo "no" > /etc/pure-ftpd/conf/UnixAuthentication
-echo "no" > /etc/pure-ftpd/conf/PAMAuthentication
-echo "yes" > /etc/pure-ftpd/conf/NoChmod
-echo "yes" > /etc/pure-ftpd/conf/ChrootEveryone
-echo "yes" > /etc/pure-ftpd/conf/AnonymousOnly
-echo "no" > /etc/pure-ftpd/conf/NoAnonymous
-echo "yes" > /etc/pure-ftpd/conf/AnonymousCanCreateDirs
-echo "yes" > /etc/pure-ftpd/conf/AllowAnonymousFXP
-echo "no" > /etc/pure-ftpd/conf/AnonymousCantUpload
-echo "30768 31768" > /etc/pure-ftpd/conf/PassivePortRange              #cat /proc/sys/net/ipv4/ip_local_port_range
-echo "/etc/pure-ftpd/welcome.msg" > /etc/pure-ftpd/conf/FortunesFile   #/etc/motd
-echo "FTP" > /etc/pure-ftpd/welcome.msg
-ln -sf /etc/pure-ftpd/conf/PureDB /etc/pure-ftpd/auth/50pure
-#--- 'Better' MOTD
-apt -y -qq install cowsay \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-echo "moo" | /usr/games/cowsay > /etc/pure-ftpd/welcome.msg
-echo -e " ${YELLOW}[i]${RESET} Pure-FTPd username: anonymous"
-echo -e " ${YELLOW}[i]${RESET} Pure-FTPd password: anonymous"
-#--- Apply settings
-systemctl restart pure-ftpd
-#--- Setup alias
-file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^## ftp' "${file}" 2>/dev/null \
-  || echo -e '## ftp\nalias ftproot="cd /var/ftp/"\n' >> "${file}"
-#--- Apply new alias
-source "${file}" || source ~/.zshrc
-#--- Remove from start up
-systemctl disable pure-ftpd
+###### Setup tftp client & server
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}tftp client${RESET} & ${GREEN}server${RESET} ~ file #transfer methods"
+##--- Configure atftpd
+#file=/etc/default/atftpd; [ -e "${file}" ] && cp -n $file{,.bkup}
+#echo -e 'USE_INETD=false\nOPTIONS="--tftpd-timeout 600 --retry-timeout 5 --maxthread 100 --verbose=5 --daemon --port 69 /var/tftp"' > "${file}#"
+#mkdir -p /var/tftp/
+#chown -R nobody\:root /var/tftp/
+#chmod -R 0755 /var/tftp/
+##--- Setup alias
+#file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
+#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+#grep -q '^## tftp' "${file}" 2>/dev/null \
+#  || echo -e '## tftp\nalias tftproot="cd /var/tftp/"\n' >> "${file}"
+##--- Apply new alias
+#source "${file}" || source ~/.zshrc
+##--- Remove from start up
+#systemctl disable atftpd
+##--- Disabling IPv6 can help
+##echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
+##echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6
 
 
-##### Install samba
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}samba${RESET} ~ file transfer method"
-#--- Installing samba
-apt -y -qq install cifs-utils \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#--- Create samba user
-groupdel smbgroup 2>/dev/null;
-groupadd smbgroup
-userdel samba 2>/dev/null;
-useradd -r -M -d /nonexistent -s /bin/false -c "Samba user" -g smbgroup samba
-#--- Use the samba user
-file=/etc/samba/smb.conf; [ -e "${file}" ] && cp -n $file{,.bkup}
-sed -i 's/guest account = .*/guest account = samba/' "${file}" 2>/dev/null
-grep -q 'guest account' "${file}" 2>/dev/null \
-  || sed -i 's#\[global\]#\[global\]\n   guest account = samba#' "${file}"
-#--- Setup samba paths
-grep -q '^\[shared\]' "${file}" 2>/dev/null \
-  || cat <<EOF >> "${file}"
+###### Install Pure-FTPd
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Pure-FTPd${RESET} ~ FTP server/file transfer method"
+#apt -y -qq install pure-ftpd \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+##--- Setup pure-ftpd
+#mkdir -p /var/ftp/
+#groupdel ftpgroup 2>/dev/null;
+#groupadd ftpgroup
+#userdel ftp 2>/dev/null;
+#useradd -r -M -d /var/ftp/ -s /bin/false -c "FTP user" -g ftpgroup ftp
+#chown -R ftp\:ftpgroup /var/ftp/
+#chmod -R 0755 /var/ftp/
+#pure-pw userdel ftp 2>/dev/null;
+#echo -e '\n' | pure-pw useradd ftp -u ftp -d /var/ftp/
+#pure-pw mkdb
+##--- Configure pure-ftpd
+#echo "no" > /etc/pure-ftpd/conf/UnixAuthentication
+#echo "no" > /etc/pure-ftpd/conf/PAMAuthentication
+#echo "yes" > /etc/pure-ftpd/conf/NoChmod
+#echo "yes" > /etc/pure-ftpd/conf/ChrootEveryone
+#echo "yes" > /etc/pure-ftpd/conf/AnonymousOnly
+#echo "no" > /etc/pure-ftpd/conf/NoAnonymous
+#echo "yes" > /etc/pure-ftpd/conf/AnonymousCanCreateDirs
+#echo "yes" > /etc/pure-ftpd/conf/AllowAnonymousFXP
+#echo "no" > /etc/pure-ftpd/conf/AnonymousCantUpload
+#echo "30768 31768" > /etc/pure-ftpd/conf/PassivePortRange              #cat /proc/sys/net/ipv4/ip_local_port_range
+#echo "/etc/pure-ftpd/welcome.msg" > /etc/pure-ftpd/conf/FortunesFile   #/etc/motd
+#echo "FTP" > /etc/pure-ftpd/welcome.msg
+#ln -sf /etc/pure-ftpd/conf/PureDB /etc/pure-ftpd/auth/50pure
+##--- 'Better' MOTD
+#apt -y -qq install cowsay \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#echo "moo" | /usr/games/cowsay > /etc/pure-ftpd/welcome.msg
+#echo -e " ${YELLOW}[i]${RESET} Pure-FTPd username: anonymous"
+#echo -e " ${YELLOW}[i]${RESET} Pure-FTPd password: anonymous"
+##--- Apply settings
+#systemctl restart pure-ftpd
+##--- Setup alias
+#file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
+#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+#grep -q '^## ftp' "${file}" 2>/dev/null \
+#  || echo -e '## ftp\nalias ftproot="cd /var/ftp/"\n' >> "${file}"
+##--- Apply new alias
+#source "${file}" || source ~/.zshrc
+##--- Remove from start up
+#systemctl disable pure-ftpd
 
-[shared]
-  comment = Shared
-  path = /var/samba/
-  browseable = yes
-  guest ok = yes
-  #guest only = yes
-  read only = no
-  writable = yes
-  create mask = 0644
-  directory mask = 0755
-EOF
-#--- Create samba path and configure it
-mkdir -p /var/samba/
-chown -R samba\:smbgroup /var/samba/
-chmod -R 0755 /var/samba/
-#--- Bug fix
-touch /etc/printcap
-#--- Check
-#systemctl restart samba
-#smbclient -L \\127.0.0.1 -N
-#mount -t cifs -o guest //127.0.0.1/share /mnt/smb     mkdir -p /mnt/smb
-#--- Disable samba at startup
-systemctl stop samba
-systemctl disable samba
-echo -e " ${YELLOW}[i]${RESET} Samba username: guest"
-echo -e " ${YELLOW}[i]${RESET} Samba password: <blank>"
-#--- Setup alias
-file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^## smb' "${file}" 2>/dev/null \
-  || echo -e '## smb\nalias smb="cd /var/samba/"\n#alias smbroot="cd /var/samba/"\n' >> "${file}"
-#--- Apply new alias
-source "${file}" || source ~/.zshrc
+
+###### Install samba
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}samba${RESET} ~ file transfer method"
+##--- Installing samba
+#apt -y -qq install cifs-utils \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+##--- Create samba user
+#groupdel smbgroup 2>/dev/null;
+#groupadd smbgroup
+#userdel samba 2>/dev/null;
+#useradd -r -M -d /nonexistent -s /bin/false -c "Samba user" -g smbgroup samba
+##--- Use the samba user
+#file=/etc/samba/smb.conf; [ -e "${file}" ] && cp -n $file{,.bkup}
+#sed -i 's/guest account = .*/guest account = samba/' "${file}" 2>/dev/null
+#grep -q 'guest account' "${file}" 2>/dev/null \
+#  || sed -i 's#\[global\]#\[global\]\n   guest account = samba#' "${file}"
+##--- Setup samba paths
+#grep -q '^\[shared\]' "${file}" 2>/dev/null \
+#  || cat <<EOF >> "${file}"
+#
+#[shared]
+#  comment = Shared
+#  path = /var/samba/
+#  browseable = yes
+#  guest ok = yes
+#  #guest only = yes
+#  read only = no
+#  writable = yes
+#  create mask = 0644
+#  directory mask = 0755
+#EOF
+##--- Create samba path and configure it
+#mkdir -p /var/samba/
+#chown -R samba\:smbgroup /var/samba/
+#chmod -R 0755 /var/samba/
+##--- Bug fix
+#touch /etc/printcap
+##--- Check
+##systemctl restart samba
+##smbclient -L \\127.0.0.1 -N
+##mount -t cifs -o guest //127.0.0.1/share /mnt/smb     mkdir -p /mnt/smb
+##--- Disable samba at startup
+#systemctl stop samba
+#systemctl disable samba
+#echo -e " ${YELLOW}[i]${RESET} Samba username: guest"
+#echo -e " ${YELLOW}[i]${RESET} Samba password: <blank>"
+##--- Setup alias
+#file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
+#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+#grep -q '^## smb' "${file}" 2>/dev/null \
+#  || echo -e '## smb\nalias smb="cd /var/samba/"\n#alias smbroot="cd /var/samba/"\n' >> "${file}"
+##--- Apply new alias
+#source "${file}" || source ~/.zshrc
 
 
 ##### Install apache2 & php
@@ -2000,10 +1993,10 @@ password=
 EOF
 
 
-##### Install rsh-client
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}rsh-client${RESET} ~ remote shell connections"
-apt -y -qq install rsh-client \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+###### Install rsh-client
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}rsh-client${RESET} ~ remote shell connections"
+#apt -y -qq install rsh-client \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install exiftool
@@ -2072,6 +2065,25 @@ apt -y -qq install \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 apt -y -qq install nfs-common \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+
+
+##### Install LinuxSmartEnumeration
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec${RESET} ~ Swiss army knife for Windows environments"
+git clone -q -b master https://github.com/diego-treitos/linux-smart-enumeration.git /opt/linux-smart-enumeration-git/ \
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+pushd /opt/linux-smart-enumeration-git/ >/dev/null
+git pull -q
+popd >/dev/null
+
+
+##### Install Sitadel
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Sitadel${RESET} ~ Web Application Security Scanner"
+git clone -q -b master https://github.com/shenril/Sitadel.git /opt/sitadel-git/ \
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+pushd /opt/sitadel-git/ >/dev/null
+git pull -q
+popd >/dev/null
+
 
 
 ##### Setup SSH
@@ -2177,11 +2189,21 @@ apt -y -qq install phantomjs \
 git clone -q https://github.com/rebootuser/LinEnum.git /opt/linenum-git \
   || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
 
-
-##### Install unix-privesc-check
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}unix-privesc-check${RESET} ~ Unix PrivEsc Checker"
-git clone -q https://github.com/pentestmonkey/unix-privesc-check.git /opt/unix-privesc-check-git \
+##### Install RootHelper
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}RootHelper${RESET} ~ Linux PrivEsc Checker"
+git clone -q https://github.com/NullArray/RootHelper.git /opt/roothelper-git/ \
   || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
+
+##### Install Sn1per
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Sn1per${RESET} ~ Automated Pentest Framework"
+git clone -q https://github.com/1N3/Sn1per.git /opt/sn1per-git/ \
+  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
+
+
+###### Install unix-privesc-check
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}unix-privesc-check${RESET} ~ Unix PrivEsc Checker"
+#git clone -q https://github.com/pentestmonkey/unix-privesc-check.git /opt/unix-privesc-check-git \
+#  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
 
 
 ##### Install apt2
