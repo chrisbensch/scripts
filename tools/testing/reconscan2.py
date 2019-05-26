@@ -15,7 +15,7 @@ import socket
 
 # syn scan doesn't print it's command line
 
-# nikto and dirb can both run on HTTP and HTTPS - should probably modfify them to do so in template
+# nikto and dirb can both run on HTTP and HTTPS should probably modfify them to do so in template
 # Why isn't smtp being printed into the file?
 
 # Add mysql nmap-script
@@ -23,6 +23,7 @@ import socket
 start = time.time()
 
 ip_output_dir = ""
+
 
 class bcolors:
     HEADER = '\033[95m'
@@ -406,15 +407,15 @@ def scan(ip_address):
     # first, run the basic TCP Nmap scans and get our list of processes
     tcp_nmap_results = basicNmapTcpScans(ip_address)
 
-    # then, run UDP nmap scans and get our list of processes
-    udp_nmap_results = udpScan(ip_address)
-
     # next, run the intense TCP Nmap Scans
     advancedNmapScans(ip_address)
 
     # then, check for other TCP enumeration we can do
     serv_dict = parseResults(tcp_nmap_results, "tcp")
     furtherEnum(ip_address, serv_dict)
+
+    # then, run UDP nmap scans and get our list of processes
+    udp_nmap_results = udpScan(ip_address)
 
     # finally, check for other UDP enumeration we can do
     serv_dict = parseResults(udp_nmap_results, "udp")
