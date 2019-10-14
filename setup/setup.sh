@@ -80,24 +80,13 @@ done
 #-Start----------------------------------------------------------------#
 
 
-##### Fix display output for GUI programs (when connecting via SSH)
-#export DISPLAY=:0.0
-#export TERM=xterm
-
-
-####### Get BurpSuitePro Archive Password
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL})BurpSuitePro Archive Password ${GREEN}${RESET}"
-#read -sp "Password: " BURPPASS
-
-
 ###### Enable default network repositories ~ http://docs.kali.org/general-use/kali-linux-sources-list-repositories
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Enabling Berkeley Kali${GREEN} network repositories${RESET}"
 ##--- Add network repositories
 file=/etc/apt/sources.list; [ -e "${file}" ] && cp -n $file{,.bkup}
 ([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
 ##--- Main
-#grep -q '^deb .* kali-rolling' "${file}" 2>/dev/null \
-#  || echo -e "\n\n# Kali Rolling\ndeb https://mirrors.ocf.berkeley.edu/kali kali-rolling main contrib non-free" >> "${file}"
+
 echo -e "\n\n# Kali Rolling\ndeb https://kali.download/kali kali-rolling main contrib non-free" > "${file}"
 ##--- Source
 #grep -q '^deb-src .* kali-rolling' "${file}" 2>/dev/null \
@@ -1079,9 +1068,9 @@ apt -y -qq install flameshot \
 
 
 ###### Setup pipe viewer
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pipe viewer${RESET} ~ CLI progress bar"
-apt -y -qq install pv \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pipe viewer${RESET} ~ CLI progress bar"
+#apt -y -qq install pv \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install htop
@@ -1102,14 +1091,14 @@ apt -y -qq install testssl.sh \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install UACScript
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}UACScript${RESET} ~ UAC Bypass for Windows 7"
-git clone -q -b master https://github.com/Vozzie/uacscript.git /opt/uacscript-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/uacscript-git/ >/dev/null
-git pull -q
-popd >/dev/null
-ln -sf /usr/share/windows-binaries/uac-win7 /opt/uacscript-git/
+###### Install UACScript
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}UACScript${RESET} ~ UAC Bypass for Windows 7"
+#git clone -q -b master https://github.com/Vozzie/uacscript.git /opt/uacscript-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/uacscript-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
+#ln -sf /usr/share/windows-binaries/uac-win7 /opt/uacscript-git/
 
 
 ###### Install MiniReverse_Shell_With_Parameters
@@ -1235,13 +1224,13 @@ chmod +x "${file}"
 #popd >/dev/null
 
 
-###### Install Babadook
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Babadook${RESET} ~ connection-less powershell backdoor#"
-#git clone -q -b master https://github.com/jseidl/Babadook.git /opt/babadook-git/ \
-#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-#pushd /opt/babadook-git/ >/dev/null
-#git pull -q
-#popd >/dev/null
+##### Install Babadook
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Babadook${RESET} ~ connection-less powershell Backdoor#"
+git clone -q -b master https://github.com/jseidl/Babadook.git /opt/babadook-git/ \
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+pushd /opt/babadook-git/ >/dev/null
+git pull -q
+popd >/dev/null
 
 
 ##### Install pupy
@@ -1324,15 +1313,15 @@ apt -y -qq install gobuster \
 #popd >/dev/null
 
 
-##### Install FruityWifi
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}FruityWifi${RESET} ~ Wireless network auditing tool"
-apt -y -qq install fruitywifi \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-# URL: https://localhost:8443
-if [[ -e /var/www/html/index.nginx-debian.html ]]; then
-  grep -q '<title>Welcome to nginx on Debian!</title>' /var/www/html/index.nginx-debian.html \
-    && echo 'Permission denied.' > /var/www/html/index.nginx-debian.html
-fi
+###### Install FruityWifi
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}FruityWifi${RESET} ~ Wireless network auditing tool"
+#apt -y -qq install fruitywifi \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+## URL: https://localhost:8443
+#if [[ -e /var/www/html/index.nginx-debian.html ]]; then
+#  grep -q '<title>Welcome to nginx on Debian!</title>' /var/www/html/index.nginx-debian.html \
+#    && echo 'Permission denied.' > /var/www/html/index.nginx-debian.html
+#fi
 
 
 ###### Install WPA2-HalfHandshake-Crack
@@ -1531,12 +1520,12 @@ grep -q '^"PATH"=.*C:\\\\MinGW\\\\bin' ~/.wine/system.reg \
   || sed -i '/^"PATH"=/ s_"$_;C:\\\\MinGW\\\\bin"_' ~/.wine/system.reg
 
 
-##### Downloading PsExec.exe
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Downloading ${GREEN}PsExec.exe${RESET} ~ Pass The Hash 'phun'"
-echo -n '[1/2]'; aria2c https://download.sysinternals.com/files/PSTools.zip -d /tmp \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading pstools.zip" 1>&2
-unzip -q -o -d /usr/share/windows-binaries/pstools/ /tmp/PSTools.zip
-#unrar x -y /opt/scripts/tools/pshtoolkit.rar /usr/share/windows-binaries/ >/dev/null
+###### Downloading PsExec.exe
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Downloading ${GREEN}PsExec.exe${RESET} ~ Pass The Hash 'phun'"
+#echo -n '[1/2]'; aria2c https://download.sysinternals.com/files/PSTools.zip -d /tmp \
+#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading pstools.zip" 1>&2
+#unzip -q -o -d /usr/share/windows-binaries/pstools/ /tmp/PSTools.zip
+##unrar x -y /opt/scripts/tools/pshtoolkit.rar /usr/share/windows-binaries/ >/dev/null
 
 
 ##### Install Python (Windows via WINE)
@@ -1601,14 +1590,10 @@ apt -y -qq install shellter \
 
 ##### Install SecLists
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}SecLists${RESET} ~ pentester's companion"
-#apt -y -qq install \
-#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+apt -y -qq install seclists \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 git clone -q -b master https://github.com/danielmiessler/SecLists.git /opt/seclists-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/seclists-git/ >/dev/null
-git pull -q
-popd >/dev/null
-ln -sf /opt/seclists-git /usr/share/wordlists/seclists
 
 
 ##### Update wordlists
@@ -2293,6 +2278,61 @@ git clone -q https://github.com/frizb/Vanquish.git /opt/vanquish/ \
 #--- Vanquish install
 cd /opt/vanquish/
 python Vanquish2.py -install
+
+
+##### Install LinEnum
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}LinEnum.sh${RESET} ~ Linux PrivEsc Checker"
+mkdir -p /opt/PrivEsc/LinEnum
+wget https://raw.githubusercontent.com/rebootuser/LinEnum/master/LinEnum.sh -O /opt/PrivEsc/LinEnum/LinEnum.sh \
+  || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
+
+
+##### Install Powerless
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Powerless${RESET} ~ Windows PrivEsc Checker"
+mkdir -p /opt/PrivEsc/Powerless
+wget https://raw.githubusercontent.com/M4ximuss/Powerless/master/Powerless.bat -O /opt/PrivEsc/Powerless/Powerless.bat \
+  || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
+
+
+##### Install PowerSploit
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PowerSploit${RESET} ~ Windows Post-Exploitation Framework"
+mkdir -p /opt/PostExploit/
+git clone https://github.com/PowerShellMafia/PowerSploit.git /opt/PostExploit/PowerSploit \
+  || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
+  cd /opt/PostExploit/PowerSploit
+  git checkout -b dev
+
+
+##### Install Linux Exploit Suggester
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Linux Exploit Suggester${RESET} ~ Linux Exploit Suggester"
+mkdir -p /opt/PrivEsc/linux-exploit-suggester
+wget https://raw.githubusercontent.com/mzet-/linux-exploit-suggester/master/linux-exploit-suggester.sh -O /opt/PrivEsc/linux-exploit-suggester/linux-exploit-suggester.sh \
+  || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
+
+
+##### Install Windows Exploit Suggester - Next Generation
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WES-NG${RESET} ~ Windows PrivEsc Checker"
+mkdir -p /opt/PrivEsc/
+git clone https://github.com/bitsadmin/wesng.git /opt/PrivEsc/WES-NG  \
+  || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
+
+
+
+##### Install RevShellGen
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}RevShellGen${RESET} ~ Reverse Shell Generator"
+mkdir -p /opt/Exploitation/
+git clone https://github.com/m0rph-1/revshellgen.git /opt/Exploitation/revshellgen \
+  || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
+
+
+##### Install SILENTTRINITY
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}RevShellGen${RESET} ~ Reverse Shell Generator"
+mkdir -p /opt/Exploitation/
+git clone https://github.com/byt3bl33d3r/SILENTTRINITY.git /opt/Exploitation/SILENTTRINITY \
+  || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
+
+
+
 
 
 ##### Configure Java default jre

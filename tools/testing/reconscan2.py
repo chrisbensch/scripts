@@ -57,20 +57,16 @@ def connect_to_port(ip_address, port, service):
         s.send("PASS anonymous\r\n")
         password = s.recv(1024)
         total_communication = banner + "\r\n" + user + "\r\n" + password
-        #write_to_file(ip_address, "INSERT_FTP_TEST", total_communication)
     elif service == "smtp":
         total_communication = banner + "\r\n"
-        #write_to_file(ip_address, "INSERT_SMTP_CONNECT", total_communication)
     elif service == "ssh":
         total_communication = banner
-        #write_to_file(ip_address, "INSERT_SSH_CONNECT", total_communication)
     elif service == "pop3":
         s.send("USER root\r\n")
         user = s.recv(1024)
         s.send("PASS root\r\n")
         password = s.recv(1024)
         total_communication = banner +  user +  password
-        #write_to_file(ip_address, "INSERT_POP3_CONNECT", total_communication)
     s.close()
 
 
@@ -495,4 +491,3 @@ if __name__=='__main__':
 
         p = multiprocessing.Process(target=scan, args=(scanip,))
         p.start()
-        
