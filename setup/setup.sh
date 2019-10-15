@@ -964,12 +964,6 @@ else
 fi
 
 
-##### Install vFeed
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}vFeed${RESET} ~ vulnerability database"
-apt -y -qq install vfeed \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Configure python console - all users
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}python console${RESET} ~ tab complete & history support"
 export PYTHONSTARTUP=$HOME/.pythonstartup
@@ -1682,15 +1676,29 @@ apt -y -qq install bless \
 #popd >/dev/null
 
 
-##### Install CrackMapExec
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec${RESET} ~ Swiss army knife for Windows environments"
-#apt -y -qq install crackmapexec \
-#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-git clone -q -b master https://github.com/byt3bl33d3r/CrackMapExec.git /opt/crackmapexec-git/ \
+##### Install CrackMapExec 3.x
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec 3.x${RESET} ~ Swiss army knife for Windows environments"
+apt -y -qq install crackmapexec \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#git clone -q -b master https://github.com/byt3bl33d3r/CrackMapExec.git /opt/crackmapexec-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#pushd /opt/crackmapexec-git/ >/dev/null
+#git pull -q
+#popd >/dev/null
+
+
+
+##### Install CrackMapExec 4.x
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec 4.x${RESET} ~ Swiss army knife for Windows environments"
+apt -y -qq install libssl-dev libffi-dev python-dev build-essential
+pip install pipenv
+git clone --recursive https://github.com/byt3bl33d3r/CrackMapExec.git /opt/crackmapexec-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/crackmapexec-git/ >/dev/null
-git pull -q
-popd >/dev/null
+cd /opt/crackmapexec-git && pipenv install
+#Exit pipenv install shell
+exit
+pipenv run python setup.py install
+
 
 
 ###### Install credcrack
@@ -2053,7 +2061,7 @@ apt -y -qq install nfs-common \
 
 
 ##### Install LinuxSmartEnumeration
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec${RESET} ~ Swiss army knife for Windows environments"
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}LinuxSmartEnumeration${RESET} ~ Linux Enumeration Tool"
 git clone -q -b master https://github.com/diego-treitos/linux-smart-enumeration.git /opt/linux-smart-enumeration-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/linux-smart-enumeration-git/ >/dev/null
