@@ -1033,12 +1033,6 @@ apt -y -qq install iotop \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install testssl
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}testssl${RESET} ~ Testing TLS/SSL encryption"
-apt -y -qq install testssl.sh \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install filezilla
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}FileZilla${RESET} ~ GUI file transfer"
 apt -y -qq install filezilla \
@@ -1047,7 +1041,7 @@ apt -y -qq install filezilla \
 
 ##### Install VPN support
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}VPN${RESET} support for Network-Manager"
-for FILE in network-manager-openvpn network-manager-pptp network-manager-vpnc network-manager-iodine; do
+for FILE in network-manager-openvpn network-manager-pptp network-manager-vpnc; do
   apt -y -qq install "${FILE}" \
     || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 done
@@ -1062,6 +1056,7 @@ git clone https://github.com/EnableSecurity/wafw00f.git /opt/wafw00f-git \
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}aria2${RESET} ~ lightweight multi-protocol & multi-source command-line download utility"
 apt -y -qq install aria2 \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+
 
 ##### Install aircrack-ng
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Aircrack-ng${RESET} ~ Wi-Fi cracking suite"
@@ -1085,6 +1080,7 @@ grep -q '^## airodump-ng' "${file}" 2>/dev/null \
   || echo -e '## airodump-ng \nalias airodump-ng="airodump-ng --manufacturer --wps --uptime"\n' >> "${file}"    # aircrack-ng 1.2 rc2
 #--- Apply new alias
 source "${file}" || source ~/.zshrc
+
 
 ##### Install updated nmap-mac-prefixes based on above updated oui.txt
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}nmap-mac-prefixes${RESET} ~ updated from new oui.txt"
