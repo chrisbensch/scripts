@@ -1,11 +1,10 @@
 #!/bin/bash
 #-Metadata----------------------------------------------------#
-#  Filename: setup.sh             (Update: 2017-10-26)        #
+#  Filename: setup.sh             (Update: 16-FEB-2020)       #
 #-Info--------------------------------------------------------#
 #  Personal post-install script for Kali Linux Rolling        #
-#  This installs the common tools                             #
 #-Author(s)---------------------------------------------------#
-#  chrisbensch ~ https://github.com/chrisbensch               #
+#  chrisbensch ~ https://github.com/chrisbensch/scripts       #
 #  g0tmi1k ~ https://github.com/g0tmi1k/os-scripts original   #
 #-------------------------------------------------------------#
 
@@ -13,13 +12,10 @@
 
 
 ##### Location information
-keyboardApple=false         # Using a Apple/Macintosh keyboard (non VM)?                [ --osx ]
-keyboardLayout="us"         # Set keyboard layout                                       [ --keyboard gb]
 timezone="Asia/Tokyo"       # Set timezone location                                     [ --timezone Europe/London ]
 
 ##### Optional steps
 burpFree=true              # Disable configuring Burp Suite (for Burp Pro users...)    [ --burp ]
-hardenDNS=false            # Set static & lock DNS name server                         [ --dns ]
 openVAS=false              # Install & configure OpenVAS (not everyone wants it...)    [ --openvas ]
 
 ##### (Optional) Enable debug mode?
@@ -79,23 +75,6 @@ done
 
 #-Start----------------------------------------------------------------#
 
-
-###### Enable default network repositories ~ http://docs.kali.org/general-use/kali-linux-sources-list-repositories
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Enabling Berkeley Kali${GREEN} network repositories${RESET}"
-##--- Add network repositories
-file=/etc/apt/sources.list; [ -e "${file}" ] && cp -n $file{,.bkup}
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-##--- Main
-
-echo -e "\n\n# Kali Rolling\ndeb https://kali.download/kali kali-rolling main contrib non-free" > "${file}"
-##--- Source
-#grep -q '^deb-src .* kali-rolling' "${file}" 2>/dev/null \
-#  || echo -e "deb-src https://mirrors.ocf.berkeley.edu/kali kali-rolling main contrib non-free" >> "${file}"
-echo -e "deb-src https://kali.download/kali kali-rolling main contrib non-free" >> "${file}"
-##--- Disable CD repositories
-sed -i '/kali/ s/^\( \|\t\|\)deb cdrom/#deb cdrom/g' "${file}"
-#--- incase we were interrupted
-dpkg --configure -a
 #--- Update
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Updating Kali ${GREEN}network repositories${RESET}"
 apt -qq update
@@ -429,7 +408,7 @@ grep -q '^## grc wdiff alias' "${file}" 2>/dev/null \
   || echo -e "## grc wdiff alias\nalias wdiff='$(which grc) $(which wdiff)'\n" >> "${file}"
 #configure  #esperanto  #ldap  #e  #cvs  #log  #mtr  #ls  #irclog  #mount2  #mount
 #--- Apply new aliases
-source "${file}" || source ~/.zshrc
+#source "${file}" || source ~/.zshrc
 
 
 ##### Install bash completion - all users
@@ -563,7 +542,7 @@ grep -q '^## edb' "${file}" 2>/dev/null \
 grep -q '^## wordlist' "${file}" 2>/dev/null \
   || echo -e '## wordlist\nalias wordlists="cd /usr/share/wordlists/"\n' >> "${file}"
 #--- Apply new aliases
-source "${file}" || source ~/.zshrc
+#source "${file}" || source ~/.zshrc
 #--- Check
 #alias
 
@@ -619,8 +598,8 @@ cat <<EOF > "${file}" \
   || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
 #-Settings---------------------------------------------------------------------
 ## Make it like screen (use CTRL+a)
-unbind C-b
-set -g prefix C-a
+#unbind C-b
+#set -g prefix C-a
 
 ## Pane switching (SHIFT+ARROWS)
 bind-key -n S-Left select-pane -L
@@ -656,7 +635,7 @@ unbind r
 bind r source-file /etc/tmux.conf
 
 ## Load custom sources
-#source ~/.bashrc   #(issues if you use /bin/bash & Debian)
+source ~/.bashrc   #(issues if you use /bin/bash & Debian)
 
 EOF
 [ -e /bin/zsh ] \
@@ -1009,12 +988,6 @@ file=~/.wireshark/recent_common;   #[ -e "${file}" ] && cp -n $file{,.bkup}
   && mv -f /usr/share/wireshark/init.lua{,.disabled}
 
 
-##### Install silver searcher
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}silver searcher${RESET} ~ code searching"
-apt -y -qq install silversearcher-ag \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install flameshot
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}flameshot${RESET} ~ Powerful yet simple to use screenshot software"
 apt -y -qq install flameshot \
@@ -1037,14 +1010,6 @@ apt -y -qq install iotop \
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}FileZilla${RESET} ~ GUI file transfer"
 apt -y -qq install filezilla \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install VPN support
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}VPN${RESET} support for Network-Manager"
-for FILE in network-manager-openvpn network-manager-pptp network-manager-vpnc; do
-  apt -y -qq install "${FILE}" \
-    || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-done
 
 
 ##### Install wafw00f
@@ -1125,15 +1090,6 @@ chmod +x "${file}"
 git clone -q -b master https://github.com/jseidl/Babadook.git /opt/babadook-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 pushd /opt/babadook-git/ >/dev/null
-git pull -q
-popd >/dev/null
-
-
-##### Install pupy
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pupy${RESET} ~ Remote Administration Tool"
-git clone -q -b master https://github.com/n1nj4sec/pupy.git /opt/pupy-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/pupy-git/ >/dev/null
 git pull -q
 popd >/dev/null
 
@@ -1275,15 +1231,6 @@ ln -sf /usr/share/sqlmap/txt/wordlist.txt /usr/share/wordlists/sqlmap.txt
 #find / \( -iname '*wordlist*' -or -iname '*passwords*' \) #-exec ls -l {} \;
 
 
-##### Install checksec
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}checksec${RESET} ~ check *nix OS for security features"
-mkdir -p /usr/share/checksec/
-file=/usr/share/checksec/checksec.sh
-timeout 600 curl --progress -k -L -f "http://www.trapkit.de/tools/checksec.sh" > "${file}" \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading checksec.sh" 1>&2     #***!!! hardcoded patch
-chmod +x "${file}"
-
-
 ##### Install bless
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}bless${RESET} ~ GUI hex editor"
 apt -y -qq install bless \
@@ -1310,18 +1257,12 @@ pipenv run python setup.py install
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Empire${RESET} ~ PowerShell post-exploitation"
 git clone -q -b master https://github.com/PowerShellEmpire/Empire.git /opt/empire-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/empire-git/ >/dev/null
-git pull -q
-popd >/dev/null
 
 
 ##### Install CMSmap
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CMSmap${RESET} ~ CMS detection"
 git clone -q -b master https://github.com/Dionach/CMSmap.git /opt/cmsmap-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/cmsmap-git/ >/dev/null
-git pull -q
-popd >/dev/null
 #--- Add to path
 mkdir -p /usr/local/bin/
 file=/usr/local/bin/cmsmap-git
@@ -1338,9 +1279,6 @@ chmod +x "${file}"
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}DroopeScan${RESET} ~ Drupal vulnerability scanner"
 git clone -q -b master https://github.com/droope/droopescan.git /opt/droopescan-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/droopescan-git/ >/dev/null
-git pull -q
-popd >/dev/null
 #--- Add to path
 mkdir -p /usr/local/bin/
 file=/usr/local/bin/droopescan-git
@@ -1353,7 +1291,7 @@ EOF
 chmod +x "${file}"
 
 
-##### Install BeEF XSS
+##### Configure BeEF XSS
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}BeEF XSS${RESET} ~ XSS framework"
 #--- Configure beef
 file=/usr/share/beef-xss/config.yaml; [ -e "${file}" ] && cp -n $file{,.bkup}
@@ -1372,9 +1310,6 @@ echo -e " ${YELLOW}[i]${RESET} Edit: /usr/share/beef-xss/config.yaml"
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}patator${RESET} (GIT) ~ brute force"
 git clone -q -b master https://github.com/lanjelot/patator.git /opt/patator-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/patator-git/ >/dev/null
-git pull -q
-popd >/dev/null
 #--- Add to path
 mkdir -p /usr/local/bin/
 file=/usr/local/bin/patator-git
@@ -1387,35 +1322,41 @@ EOF
 chmod +x "${file}"
 
 
-##### Install apache2 & php
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}apache2${RESET} & ${GREEN}php${RESET} ~ web server"
-touch /var/www/html/favicon.ico
-grep -q '<title>Apache2 Debian Default Page: It works</title>' /var/www/html/index.html 2>/dev/null \
-  && rm -f /var/www/html/index.html \
-  && echo '<?php echo "Access denied for " . $_SERVER["REMOTE_ADDR"]; ?>' > /var/www/html/index.php \
-  && echo -e 'User-agent: *n\Disallow: /\n' > /var/www/html/robots.txt
-#--- Setup alias
-file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^## www' "${file}" 2>/dev/null \
-  || echo -e '## www\nalias wwwroot="cd /var/www/html/"\n' >> "${file}"
-#--- Apply new alias
-source "${file}" || source ~/.zshrc
+##### Install JuicyPotato (GIT)
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}JuicyPotato${RESET} Abuse Golden Privileges"
+git clone -q https://github.com/ohpe/juicy-potato.git /opt/juicy-potato-git/ \
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
-##### Install mariadb
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MySQL${RESET} ~ database"
-apt -y -qq install mariadb-server \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-echo -e " ${YELLOW}[i]${RESET} MySQL username: root"
-echo -e " ${YELLOW}[i]${RESET} MySQL password: <blank>   ***${BOLD}CHANGE THIS ASAP${RESET}***"
-[[ -e ~/.my.cnf ]] \
-  || cat <<EOF > ~/.my.cnf
-[client]
-user=root
-host=localhost
-password=
-EOF
+###### Install apache2 & php
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}apache2${RESET} & ${GREEN}php${RESET} ~ web server"
+#touch /var/www/html/favicon.ico
+#grep -q '<title>Apache2 Debian Default Page: It works</title>' /var/www/html/index.html 2>/dev/null \
+#  && rm -f /var/www/html/index.html \
+#  && echo '<?php echo "Access denied for " . $_SERVER["REMOTE_ADDR"]; ?>' > /var/www/html/index.php \
+#  && echo -e 'User-agent: *n\Disallow: /\n' > /var/www/html/robots.txt
+##--- Setup alias
+#file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
+#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+#grep -q '^## www' "${file}" 2>/dev/null \
+#  || echo -e '## www\nalias wwwroot="cd /var/www/html/"\n' >> "${file}"
+##--- Apply new alias
+#source "${file}" || source ~/.zshrc
+
+
+###### Install mariadb
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MySQL${RESET} ~ database"
+#apt -y -qq install mariadb-server \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#echo -e " ${YELLOW}[i]${RESET} MySQL username: root"
+#echo -e " ${YELLOW}[i]${RESET} MySQL password: <blank>   ***${BOLD}CHANGE THIS ASAP${RESET}***"
+#[[ -e ~/.my.cnf ]] \
+#  || cat <<EOF > ~/.my.cnf
+#[client]
+#user=root
+#host=localhost
+#password=
+#EOF
 
 
 ##### Install exiftool
@@ -1464,19 +1405,12 @@ apt -y -qq install putty-tools \
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}impacket${RESET} ~ network protocols via python"
 git clone -q -b master https://github.com/CoreSecurity/impacket.git /opt/impacket-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/impacket-git/ >/dev/null
-git pull -q
-popd >/dev/null
 
 
 ##### Install gotty
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}gotty${RESET} ~ terminal via the web"
 git clone -q -b master https://github.com/yudai/gotty.git /opt/gotty-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/gotty-git/ >/dev/null
-git pull -q
-popd >/dev/null
-
 
 ##### Install nfs-common
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}nfs-common${RESET} ~ nfs common tools"
@@ -1490,19 +1424,12 @@ apt -y -qq install nfs-common \
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}LinuxSmartEnumeration${RESET} ~ Linux Enumeration Tool"
 git clone -q -b master https://github.com/diego-treitos/linux-smart-enumeration.git /opt/linux-smart-enumeration-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/linux-smart-enumeration-git/ >/dev/null
-git pull -q
-popd >/dev/null
 
 
 ##### Install Sitadel
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Sitadel${RESET} ~ Web Application Security Scanner"
 git clone -q -b master https://github.com/shenril/Sitadel.git /opt/sitadel-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/sitadel-git/ >/dev/null
-git pull -q
-popd >/dev/null
-
 
 
 ##### Setup SSH
@@ -1538,63 +1465,57 @@ grep -q '^## ssh' "${file}" 2>/dev/null \
 source "${file}" || source ~/.zshrc
 
 
-##### Configure file   Note: need to restart xserver for effect
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}file${RESET} (Nautilus/Thunar) ~ GUI file system navigation"
-#--- Settings
-mkdir -p ~/.config/gtk-2.0/
-file=~/.config/gtk-2.0/gtkfilechooser.ini; [ -e "${file}" ] && cp -n $file{,.bkup}
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-sed -i 's/^.*ShowHidden.*/ShowHidden=true/' "${file}" 2>/dev/null \
-  || cat <<EOF > "${file}"
-[Filechooser Settings]
-LocationMode=path-bar
-ShowHidden=true
-ExpandFolders=false
-ShowSizeColumn=true
-GeometryX=66
-GeometryY=39
-GeometryWidth=780
-GeometryHeight=618
-SortColumn=name
-SortOrder=ascending
-EOF
-dconf write /org/gnome/nautilus/preferences/show-hidden-files true
-#--- Bookmarks
-file=/root/.gtk-bookmarks; [ -e "${file}" ] && cp -n $file{,.bkup}
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^file:///root/Downloads ' "${file}" 2>/dev/null \
-  || echo 'file:///root/Downloads Downloads' >> "${file}"
-(dmidecode | grep -iq vmware) \
-  && (mkdir -p /mnt/hgfs/ 2>/dev/null; grep -q '^file:///mnt/hgfs ' "${file}" 2>/dev/null \
-    || echo 'file:///mnt/hgfs VMShare' >> "${file}")
-grep -q '^file:///tmp ' "${file}" 2>/dev/null \
-  || echo 'file:///tmp /TMP' >> "${file}"
-grep -q '^file:///usr/share ' "${file}" 2>/dev/null \
-  || echo 'file:///usr/share Kali Tools' >> "${file}"
-grep -q '^file:///opt ' "${file}" 2>/dev/null \
-  || echo 'file:///opt /opt' >> "${file}"
-grep -q '^file:///usr/local/src ' "${file}" 2>/dev/null \
-  || echo 'file:///usr/local/src SRC' >> "${file}"
-grep -q '^file:///var/ftp ' "${file}" 2>/dev/null \
-  || echo 'file:///var/ftp FTP' >> "${file}"
-grep -q '^file:///var/samba ' "${file}" 2>/dev/null \
-  || echo 'file:///var/samba Samba' >> "${file}"
-grep -q '^file:///var/tftp ' "${file}" 2>/dev/null \
-  || echo 'file:///var/tftp TFTP' >> "${file}"
-grep -q '^file:///var/www/html ' "${file}" 2>/dev/null \
-  || echo 'file:///var/www/html WWW' >> "${file}"
+###### Configure file   Note: need to restart xserver for effect
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}file${RESET} (Nautilus/Thunar) ~ GUI file system navigation"
+##--- Settings
+#mkdir -p ~/.config/gtk-2.0/
+#file=~/.config/gtk-2.0/gtkfilechooser.ini; [ -e "${file}" ] && cp -n $file{,.bkup}
+#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+#sed -i 's/^.*ShowHidden.*/ShowHidden=true/' "${file}" 2>/dev/null \
+#  || cat <<EOF > "${file}"
+#[Filechooser Settings]
+#LocationMode=path-bar
+#ShowHidden=true
+#ExpandFolders=false
+#ShowSizeColumn=true
+#GeometryX=66
+#GeometryY=39
+#GeometryWidth=780
+#GeometryHeight=618
+#SortColumn=name
+#SortOrder=ascending
+#EOF
+#dconf write /org/gnome/nautilus/preferences/show-hidden-files true
+##--- Bookmarks
+#file=/root/.gtk-bookmarks; [ -e "${file}" ] && cp -n $file{,.bkup}
+#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+#grep -q '^file:///root/Downloads ' "${file}" 2>/dev/null \
+#  || echo 'file:///root/Downloads Downloads' >> "${file}"
+#(dmidecode | grep -iq vmware) \
+#  && (mkdir -p /mnt/hgfs/ 2>/dev/null; grep -q '^file:///mnt/hgfs ' "${file}" 2>/dev/null \
+#    || echo 'file:///mnt/hgfs VMShare' >> "${file}")
+#grep -q '^file:///tmp ' "${file}" 2>/dev/null \
+#  || echo 'file:///tmp /TMP' >> "${file}"
+#grep -q '^file:///usr/share ' "${file}" 2>/dev/null \
+#  || echo 'file:///usr/share Kali Tools' >> "${file}"
+#grep -q '^file:///opt ' "${file}" 2>/dev/null \
+#  || echo 'file:///opt /opt' >> "${file}"
+#grep -q '^file:///usr/local/src ' "${file}" 2>/dev/null \
+#  || echo 'file:///usr/local/src SRC' >> "${file}"
+#grep -q '^file:///var/ftp ' "${file}" 2>/dev/null \
+#  || echo 'file:///var/ftp FTP' >> "${file}"
+#grep -q '^file:///var/samba ' "${file}" 2>/dev/null \
+#  || echo 'file:///var/samba Samba' >> "${file}"
+#grep -q '^file:///var/tftp ' "${file}" 2>/dev/null \
+#  || echo 'file:///var/tftp TFTP' >> "${file}"
+#grep -q '^file:///var/www/html ' "${file}" 2>/dev/null \
+#  || echo 'file:///var/www/html WWW' >> "${file}"
 ##--- Configure file browser - Thunar (need to re-login for effect)
 #mkdir -p ~/.config/Thunar/
 #file=~/.config/Thunar/thunarrc; [ -e "${file}" ] && cp -n $file{,.bkup}
 #([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
 #sed -i 's/LastShowHidden=.*/LastShowHidden=TRUE/' "${file}" 2>/dev/null \
 #  || echo -e "[Configuration]\nLastShowHidden=TRUE" > "${file}"
-
-
-##### Install LightDM
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}lightdm${RESET} ~ leaner display manager"
-apt -y -qq install lightdm \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install PhantomJS
@@ -1608,10 +1529,12 @@ apt -y -qq install phantomjs \
 git clone -q https://github.com/rebootuser/LinEnum.git /opt/linenum-git \
   || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
 
+
 ##### Install RootHelper
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}RootHelper${RESET} ~ Linux PrivEsc Checker"
 git clone -q https://github.com/NullArray/RootHelper.git /opt/roothelper-git/ \
   || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
+
 
 ##### Install Sn1per
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Sn1per${RESET} ~ Automated Pentest Framework"
@@ -1706,55 +1629,43 @@ cd /opt/vanquish/
 python Vanquish2.py -install
 
 
-##### Install LinEnum
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}LinEnum.sh${RESET} ~ Linux PrivEsc Checker"
-mkdir -p /opt/PrivEsc/LinEnum
-wget https://raw.githubusercontent.com/rebootuser/LinEnum/master/LinEnum.sh -O /opt/PrivEsc/LinEnum/LinEnum.sh \
-  || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
-
-
 ##### Install Powerless
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Powerless${RESET} ~ Windows PrivEsc Checker"
-mkdir -p /opt/PrivEsc/Powerless
-wget https://raw.githubusercontent.com/M4ximuss/Powerless/master/Powerless.bat -O /opt/PrivEsc/Powerless/Powerless.bat \
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Powerless${RESET} ~ Windows PrivEsc Checker"Powerless
+mkdir -p /opt/powerless
+wget https://raw.githubusercontent.com/M4ximuss/Powerless/master/Powerless.bat -O /opt/powerless/powerless.bat \
   || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
 
 
 ##### Install PowerSploit
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PowerSploit${RESET} ~ Windows Post-Exploitation Framework"
-mkdir -p /opt/PostExploit/
-git clone https://github.com/PowerShellMafia/PowerSploit.git /opt/PostExploit/PowerSploit \
+git clone https://github.com/PowerShellMafia/PowerSploit.git /opt/powersploit-git \
   || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
-  cd /opt/PostExploit/PowerSploit
+  cd /opt/powersploit-git
   git checkout -b dev
 
 
 ##### Install Linux Exploit Suggester
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Linux Exploit Suggester${RESET} ~ Linux Exploit Suggester"
-mkdir -p /opt/PrivEsc/linux-exploit-suggester
-wget https://raw.githubusercontent.com/mzet-/linux-exploit-suggester/master/linux-exploit-suggester.sh -O /opt/PrivEsc/linux-exploit-suggester/linux-exploit-suggester.sh \
+mkdir -p /opt/linux-exploit-suggester
+wget https://raw.githubusercontent.com/mzet-/linux-exploit-suggester/master/linux-exploit-suggester.sh -O /opt/linux-exploit-suggester/linux-exploit-suggester.sh \
   || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
 
 
 ##### Install Windows Exploit Suggester - Next Generation
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WES-NG${RESET} ~ Windows PrivEsc Checker"
-mkdir -p /opt/PrivEsc/
-git clone https://github.com/bitsadmin/wesng.git /opt/PrivEsc/WES-NG  \
+git clone https://github.com/bitsadmin/wesng.git /opt/wesng-git  \
   || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
-
 
 
 ##### Install RevShellGen
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}RevShellGen${RESET} ~ Reverse Shell Generator"
-mkdir -p /opt/Exploitation/
-git clone https://github.com/m0rph-1/revshellgen.git /opt/Exploitation/revshellgen \
+git clone https://github.com/m0rph-1/revshellgen.git /opt/revshellgen-git \
   || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
 
 
 ##### Install SILENTTRINITY
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}RevShellGen${RESET} ~ Reverse Shell Generator"
-mkdir -p /opt/Exploitation/
-git clone https://github.com/byt3bl33d3r/SILENTTRINITY.git /opt/Exploitation/SILENTTRINITY \
+git clone https://github.com/byt3bl33d3r/SILENTTRINITY.git /opt/silenttrinity-git \
   || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
 
 
@@ -1763,6 +1674,13 @@ git clone https://github.com/byt3bl33d3r/SILENTTRINITY.git /opt/Exploitation/SIL
 update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
   || echo -e ' '${RED}'[!] Issue with configuration'${RESET} 1>&2
 
+
+##### Install PEASS - Privilege Escalation Awesome Scripts SUITE (with colors) https://book.hacktricks.xyz
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PEASS${RESET} ~ Privilege Escalation Awesome Scripts SUITE"
+git clone https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite.git /opt/peass-git \
+  || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
+
+################################################################################
 
 ##### Clean the system
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Cleaning${RESET} the system"
