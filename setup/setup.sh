@@ -260,7 +260,7 @@ killall -9 -q -w sublime_text >/dev/null
 # Install Package Control
 mkdir -p "~/.config/sublime-text-3/Installed Packages/"
 cd "~/.config/sublime-text-3/Installed Packages/"
-curl --progress -k -L -f "https://packagecontrol.io/Package%20Control.sublime-package" -o "Package Control.sublime-package" 2>/dev/null
+curl --progress-bar -k -L -f "https://packagecontrol.io/Package%20Control.sublime-package" --output "~/.config/sublime-text-3/Installed Packages/Package Control.sublime-package" 2>/dev/null
 
 # Configure Install Packages
 mkdir -p ~/.config/sublime-text-3/Packages/User/
@@ -787,6 +787,8 @@ sqlite3 "${file}" ".restore /opt/scripts/misc/places.sqlite.backup"
 
 ##### Install metasploit ~ http://docs.kali.org/general-use/starting-metasploit-framework-in-kali
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}metasploit${RESET} ~ exploit framework"
+apt -y -qq install --reinstall metasploit-framework \
+    || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 mkdir -p ~/.msf5/modules/{auxiliary,exploits,payloads,post}/
 #--- Fix any port issues
 file=$(find /etc/postgresql/*/main/ -maxdepth 1 -type f -name postgresql.conf -print -quit);
@@ -1548,12 +1550,6 @@ git clone -q https://github.com/1N3/Sn1per.git /opt/sn1per-git/ \
 #  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
 
 
-##### Install apt2
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}apt2${RESET} ~ Automated Penetration Testing Tool"
-git clone -q https://github.com/MooseDojo/apt2.git /opt/apt2-git \
-  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
-
-
 ##### Install dirsearch
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dirsearch${RESET} ~ Directory Bruteforcer"
 cd /opt
@@ -1679,6 +1675,11 @@ update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PEASS${RESET} ~ Privilege Escalation Awesome Scripts SUITE"
 git clone https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite.git /opt/peass-git \
   || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
+
+
+##### Configure Home perms, temp until split root and user functions
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Resetting my perms${RESET} ~ root->analyst"
+chown -R analyst:analyst /home/analyst
 
 ################################################################################
 
