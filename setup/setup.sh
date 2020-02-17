@@ -218,12 +218,12 @@ if [[ $? -ne 0 ]]; then
 fi
 
 
-##### Install "kali full" meta packages (default tool selection)
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}kali-linux-full${RESET} meta-package"
-echo -e " ${YELLOW}[i]${RESET}  ...this ${BOLD}may take a while${RESET} depending on your Kali version (e.g. ARM, light, mini or docker...)"
-#--- Kali's default tools ~ https://www.kali.org/news/kali-linux-metapackages/
-apt -y -qq install kali-linux-full \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+###### Install "kali full" meta packages (default tool selection)
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}kali-linux-full${RESET} meta-package"
+#echo -e " ${YELLOW}[i]${RESET}  ...this ${BOLD}may take a while${RESET} depending on your Kali version (e.g. ARM, light, mini or docker...)"
+##--- Kali's default tools ~ https://www.kali.org/news/kali-linux-metapackages/
+#apt -y -qq install kali-linux-full \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Set audio level
