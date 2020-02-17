@@ -109,7 +109,7 @@ done
 sleep 2s
 EOF
   chmod +x "${file}"
-  ln -sf "${file}" /root/Desktop/mount-shared-folders.sh
+  ln -sf "${file}" ~/Desktop/mount-shared-folders.sh
   ## Restart Open-VM-Tools
 file=/usr/local/sbin/restart-vm-tools; [ -e "${file}" ] && cp -n $file{,.bkup}
   cat <<EOF > "${file}" \
@@ -120,7 +120,7 @@ vmware-user-suid-wrapper vmtoolsd -n vmusr 2>/dev/null
 vmtoolsd -b /var/run/vmroot 2>/dev/null
 EOF
   chmod +x "${file}"
-  ln -sf "${file}" /root/Desktop/restart-vm-tools.sh
+  ln -sf "${file}" ~/Desktop/restart-vm-tools.sh
 elif (dmidecode | grep -iq virtualbox); then
   ##### Installing VirtualBox Guest Additions.   Note: Need VirtualBox 4.2.xx+ for the host (http://docs.kali.org/general-use/kali-linux-virtual-box-guest)
   (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}VirtualBox's guest additions${RESET}"
@@ -258,13 +258,13 @@ sleep 5
 killall -9 -q -w sublime_text >/dev/null
 
 # Install Package Control
-mkdir -p "/root/.config/sublime-text-3/Installed Packages/"
-cd "/root/.config/sublime-text-3/Installed Packages/"
+mkdir -p "~/.config/sublime-text-3/Installed Packages/"
+cd "~/.config/sublime-text-3/Installed Packages/"
 curl --progress -k -L -f "https://packagecontrol.io/Package%20Control.sublime-package" -o "Package Control.sublime-package" 2>/dev/null
 
 # Configure Install Packages
-mkdir -p /root/.config/sublime-text-3/Packages/User/
-file="/root/.config/sublime-text-3/Packages/User/Package Control.sublime-settings"
+mkdir -p ~/.config/sublime-text-3/Packages/User/
+file="~/.config/sublime-text-3/Packages/User/Package Control.sublime-settings"
 cat <<EOF > "${file}" \
   || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
 {
@@ -291,8 +291,8 @@ sleep 60
 killall -9 -q -w sublime_text >/dev/null
 
 # Configure special settings
-mkdir -p /root/.config/sublime-text-3/Packages/User/
-file=/root/.config/sublime-text-3/Packages/User/Preferences.sublime-settings; [ -e "${file}" ] && cp -n $file{,.bkup}
+mkdir -p ~/.config/sublime-text-3/Packages/User/
+file=~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings; [ -e "${file}" ] && cp -n $file{,.bkup}
 cat <<EOF > "${file}" \
   || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
 {
@@ -1487,10 +1487,10 @@ source "${file}" || source ~/.zshrc
 #EOF
 #dconf write /org/gnome/nautilus/preferences/show-hidden-files true
 ##--- Bookmarks
-#file=/root/.gtk-bookmarks; [ -e "${file}" ] && cp -n $file{,.bkup}
+#file=~/.gtk-bookmarks; [ -e "${file}" ] && cp -n $file{,.bkup}
 #([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-#grep -q '^file:///root/Downloads ' "${file}" 2>/dev/null \
-#  || echo 'file:///root/Downloads Downloads' >> "${file}"
+#grep -q '^file://~/Downloads ' "${file}" 2>/dev/null \
+#  || echo 'file://~/Downloads Downloads' >> "${file}"
 #(dmidecode | grep -iq vmware) \
 #  && (mkdir -p /mnt/hgfs/ 2>/dev/null; grep -q '^file:///mnt/hgfs ' "${file}" 2>/dev/null \
 #    || echo 'file:///mnt/hgfs VMShare' >> "${file}")
