@@ -204,6 +204,12 @@ fi
 apt -y -qq install build-essential \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
+
+##### Install python and python3 essential tools
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}python(3) tools${RESET}"
+apt -y -qq install python-pip python3-pip \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+
 ##### Install kernel headers
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}kernel headers${RESET}"
 apt -y -qq install "linux-headers-$(uname -r)" \
@@ -372,6 +378,7 @@ find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'sessionstore.*' -
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}metasploit${RESET} ~ exploit framework"
 apt -y -qq install --reinstall metasploit-framework \
     || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+mkdir -p ~/.msf5/modules/{auxiliary,exploits,payloads,post}/
 #--- Fix any port issues
 file=$(find /etc/postgresql/*/main/ -maxdepth 1 -type f -name postgresql.conf -print -quit);
 [ -e "${file}" ] && cp -n $file{,.bkup}
@@ -381,6 +388,96 @@ chmod 0644 /etc/hosts
 #--- Start services
 systemctl stop postgresql
 systemctl start postgresql
+msfdb reinit
+sleep 5s
+#--- Autorun Metasploit commands each startup
+file=~/.msf5/msf_autorunscript.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
+if [[ -f "${file}" ]]; then
+  echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
+else
+  cat <<EOF > "${file}"
+#run post/windows/escalate/getsystem
+
+#run migrate -f -k
+#run migrate -n "explorer.exe" -k    # Can trigger AV alerts by touching explorer.exe...
+
+#run post/windows/manage/smart_migrate
+#run post/windows/gather/smart_hashdump
+EOF
+fi
+file=~/.msf5/msfconsole.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
+if [[ -f "${file}" ]]; then
+  echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
+else
+  cat <<EOF > "${file}"
+load auto_add_route
+
+load alias
+alias del rm
+alias handler use exploit/multi/handler
+
+load sounds
+
+setg TimestampOutput true
+setg VERBOSE true
+
+setg ExitOnSession false
+setg EnableStageEncoding true
+setg LHOST 0.0.0.0
+setg LPORT 443
+use exploit/multi/handler
+#setg AutoRunScript 'multi_console_command -rc "~/.msf5/msf_autorunscript.rc"'
+set PAYLOAD windows/meterpreter/reverse_https
+EOF
+fi
+#--- Aliases time
+file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
+([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+#--- Aliases for console
+grep -q '^alias msfc=' "${file}" 2>/dev/null \
+  || echo -e 'alias msfc="systemctl start postgresql; msfdb start; msfconsole -q \"\$@\""' >> "${file}"
+grep -q '^alias msfconsole=' "${file}" 2>/dev/null \
+  || echo -e 'alias msfconsole="systemctl start postgresql; msfdb start; msfconsole \"\$@\""\n' >> "${file}"
+#--- Aliases to speed up msfvenom (create static output)
+grep -q "^alias msfvenom-list-all" "${file}" 2>/dev/null \
+  || echo "alias msfvenom-list-all='cat ~/.msf5/msfvenom/all'" >> "${file}"
+grep -q "^alias msfvenom-list-nops" "${file}" 2>/dev/null \
+  || echo "alias msfvenom-list-nops='cat ~/.msf5/msfvenom/nops'" >> "${file}"
+grep -q "^alias msfvenom-list-payloads" "${file}" 2>/dev/null \
+  || echo "alias msfvenom-list-payloads='cat ~/.msf5/msfvenom/payloads'" >> "${file}"
+grep -q "^alias msfvenom-list-encoders" "${file}" 2>/dev/null \
+  || echo "alias msfvenom-list-encoders='cat ~/.msf5/msfvenom/encoders'" >> "${file}"
+grep -q "^alias msfvenom-list-formats" "${file}" 2>/dev/null \
+  || echo "alias msfvenom-list-formats='cat ~/.msf5/msfvenom/formats'" >> "${file}"
+grep -q "^alias msfvenom-list-generate" "${file}" 2>/dev/null \
+  || echo "alias msfvenom-list-generate='_msfvenom-list-generate'" >> "${file}"
+grep -q "^function _msfvenom-list-generate" "${file}" 2>/dev/null \
+  || cat <<EOF >> "${file}" \
+    || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+function _msfvenom-list-generate {
+  mkdir -p ~/.msf5/msfvenom/
+  msfvenom --list all > ~/.msf5/msfvenom/all
+  msfvenom --list nops > ~/.msf5/msfvenom/nops
+  msfvenom --list payloads > ~/.msf5/msfvenom/payloads
+  msfvenom --list encoders > ~/.msf5/msfvenom/encoders
+  msfvenom --help-formats 2> ~/.msf5/msfvenom/formats
+}
+EOF
+#--- Apply new aliases
+source "${file}" || source ~/.zshrc
+#--- Generate (Can't call alias)
+mkdir -p ~/.msf5/msfvenom/
+msfvenom --list all > ~/.msf5/msfvenom/all
+msfvenom --list nops > ~/.msf5/msfvenom/nops
+msfvenom --list payloads > ~/.msf5/msfvenom/payloads
+msfvenom --list encoders > ~/.msf5/msfvenom/encoders
+msfvenom --help-formats 2> ~/.msf5/msfvenom/formats
+#--- First time run with Metasploit
+(( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Starting Metasploit for the first time${RESET} ~ this ${BOLD}will take a ~350 seconds${RESET} (~6 mintues)"
+echo "Started at: $(date)"
+systemctl start postgresql
+msfdb start
+msfconsole -q -x 'version;db_status;sleep 310;exit'
 
 
 ##### Configuring armitage
@@ -444,7 +541,7 @@ apt -y -qq install aircrack-ng curl \
 mkdir -p /etc/aircrack-ng/
 #(timeout 600 airodump-ng-oui-update 2>/dev/null) \
 #  || timeout 600 curl --progress -k -L -f "http://standards.ieee.org/develop/regauth/oui/oui.txt" > /etc/aircrack-ng/oui.txt
-aria2c http://linuxnet.ca/ieee/oui.txt -d /etc/aircrack-ng
+aria2c https://gitlab.com/wireshark/wireshark/raw/master/manuf -d /etc/aircrack-ng/ -o oui.txt
 [ -e /etc/aircrack-ng/oui.txt ] \
   && (\grep "(hex)" /etc/aircrack-ng/oui.txt | sed 's/^[ \t]*//g;s/[ \t]*$//g' > /etc/aircrack-ng/airodump-ng-oui.txt)
 [[ ! -f /etc/aircrack-ng/airodump-ng-oui.txt ]] \
@@ -513,18 +610,6 @@ mkdir -p /usr/local/bin/
 ln -sf /usr/bin/proxychains4 /usr/local/bin/proxychains-ng
 
 
-##### Install gcc & multilib
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}gcc${RESET} & ${GREEN}multilibc${RESET} ~ compiling libraries"
-apt -y -qq install cc gcc g++ gcc-multilib make automake libc6 libc6-dev libc6-dev-amd64 libc6-i386 libc6-dev-i386 libc6-i686 libc6-dev-i686 build-essential dpkg-dev \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-  
-
-
-##### Install MinGW ~ cross compiling suite
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MinGW${RESET} ~ cross compiling suite"
-apt -y -qq install mingw-w64 binutils-mingw-w64 gcc-mingw-w64 cmake mingw-w64-x86-64-dev mingw-w64-tools gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 mingw32 \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
 ##### Install WINE
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WINE${RESET} ~ run Windows programs on *nix"
 apt -y -qq install wine wine64 \
@@ -588,18 +673,17 @@ apt -y -qq install bless \
 
 ##### Install CrackMapExec 3.x
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec 3.x${RESET} ~ Swiss army knife for Windows environments"
-apt -y -qq install crackmapexec \
+apt -y -qq install python-pip \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+sudo pip install crackmapexec
 
 
-##### Install CrackMapExec 4.x
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec 4.x${RESET} ~ Swiss army knife for Windows environments"
-apt -y -qq install libssl-dev libffi-dev python-dev build-essential
-pip install pipenv
-git clone --recursive https://github.com/byt3bl33d3r/CrackMapExec.git /opt/crackmapexec-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-cd /opt/crackmapexec-git && pipenv install
-pipenv run python setup.py install
+###### Install CrackMapExec 4.x
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec 4.x${RESET} ~ Swiss army knife for Windows #environments"
+#git clone --recursive https://github.com/byt3bl33d3r/CrackMapExec /opt/crackmapexec4-git \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+#cd /opt/crackmapexec4-git && pip3 install -r requirements.txt
+#pipenv run python setup.py install
 
 
 ##### Install Empire
@@ -638,19 +722,6 @@ cat <<EOF > "${file}" \
 cd /opt/droopescan-git/ && python droopescan "\$@"
 EOF
 chmod +x "${file}"
-
-
-##### Configure BeEF XSS
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}BeEF XSS${RESET} ~ XSS framework"
-#--- Configure beef
-file=/usr/share/beef-xss/config.yaml; [ -e "${file}" ] && cp -n $file{,.bkup}
-username="root"
-password="toor"
-sed -i 's/user:.*".*"/user:   "'${username}'"/' "${file}"
-sed -i 's/passwd:.*".*"/passwd:  "'${password}'"/'  "${file}"
-echo -e " ${YELLOW}[i]${RESET} BeEF username: ${username}"
-echo -e " ${YELLOW}[i]${RESET} BeEF password: ${password}   ***${BOLD}CHANGE THIS ASAP${RESET}***"
-echo -e " ${YELLOW}[i]${RESET} Edit: /usr/share/beef-xss/config.yaml"
 
 
 ##### Install patator (GIT)

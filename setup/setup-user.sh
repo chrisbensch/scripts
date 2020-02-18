@@ -13,10 +13,10 @@
 ##### Configure User Settings
 
 ## Shared folders support for Open-VM-Tools
-file=/usr/local/sbin/mount-shared-folders; [ -e "${file}" ] && cp -n $file{,.bkup}
+file=/usr/local/sbin/mount-shared-folders; [ -e "${file}" ]
 ln -sf "${file}" ~/Desktop/mount-shared-folders.sh
  ## Restart Open-VM-Tools
-file=/usr/local/sbin/restart-vm-tools; [ -e "${file}" ] && cp -n $file{,.bkup}
+file=/usr/local/sbin/restart-vm-tools; [ -e "${file}" ]
 ln -sf "${file}" ~/Desktop/restart-vm-tools.sh
 
 
@@ -34,7 +34,9 @@ curl --progress-bar -k -L -f "https://packagecontrol.io/Package%20Control.sublim
 
 # Configure Install Packages
 mkdir -p ~/.config/sublime-text-3/Packages/User/
-file="~/.config/sublime-text-3/Packages/User/Package Control.sublime-settings"
+cd ~/.config/sublime-text-3/Packages/User/
+touch "Package Control.sublime-settings"
+file="Package Control.sublime-settings"
 cat <<EOF > "${file}" \
   || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
 {
@@ -61,7 +63,6 @@ sleep 60
 killall -9 -q -w sublime_text >/dev/null
 
 # Configure special settings
-mkdir -p ~/.config/sublime-text-3/Packages/User/
 file=~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings; [ -e "${file}" ] && cp -n $file{,.bkup}
 cat <<EOF > "${file}" \
   || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
