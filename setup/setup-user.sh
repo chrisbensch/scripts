@@ -42,9 +42,9 @@ sleep 5
 killall -9 -q -w sublime_text >/dev/null
 
 # Install Package Control
-mkdir -p "~/.config/sublime-text-3/Installed Packages/"
-cd "~/.config/sublime-text-3/Installed Packages/"
-curl --progress-bar -k -L -f "https://packagecontrol.io/Package%20Control.sublime-package" --output "~/.config/sublime-text-3/Installed Packages/Package Control.sublime-package" 2>/dev/null
+mkdir -p ~/.config/sublime-text-3/Installed Packages/
+cd ~/.config/sublime-text-3/Installed\ Packages/
+curl --progress-bar -k -L -f "https://packagecontrol.io/Package%20Control.sublime-package" --output "Package Control.sublime-package" 2>/dev/null
 
 # Configure Install Packages
 mkdir -p ~/.config/sublime-text-3/Packages/User/
@@ -77,7 +77,7 @@ sleep 60
 killall -9 -q -w sublime_text >/dev/null
 
 # Configure special settings
-file=~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings; [ -e "${file}" ] && cp -n $file{,.bkup}
+file=~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings; [ -e "${file}" ]
 cat <<EOF > "${file}" \
   || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
 {
