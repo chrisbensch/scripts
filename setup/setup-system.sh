@@ -249,11 +249,6 @@ echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sou
 apt -y -qq update
 apt -y -qq install sublime-text
 
-# Run once to do basic setup
-subl >/dev/null 2>&1                # Start and kill. Files/folders needed for first time run
-sleep 5
-killall -9 -q -w sublime_text >/dev/null
-
 
 ##### Configure bash - all users
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}bash${RESET} ~ CLI shell"
