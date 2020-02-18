@@ -10,6 +10,20 @@
 
 #-Defaults-------------------------------------------------------------#
 
+##### (Cosmetic) Colour output
+RED="\033[01;31m"      # Issues/Errors
+GREEN="\033[01;32m"    # Success
+YELLOW="\033[01;33m"   # Warnings/Information
+BLUE="\033[01;34m"     # Heading
+BOLD="\033[01;01m"     # Highlight
+RESET="\033[00m"       # Normal
+
+STAGE=0                                                       # Where are we up to
+TOTAL=$(grep '(${STAGE}/${TOTAL})' $0 | wc -l);(( TOTAL-- ))  # How many things have we got todo
+
+#--- Only used for stats at the end
+start_time=$(date +%s)
+
 ##### Configure User Settings
 
 ## Shared folders support for Open-VM-Tools
@@ -404,8 +418,6 @@ echo -e "\n\n ${YELLOW}[i]${RESET} Time (roughly) taken: ${YELLOW}$(( $(( finish
 
 
 #-Done-----------------------------------------------------------------#
-(dmidecode | grep -iq virtual) \
-  && echo -e " ${YELLOW}[i]${RESET} + Take a snapshot   (Virtual machine detected)"
 
 
 echo -e '\n'${BLUE}'[*]'${RESET}' '${BOLD}'Done!'${RESET}'\n\a'
