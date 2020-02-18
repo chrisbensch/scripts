@@ -230,37 +230,6 @@ grep -q '^alias tmux' "${file}" 2>/dev/null \
 source "${file}" || source ~/.zshrc
 
 
-##### Install vim - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}vim${RESET} ~ CLI text editor"
-#--- Configure vim
-file=/etc/vim/vimrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.vimrc
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-sed -i 's/.*syntax on/syntax on/' "${file}"
-sed -i 's/.*set background=dark/set background=dark/' "${file}"
-sed -i 's/.*set showcmd/set showcmd/' "${file}"
-sed -i 's/.*set showmatch/set showmatch/' "${file}"
-grep -q '^set number' "${file}" 2>/dev/null \
-  || echo 'set number' >> "${file}"                                                                      # Add line numbers
-grep -q '^set expandtab' "${file}" 2>/dev/null \
-  || echo -e 'set expandtab\nset smarttab' >> "${file}"                                                  # Set use spaces instead of tabs
-grep -q '^set softtabstop' "${file}" 2>/dev/null \
-  || echo -e 'set softtabstop=4\nset shiftwidth=4' >> "${file}"                                          # Set 4 spaces as a 'tab'
-grep -q '^set foldmethod=marker' "${file}" 2>/dev/null \
-  || echo 'set foldmethod=marker' >> "${file}"                                                           # Folding
-grep -q '^nnoremap <space> za' "${file}" 2>/dev/null \
-  || echo 'nnoremap <space> za' >> "${file}"                                                             # Space toggle folds
-grep -q '^set hlsearch' "${file}" 2>/dev/null \
-  || echo 'set hlsearch' >> "${file}"                                                                    # Highlight search results
-grep -q '^set laststatus' "${file}" 2>/dev/null \
-  || echo -e 'set laststatus=2\nset statusline=%F%m%r%h%w\ (%{&ff}){%Y}\ [%l,%v][%p%%]' >> "${file}"     # Status bar
-grep -q '^filetype on' "${file}" 2>/dev/null \
-  || echo -e 'filetype on\nfiletype plugin on\nsyntax enable\nset grepprg=grep\ -nH\ $*' >> "${file}"    # Syntax highlighting
-grep -q '^set wildmenu' "${file}" 2>/dev/null \
-  || echo -e 'set wildmenu\nset wildmode=list:longest,full' >> "${file}"                                 # Tab completion
-grep -q '^set invnumber' "${file}" 2>/dev/null \
-  || echo -e ':nmap <F8> :set invnumber<CR>' >> "${file}"                                                # Toggle line numbers
-
-
 ###### Setup firefox
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}firefox${RESET} ~ GUI web browser"
 timeout 15 firefox >/dev/null 2>&1                # Start and kill. Files needed for first time run
@@ -269,8 +238,7 @@ timeout 5 killall -9 -q -w firefox-esr >/dev/null
 find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'sessionstore.*' -delete
 #
 file=$(find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'prefs.js' -print -quit)
-[ -e "${file}" ] \
-  && cp -n $file{,.bkup}
+[ -e "${file}" ]
 ([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
 
 sed -i 's/^.network.proxy.socks_remote_dns.*/user_pref("network.proxy.socks_remote_dns", true);' "${file}" 2>/dev/null \
@@ -315,7 +283,8 @@ sed -i 's#^WebBrowser=.*#WebBrowser=firefox#' "${file}" 2>/dev/null \
 
 #--- Restore Bookmarks
 file=$(find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'places.sqlite' -print -quit)
-sqlite3 "${file}" ".restore /opt/scripts/misc/places.sqlite.backup"
+cp /opt/scripts/misc/places.sqlite.backup /tmp
+sqlite3 "${file}" ".restore /tmp/places.sqlite.backup"
 
 
 ##### Install WINE
@@ -325,12 +294,14 @@ if [[ "$(uname -m)" == 'x86_64' ]]; then
   (( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}WINE (x64)${RESET}"
   export WINEARCH=win32
   rm -rf ~/.wine
+fi
 #--- Run WINE for the first time
 export WINEARCH=win32
 rm -rf ~/.wine
 [ -e /usr/share/windows-binaries/whoami.exe ] && wine /usr/share/windows-binaries/whoami.exe &>/dev/null
 #--- Setup default file association for .exe
-file=~/.local/share/applications/mimeapps.list; [ -e "${file}" ] && cp -n $file{,.bkup}
+mkdir -p ~/.local/share/applications/
+file=~/.local/share/applications/mimeapps.list; [ -e "${file}" ]
 ([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
 echo -e 'application/x-ms-dos-executable=wine.desktop' >> "${file}"
 
