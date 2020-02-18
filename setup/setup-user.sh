@@ -54,7 +54,7 @@ EOF
 
 # Run ST3 once to get Package Control set up
 subl >/dev/null 2>&1
-sleep 10
+sleep 30
 killall -9 -q -w sublime_text >/dev/null
 
 # Run ST3 once again to get packages installed
@@ -287,58 +287,58 @@ cp /opt/scripts/misc/places.sqlite.backup /tmp
 sqlite3 "${file}" ".restore /tmp/places.sqlite.backup"
 
 
-##### Install WINE
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}WINE${RESET} ~ run Windows programs on *nix"
-#--- Using x64?
-if [[ "$(uname -m)" == 'x86_64' ]]; then
-  (( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}WINE (x64)${RESET}"
-  export WINEARCH=win32
-  rm -rf ~/.wine
-fi
-#--- Run WINE for the first time
-export WINEARCH=win32
-rm -rf ~/.wine
-[ -e /usr/share/windows-binaries/whoami.exe ] && wine /usr/share/windows-binaries/whoami.exe &>/dev/null
-#--- Setup default file association for .exe
-mkdir -p ~/.local/share/applications/
-file=~/.local/share/applications/mimeapps.list; [ -e "${file}" ]
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-echo -e 'application/x-ms-dos-executable=wine.desktop' >> "${file}"
-
-
-##### Install MinGW (Windows) ~ cross compiling suite
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MinGW (Windows)${RESET} ~ cross compiling suite"
-aria2c https://jaist.dl.sourceforge.net/project/mingw/Installer/mingw-get/mingw-get-0.6.2-beta-20131004-1/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip -d /tmp
-mv /tmp/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip /tmp/mingw-get.zip \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading mingw-get.zip" 1>&2       #***!!! hardcoded path!
-mkdir -p ~/.wine/drive_c/MinGW/bin/
-unzip -q -o -d ~/.wine/drive_c/MinGW/ /tmp/mingw-get.zip
-pushd ~/.wine/drive_c/MinGW/ >/dev/null
-for FILE in mingw32-base mingw32-gcc-g++ mingw32-gcc-objc; do   #msys-base
-  wine ./bin/mingw-get.exe install "${FILE}" 2>&1 | grep -v 'If something goes wrong, please rerun with\|for more detailed debugging output'
-done
-popd >/dev/null
-#--- Add to windows path
-grep -q '^"PATH"=.*C:\\\\MinGW\\\\bin' ~/.wine/system.reg \
-  || sed -i '/^"PATH"=/ s_"$_;C:\\\\MinGW\\\\bin"_' ~/.wine/system.reg
-
-
-##### Install Python (Windows via WINE)
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Python (Windows)${RESET}"
-echo -n '[1/2]'; aria2c https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi -d /tmp \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading python.msi" 1>&2       #***!!! hardcoded path!
-mv /tmp/python-2.7.9.msi /tmp/python.msi
-echo -n '[2/2]'; aria2c http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe/download -d /tmp \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading pywin32.exe" 1>&2      #***!!! hardcoded path!
-mv  /tmp/pywin32-219.win32-py2.7.exe /tmp/pywin32.exe
-wine msiexec /i /tmp/python.msi /qb 2>&1 | grep -v 'If something goes wrong, please rerun with\|for more detailed debugging output'
-pushd /tmp/ >/dev/null
-rm -rf "PLATLIB/" "SCRIPTS/"
-unzip -q -o /tmp/pywin32.exe
-cp -rf PLATLIB/* ~/.wine/drive_c/Python27/Lib/site-packages/
-cp -rf SCRIPTS/* ~/.wine/drive_c/Python27/Scripts/
-rm -rf "PLATLIB/" "SCRIPTS/"
-popd >/dev/null
+###### Install WINE
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}WINE${RESET} ~ run Windows programs on *nix"
+##--- Using x64?
+#if [[ "$(uname -m)" == 'x86_64' ]]; then
+#  (( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}WINE (x64)${RESET}"
+#  export WINEARCH=win32
+#  rm -rf ~/.wine
+#fi
+##--- Run WINE for the first time
+#export WINEARCH=win32
+#rm -rf ~/.wine
+#[ -e /usr/share/windows-binaries/whoami.exe ] && wine /usr/share/windows-binaries/whoami.exe &>/dev/null
+##--- Setup default file association for .exe
+#mkdir -p ~/.local/share/applications/
+#file=~/.local/share/applications/mimeapps.list; [ -e "${file}" ]
+#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+#echo -e 'application/x-ms-dos-executable=wine.desktop' >> "${file}"
+#
+#
+###### Install MinGW (Windows) ~ cross compiling suite
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MinGW (Windows)${RESET} ~ cross compiling suite"
+#aria2c https://jaist.dl.sourceforge.net/project/mingw/Installer/mingw-get/mingw-get-0.6.2-beta-20131004-1/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip -#d /tmp
+#mv /tmp/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip /tmp/mingw-get.zip \
+#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading mingw-get.zip" 1>&2       #***!!! hardcoded path!
+#mkdir -p ~/.wine/drive_c/MinGW/bin/
+#unzip -q -o -d ~/.wine/drive_c/MinGW/ /tmp/mingw-get.zip
+#pushd ~/.wine/drive_c/MinGW/ >/dev/null
+#for FILE in mingw32-base mingw32-gcc-g++ mingw32-gcc-objc; do   #msys-base
+#  wine ./bin/mingw-get.exe install "${FILE}" 2>&1 | grep -v 'If something goes wrong, please rerun with\|for more detailed debugging output'
+#done
+#popd >/dev/null
+##--- Add to windows path
+#grep -q '^"PATH"=.*C:\\\\MinGW\\\\bin' ~/.wine/system.reg \
+#  || sed -i '/^"PATH"=/ s_"$_;C:\\\\MinGW\\\\bin"_' ~/.wine/system.reg
+#
+#
+###### Install Python (Windows via WINE)
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Python (Windows)${RESET}"
+#echo -n '[1/2]'; aria2c https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi -d /tmp \
+#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading python.msi" 1>&2       #***!!! hardcoded path!
+#mv /tmp/python-2.7.9.msi /tmp/python.msi
+#echo -n '[2/2]'; aria2c http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe/download -d /tmp \
+#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading pywin32.exe" 1>&2      #***!!! hardcoded path!
+#mv  /tmp/pywin32-219.win32-py2.7.exe /tmp/pywin32.exe
+#wine msiexec /i /tmp/python.msi /qb 2>&1 | grep -v 'If something goes wrong, please rerun with\|for more detailed debugging output'
+#pushd /tmp/ >/dev/null
+#rm -rf "PLATLIB/" "SCRIPTS/"
+#unzip -q -o /tmp/pywin32.exe
+#cp -rf PLATLIB/* ~/.wine/drive_c/Python27/Lib/site-packages/
+#cp -rf SCRIPTS/* ~/.wine/drive_c/Python27/Scripts/
+#rm -rf "PLATLIB/" "SCRIPTS/"
+#popd >/dev/null
 
 
 ##### Setup SSH
