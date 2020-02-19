@@ -183,14 +183,6 @@ if [[ $? -ne 0 ]]; then
 fi
 
 
-##### Set audio level
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Setting ${GREEN}audio${RESET} levels"
-systemctl --user enable pulseaudio
-systemctl --user start pulseaudio
-pactl set-sink-mute 0 0
-pactl set-sink-volume 0 25%
-
-
 ##### Configure GRUB
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}GRUB${RESET} ~ boot manager"
 grubTimeout=5
@@ -495,9 +487,7 @@ apt -y -qq install aircrack-ng curl \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 #--- Setup hardware database
 mkdir -p /etc/aircrack-ng/
-#(timeout 600 airodump-ng-oui-update 2>/dev/null) \
-#  || timeout 600 curl --progress -k -L -f "http://standards.ieee.org/develop/regauth/oui/oui.txt" > /etc/aircrack-ng/oui.txt
-aria2c https://gitlab.com/wireshark/wireshark/raw/master/manuf -d /etc/aircrack-ng/ -o oui.txt
+aria2c https://gitlab.com/wireshark/wireshark/raw/master/manuf -d /etc/aircrack-ng -o oui.txt
 [ -e /etc/aircrack-ng/oui.txt ] \
   && (\grep "(hex)" /etc/aircrack-ng/oui.txt | sed 's/^[ \t]*//g;s/[ \t]*$//g' > /etc/aircrack-ng/airodump-ng-oui.txt)
 [[ ! -f /etc/aircrack-ng/airodump-ng-oui.txt ]] \

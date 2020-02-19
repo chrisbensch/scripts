@@ -249,7 +249,7 @@ source "${file}" || source ~/.zshrc
 timeout 15 firefox >/dev/null 2>&1                # Start and kill. Files needed for first time run
 timeout 5 killall -9 -q -w firefox-esr >/dev/null
 #--- Wipe session (due to force close)
-find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'sessionstore.*' -delete
+find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'sessionstore.*' -delete >/dev/null
 #
 file=$(find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'prefs.js' -print -quit)
 [ -e "${file}" ]
