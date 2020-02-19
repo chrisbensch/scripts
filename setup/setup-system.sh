@@ -380,6 +380,9 @@ file=$(find /etc/postgresql/*/main/ -maxdepth 1 -type f -name postgresql.conf -p
 sed -i 's/port = .* #/port = 5432 /' "${file}"
 #--- Fix permissions - 'could not translate host name "localhost", service "5432" to address: Name or service not known'
 chmod 0644 /etc/hosts
+#--- Fix 'bundler' issues - 'could not locate gemfile'
+cd /usr/share/metasploit-framework/
+gem install bundler:1.17.3
 #--- Start services
 systemctl stop postgresql
 systemctl start postgresql
