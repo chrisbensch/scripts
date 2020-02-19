@@ -369,10 +369,8 @@ timeout 5 killall -9 -q -w firefox-esr >/dev/null
 find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'sessionstore.*' -delete
 
 
-##### Install metasploit ~ http://docs.kali.org/general-use/starting-metasploit-framework-in-kali
+##### Configure metasploit ~ http://docs.kali.org/general-use/starting-metasploit-framework-in-kali
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}metasploit${RESET} ~ exploit framework"
-apt -y -qq install --reinstall metasploit-framework \
-    || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 mkdir -p ~/.msf5/modules/{auxiliary,exploits,payloads,post}/
 #--- Fix any port issues
 file=$(find /etc/postgresql/*/main/ -maxdepth 1 -type f -name postgresql.conf -print -quit);
