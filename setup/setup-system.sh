@@ -33,46 +33,6 @@ STAGE=0                                                       # Where are we up 
 TOTAL=$(grep '(${STAGE}/${TOTAL})' $0 | wc -l);(( TOTAL-- ))  # How many things have we got todo
 
 
-#-Arguments------------------------------------------------------------#
-
-
-##### Read command line arguments
-while [[ "${#}" -gt 0 && ."${1}" == .-* ]]; do
-  opt="${1}";
-  shift;
-  case "$(echo ${opt} | tr '[:upper:]' '[:lower:]')" in
-    -|-- ) break 2;;
-
-    -osx|--osx )
-      keyboardApple=true;;
-    -apple|--apple )
-      keyboardApple=true;;
-
-    -dns|--dns )
-      hardenDNS=true;;
-
-    -openvas|--openvas )
-      openVAS=true;;
-
-    -burp|--burp )
-      burpFree=true;;
-
-    -keyboard|--keyboard )
-      keyboardLayout="${1}"; shift;;
-    -keyboard=*|--keyboard=* )
-      keyboardLayout="${opt#*=}";;
-
-    -timezone|--timezone )
-      timezone="${1}"; shift;;
-    -timezone=*|--timezone=* )
-      timezone="${opt#*=}";;
-
-    *) echo -e ' '${RED}'[!]'${RESET}" Unknown option: ${RED}${x}${RESET}" 1>&2 \
-      && exit 1;;
-   esac
-done
-
-
 #-Start----------------------------------------------------------------#
 
 #--- Update
@@ -606,22 +566,6 @@ mkdir -p /usr/local/bin/
 ln -sf /usr/bin/proxychains4 /usr/local/bin/proxychains-ng
 
 
-##### Install WINE
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WINE${RESET} ~ run Windows programs on *nix"
-apt -y -qq install wine wine64 \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#--- Using x64?
-if [[ "$(uname -m)" == 'x86_64' ]]; then
-  (( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}WINE (x64)${RESET}"
-  export WINEARCH=win32
-  rm -rf ~/.wine
-  dpkg --add-architecture i386
-  apt update
-  apt -y -qq install wine32 \
-    || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-fi
-
-
 ##### Install veil framework
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}veil-evasion framework${RESET} ~ bypassing anti-virus"
 apt -y -qq install veil-evasion \
@@ -672,14 +616,6 @@ apt -y -qq install bless \
 apt -y -qq install python-pip \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 sudo pip install crackmapexec
-
-
-###### Install CrackMapExec 4.x
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec 4.x${RESET} ~ Swiss army knife for Windows #environments"
-#git clone --recursive https://github.com/byt3bl33d3r/CrackMapExec /opt/crackmapexec4-git \
-#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-#cd /opt/crackmapexec4-git && pip3 install -r requirements.txt
-#pipenv run python setup.py install
 
 
 ##### Install Empire
