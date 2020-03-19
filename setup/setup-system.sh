@@ -193,6 +193,34 @@ sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="vga=0x0318"
 update-grub
 
 
+##### Configure PCManFM
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}PCManFM${RESET} - GUI file system navigation"
+#--- Settings
+mkdir -p ~/.config/gtk-3.0/
+#--- Bookmarks
+file=~/.config/gtk-3.0/bookmarks; [ -e "${file}" ] && cp -n $file{,.bkup}
+([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+grep -q '^file://~/Downloads ' "${file}" 2>/dev/null \
+  || echo 'file://~/Downloads Downloads' >> "${file}"
+(dmidecode | grep -iq vmware) \
+  && (mkdir -p /mnt/hgfs/ 2>/dev/null; grep -q '^file:///mnt/hgfs ' "${file}" 2>/dev/null \
+    || echo 'file:///mnt/hgfs VMShare' >> "${file}")
+grep -q '^file:///tmp ' "${file}" 2>/dev/null \
+  || echo 'file:///tmp /tmp' >> "${file}"
+grep -q '^file:///usr/share ' "${file}" 2>/dev/null \
+  || echo 'file:///usr/share Kali Tools' >> "${file}"
+grep -q '^file:///opt ' "${file}" 2>/dev/null \
+  || echo 'file:///opt /opt' >> "${file}"
+grep -q '^file:///var/ftp ' "${file}" 2>/dev/null \
+  || echo 'file:///var/ftp ftp' >> "${file}"
+grep -q '^file:///var/samba ' "${file}" 2>/dev/null \
+  || echo 'file:///var/samba Samba' >> "${file}"
+grep -q '^file:///var/tftp ' "${file}" 2>/dev/null \
+  || echo 'file:///var/tftp tftp >> "${file}"
+grep -q '^file:///var/www/html ' "${file}" 2>/dev/null \
+  || echo 'file:///var/www/html www' >> "${file}"
+
+
 #### Install Sublime Text
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Sublime Text${RESET} ~ Awesome Editor"
 wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
@@ -817,15 +845,6 @@ apt -y -qq install winetricks \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install Vanquish
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Vanquish${RESET} ~ automated enumeration orchestrator"
-git clone -q https://github.com/frizb/Vanquish.git /opt/vanquish-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-#--- Vanquish install
-cd /opt/vanquish-git/
-python Vanquish2.py -install
-
-
 ##### Install Powerless
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Powerless${RESET} ~ Windows PrivEsc Checker"Powerless
 git clone https://github.com/M4ximuss/Powerless.git /opt/powerless-git/ \
@@ -871,6 +890,12 @@ update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
 ##### Install PEASS - Privilege Escalation Awesome Scripts SUITE (with colors) https://book.hacktricks.xyz
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PEASS${RESET} ~ Privilege Escalation Awesome Scripts SUITE"
 git clone https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite.git /opt/peass-git \
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+
+
+##### Install AutoRecon - AutoRecon is a multi-threaded network reconnaissance tool which performs automated enumeration of services. 
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}AutoRecon${RESET} ~ Multi-threaded Recond Tool"
+git clone https://github.com/Tib3rius/AutoRecon.git /opt/autorecon-git \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
