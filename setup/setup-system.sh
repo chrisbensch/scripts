@@ -937,6 +937,16 @@ git clone https://github.com/carlospolop/privilege-escalation-awesome-scripts-su
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}AutoRecon${RESET} ~ Multi-threaded Recond Tool"
 git clone https://github.com/Tib3rius/AutoRecon.git /opt/autorecon-git \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+cd /opt/autorecon-git
+pip3 install -r requirements.txt
+
+
+##### Install evil-winrm - WinRM shell
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}evil-winrm${RESET} ~ The ultimate WinRM shell for hacking/pentesting "
+git clone https://github.com/Hackplayers/evil-winrm.git /opt/evil-winrm-git \
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+cd /opt/evil-winrm-git
+gem install winrm winrm-fs stringio
 
 
 ################################################################################
