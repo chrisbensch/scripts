@@ -274,7 +274,16 @@ fc-cache -rv
 #Configuring Konsole to use new fonts
 file=~/.local/share/konsole/Kali-Dark.profile
 cat <<EOF > "${file}"
- Font=MesloLGS NF,12,-1,5,50,0,0,0,0,0
+[Appearance]
+ColorScheme=Kali-Dark
+
+[General]
+Name=Kali-Dark
+Parent=FALLBACK/
+
+[Scrolling]
+HistoryMode=2
+
 EOF
 #Configuring PowerLevel10k - cheating
 cp ./res/p10k.zsh ~/.p10k.zsh
