@@ -244,6 +244,48 @@ sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="vga=0x0318"
 update-grub
 
 
+##### Install zsh
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}zsh${RESET} ~ zsh shell"
+apt -y -qq install zsh \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#Installing zsh plugins
+git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
+#Configuring zsh - cheating
+cp ./res/zshrc ~/.zshrc
+
+
+##### Install oh-my-zsh
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}oh-my-zsh${RESET} ~ zsh customization"
+wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+chsh -s "$(which zsh)"
+
+
+##### Install PowerLevel10k
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PowerLevel10k${RESET} ~ zsh customization"
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k \
+  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
+#Installing PowerLevel10k fonts
+cd /usr/local/share/fonts || return
+wget "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Regular.ttf"
+wget "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold.ttf"
+wget "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Italic.ttf"
+wget "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold Italic.ttf"
+fc-cache -rv
+#Configuring Konsole to use new fonts
+file=~/.local/share/konsole/Kali-Dark.profile
+cat <<EOF > "${file}"
+ Font=MesloLGS NF,12,-1,5,50,0,0,0,0,0
+EOF
+#Configuring PowerLevel10k - cheating
+cp ./res/p10k.zsh ~/.p10k.zsh
+
+
+#
+
+
+
 ##### Install (GNOME) Terminator
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing (GNOME) ${GREEN}Terminator${RESET} ~ multiple terminals in a single window"
 apt -y -qq install terminator \
