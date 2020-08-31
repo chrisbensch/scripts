@@ -248,18 +248,16 @@ update-grub
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}zsh${RESET} ~ zsh shell"
 apt -y -qq install zsh \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#Installing zsh plugins
-git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
-#Configuring zsh - cheating
-cp ./res/zshrc ~/.zshrc
+chsh -s "$(which zsh)"
 
 
 ##### Install oh-my-zsh
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}oh-my-zsh${RESET} ~ zsh customization"
 wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-chsh -s "$(which zsh)"
+#Installing zsh plugins
+git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting
 
 
 ##### Install PowerLevel10k
@@ -280,6 +278,9 @@ cat <<EOF > "${file}"
 EOF
 #Configuring PowerLevel10k - cheating
 cp ./res/p10k.zsh ~/.p10k.zsh
+#Configuring zsh - cheating
+cp ./res/zshrc ~/.zshrc
+
 
 
 #
