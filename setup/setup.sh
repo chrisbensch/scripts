@@ -12,7 +12,7 @@
 
 
 ##### Location information
-timezone="Asia/Tokyo"       # Set timezone location                                     [ --timezone Europe/London ]
+timezone="US/Pacific"       # Set timezone location                                     [ --timezone Europe/London ]
 
 ##### Optional steps
 burpFree=true              # Disable configuring Burp Suite (for Burp Pro users...)    [ --burp ]
@@ -244,309 +244,6 @@ sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="vga=0x0318"
 update-grub
 
 
-#### Install Sublime Text
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Sublime Text${RESET} ~ Awesome Editor"
-wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
-apt -y -qq install apt-transport-https
-echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
-apt -y -qq update
-apt -y -qq install sublime-text
-
-# Run once to do basic setup
-subl >/dev/null 2>&1                # Start and kill. Files/folders needed for first time run
-sleep 5
-killall -9 -q -w sublime_text >/dev/null
-
-# Install Package Control
-mkdir -p "~/.config/sublime-text-3/Installed Packages/"
-cd "~/.config/sublime-text-3/Installed Packages/"
-curl --progress-bar -k -L -f "https://packagecontrol.io/Package%20Control.sublime-package" --output "~/.config/sublime-text-3/Installed Packages/Package Control.sublime-package" 2>/dev/null
-
-# Configure Install Packages
-mkdir -p ~/.config/sublime-text-3/Packages/User/
-file="~/.config/sublime-text-3/Packages/User/Package Control.sublime-settings"
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-{
-  "installed_packages":
-  [
-    "GitGutter",
-    "Package Control",
-    "PowerShell",
-    "SideBarEnhancements",
-    "Theme - Cobalt2",
-    "WordCount"
-  ]
-}
-EOF
-
-# Run ST3 once to get Package Control set up
-subl >/dev/null 2>&1
-sleep 10
-killall -9 -q -w sublime_text >/dev/null
-
-# Run ST3 once again to get packages installed
-subl >/dev/null 2>&1
-sleep 60
-killall -9 -q -w sublime_text >/dev/null
-
-# Configure special settings
-mkdir -p ~/.config/sublime-text-3/Packages/User/
-file=~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings; [ -e "${file}" ] && cp -n $file{,.bkup}
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-{
-  "auto_complete": false,
-  "bold_folder_labels": true,
-  "caret_extra_bottom": 2,
-  "caret_extra_top": 2,
-  "caret_extra_width": 8,
-  "caret_style": "phase",
-  "color_scheme": "Packages/Theme - Cobalt2/cobalt2.tmTheme",
-  "font_size": 12,
-  "highlight_line": true,
-  "highlight_modified_tabs": true,
-  "hot_exit": false,
-  "ignored_packages":
-  [
-    "Vintage"
-  ],
-  "indent_guide_options":
-  [
-    "draw_normal",
-    "draw_active"
-  ],
-  "line_padding_bottom": 1,
-  "line_padding_top": 1,
-  "remember_open_files": false,
-  "sidebar_font_big": true,
-  "theme": "Cobalt2.sublime-theme",
-  "theme_bar": true,
-  "theme_sidebar_disclosure": true,
-  "theme_sidebar_indent_sm": true,
-  "theme_statusbar_colored": true,
-  "theme_tab_highlight_text_only": true,
-  "wide_caret": true,
-  "word_wrap": true
-}
-EOF
-
-
-##### Configure bash - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}bash${RESET} ~ CLI shell"
-file=/etc/bash.bashrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.bashrc
-#grep -q "cdspell" "${file}" \
-#  || echo "shopt -sq cdspell" >> "${file}"             # Spell check 'cd' commands
-#grep -q "autocd" "${file}" \
-# || echo "shopt -s autocd" >> "${file}"                # So you don't have to 'cd' before a folder
-##grep -q "CDPATH" "${file}" \
-## || echo "CDPATH=/etc:/usr/share/:/opt" >> "${file}"  # Always CD into these folders
-grep -q "checkwinsize" "${file}" \
- || echo "shopt -sq checkwinsize" >> "${file}"         # Wrap lines correctly after resizing
-#grep -q "nocaseglob" "${file}" \
-# || echo "shopt -sq nocaseglob" >> "${file}"           # Case insensitive pathname expansion
-grep -q "HISTSIZE" "${file}" \
- || echo "HISTSIZE=10000" >> "${file}"                 # Bash history (memory scroll back)
-grep -q "HISTFILESIZE" "${file}" \
- || echo "HISTFILESIZE=10000" >> "${file}"             # Bash history (file .bash_history)
-#--- Apply new configs
-source "${file}" || source ~/.zshrc
-
-##### Install bash colour - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}bash colour${RESET} ~ colours shell output"
-file=/etc/bash.bashrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.bashrc
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-sed -i 's/.*force_color_prompt=.*/force_color_prompt=yes/' "${file}"
-grep -q '^force_color_prompt' "${file}" 2>/dev/null \
-  || echo 'force_color_prompt=yes' >> "${file}"
-sed -i 's#PS1='"'"'.*'"'"'#PS1='"'"'${debian_chroot:+($debian_chroot)}\\[\\033\[01;31m\\]\\u@\\h\\\[\\033\[00m\\]:\\[\\033\[01;34m\\]\\w\\[\\033\[00m\\]\\$ '"'"'#' "${file}"
-grep -q "^export LS_OPTIONS='--color=auto'" "${file}" 2>/dev/null \
-  || echo "export LS_OPTIONS='--color=auto'" >> "${file}"
-grep -q '^eval "$(dircolors)"' "${file}" 2>/dev/null \
-  || echo 'eval "$(dircolors)"' >> "${file}"
-grep -q "^alias ls='ls $LS_OPTIONS'" "${file}" 2>/dev/null \
-  || echo "alias ls='ls $LS_OPTIONS'" >> "${file}"
-grep -q "^alias ll='ls $LS_OPTIONS -l'" "${file}" 2>/dev/null \
-  || echo "alias ll='ls $LS_OPTIONS -l'" >> "${file}"
-grep -q "^alias l='ls $LS_OPTIONS -lA'" "${file}" 2>/dev/null \
-  || echo "alias l='ls $LS_OPTIONS -lA'" >> "${file}"
-#--- All other users that are made afterwards
-file=/etc/skel/.bashrc   #; [ -e "${file}" ] && cp -n $file{,.bkup}
-sed -i 's/.*force_color_prompt=.*/force_color_prompt=yes/' "${file}"
-#--- Apply new configs
-source "${file}" || source ~/.zshrc
-
-
-###### Install grc
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}grc${RESET} ~ colours #shell output"
-apt -y -qq install grc \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#--- Setup aliases
-file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^## grc diff alias' "${file}" 2>/dev/null \
-  || echo -e "## grc diff alias\nalias diff='$(which grc) $(which diff)'\n" >> "${file}"
-grep -q '^## grc dig alias' "${file}" 2>/dev/null \
-  || echo -e "## grc dig alias\nalias dig='$(which grc) $(which dig)'\n" >> "${file}"
-grep -q '^## grc gcc alias' "${file}" 2>/dev/null \
-  || echo -e "## grc gcc alias\nalias gcc='$(which grc) $(which gcc)'\n" >> "${file}"
-grep -q '^## grc ifconfig alias' "${file}" 2>/dev/null \
-  || echo -e "## grc ifconfig alias\nalias ifconfig='$(which grc) $(which ifconfig)'\n" >> "${file}"
-grep -q '^## grc mount alias' "${file}" 2>/dev/null \
-  || echo -e "## grc mount alias\nalias mount='$(which grc) $(which mount)'\n" >> "${file}"
-grep -q '^## grc netstat alias' "${file}" 2>/dev/null \
-  || echo -e "## grc netstat alias\nalias netstat='$(which grc) $(which netstat)'\n" >> "${file}"
-grep -q '^## grc ping alias' "${file}" 2>/dev/null \
-  || echo -e "## grc ping alias\nalias ping='$(which grc) $(which ping)'\n" >> "${file}"
-grep -q '^## grc ps alias' "${file}" 2>/dev/null \
-  || echo -e "## grc ps alias\nalias ps='$(which grc) $(which ps)'\n" >> "${file}"
-grep -q '^## grc tail alias' "${file}" 2>/dev/null \
-  || echo -e "## grc tail alias\nalias tail='$(which grc) $(which tail)'\n" >> "${file}"
-grep -q '^## grc traceroute alias' "${file}" 2>/dev/null \
-  || echo -e "## grc traceroute alias\nalias traceroute='$(which grc) $(which traceroute)'\n" >> "${file}"
-grep -q '^## grc wdiff alias' "${file}" 2>/dev/null \
-  || echo -e "## grc wdiff alias\nalias wdiff='$(which grc) $(which wdiff)'\n" >> "${file}"
-#configure  #esperanto  #ldap  #e  #cvs  #log  #mtr  #ls  #irclog  #mount2  #mount
-#--- Apply new aliases
-#source "${file}" || source ~/.zshrc
-
-
-##### Install bash completion - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}bash completion${RESET} ~ tab complete CLI commands"
-file=/etc/bash.bashrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.bashrc
-sed -i '/# enable bash completion in/,+7{/enable bash completion/!s/^#//}' "${file}"
-#--- Apply new configs
-source "${file}" || source ~/.zshrc
-
-
-##### Configure aliases - root user
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}aliases${RESET} ~ CLI shortcuts"
-#--- Enable defaults - root user
-for FILE in /etc/bash.bashrc ~/.bashrc ~/.bash_aliases; do    #/etc/profile /etc/bashrc /etc/bash_aliases /etc/bash.bash_aliases
-  [[ ! -f "${FILE}" ]] \
-    && continue
-  cp -n $FILE{,.bkup}
-  sed -i 's/#alias/alias/g' "${FILE}"
-done
-#--- General system ones
-file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^## grep aliases' "${file}" 2>/dev/null \
-  || echo -e '## grep aliases\nalias grep="grep --color=always"\nalias ngrep="grep -n"\n' >> "${file}"
-grep -q '^alias egrep=' "${file}" 2>/dev/null \
-  || echo -e 'alias egrep="egrep --color=auto"\n' >> "${file}"
-grep -q '^alias fgrep=' "${file}" 2>/dev/null \
-  || echo -e 'alias fgrep="fgrep --color=auto"\n' >> "${file}"
-#--- Add in ours (OS programs)
-grep -q '^alias tmux' "${file}" 2>/dev/null \
-  || echo -e '## tmux\nalias tmux="tmux attach || tmux new"\n' >> "${file}"    #alias tmux="tmux attach -t $HOST || tmux new -s $HOST"
-grep -q '^alias axel' "${file}" 2>/dev/null \
-  || echo -e '## axel\nalias axel="axel -a"\n' >> "${file}"
-grep -q '^alias screen' "${file}" 2>/dev/null \
-  || echo -e '## screen\nalias screen="screen -xRR"\n' >> "${file}"
-#--- Add in ours (shortcuts)
-grep -q '^## Checksums' "${file}" 2>/dev/null \
-  || echo -e '## Checksums\nalias sha1="openssl sha1"\nalias md5="openssl md5"\n' >> "${file}"
-grep -q '^## Force create folders' "${file}" 2>/dev/null \
-  || echo -e '## Force create folders\nalias mkdir="/bin/mkdir -pv"\n' >> "${file}"
-#grep -q '^## Mount' "${file}" 2>/dev/null \
-#  || echo -e '## Mount\nalias mount="mount | column -t"\n' >> "${file}"
-grep -q '^## List open ports' "${file}" 2>/dev/null \
-  || echo -e '## List open ports\nalias ports="netstat -tulanp"\n' >> "${file}"
-grep -q '^## Get header' "${file}" 2>/dev/null \
-  || echo -e '## Get header\nalias header="curl -I"\n' >> "${file}"
-grep -q '^## Get external IP address' "${file}" 2>/dev/null \
-  || echo -e '## Get external IP address\nalias ipx="curl -s http://ipinfo.io/ip"\n' >> "${file}"
-grep -q '^## DNS - External IP #1' "${file}" 2>/dev/null \
-  || echo -e '## DNS - External IP #1\nalias dns1="dig +short @resolver1.opendns.com myip.opendns.com"\n' >> "${file}"
-grep -q '^## DNS - External IP #2' "${file}" 2>/dev/null \
-  || echo -e '## DNS - External IP #2\nalias dns2="dig +short @208.67.222.222 myip.opendns.com"\n' >> "${file}"
-grep -q '^## DNS - Check' "${file}" 2>/dev/null \
-  || echo -e '### DNS - Check ("#.abc" is Okay)\nalias dns3="dig +short @208.67.220.220 which.opendns.com txt"\n' >> "${file}"
-grep -q '^## Directory navigation aliases' "${file}" 2>/dev/null \
-  || echo -e '## Directory navigation aliases\nalias ..="cd .."\nalias ...="cd ../.."\nalias ....="cd ../../.."\nalias .....="cd ../../../.."\n' >> "${file}"
-grep -q '^## Extract file' "${file}" 2>/dev/null \
-  || cat <<EOF >> "${file}" \
-    || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-
-## Extract file, example. "ex package.tar.bz2"
-ex() {
-  if [[ -f \$1 ]]; then
-    case \$1 in
-      *.tar.bz2) tar xjf \$1 ;;
-      *.tar.gz)  tar xzf \$1 ;;
-      *.bz2)     bunzip2 \$1 ;;
-      *.rar)     rar x \$1 ;;
-      *.gz)      gunzip \$1  ;;
-      *.tar)     tar xf \$1  ;;
-      *.tbz2)    tar xjf \$1 ;;
-      *.tgz)     tar xzf \$1 ;;
-      *.zip)     unzip \$1 ;;
-      *.Z)       uncompress \$1 ;;
-      *.7z)      7z x \$1 ;;
-      *)         echo \$1 cannot be extracted ;;
-    esac
-  else
-    echo \$1 is not a valid file
-  fi
-}
-EOF
-grep -q '^## strings' "${file}" 2>/dev/null \
-  || echo -e '## strings\nalias strings="strings -a"\n' >> "${file}"
-grep -q '^## history' "${file}" 2>/dev/null \
-  || echo -e '## history\nalias hg="history | grep"\n' >> "${file}"
-grep -q '^## Network Services' "${file}" 2>/dev/null \
-  || echo -e '### Network Services\nalias listen="netstat -antp | grep LISTEN"\n' >> "${file}"
-grep -q '^## HDD size' "${file}" 2>/dev/null \
-  || echo -e '### HDD size\nalias hogs="for i in G M K; do du -ah | grep [0-9]$i | sort -nr -k 1; done | head -n 11"\n' >> "${file}"
-grep -q '^## Listing' "${file}" 2>/dev/null \
-  || echo -e '### Listing\nalias ll="ls -l --block-size=1 --color=auto"\n' >> "${file}"
-#--- Add in tools
-#grep -q '^## nmap' "${file}" 2>/dev/null \
-#  || echo -e '## nmap\nalias nmap="nmap --reason --open --stats-every 3m --max-retries 1 --max-scan-delay 20 #--defeat-rst-ratelimit"\n' >> "${file}"
-grep -q '^## aircrack-ng' "${file}" 2>/dev/null \
-  || echo -e '## aircrack-ng\nalias aircrack-ng="aircrack-ng -z"\n' >> "${file}"
-grep -q '^## airodump-ng' "${file}" 2>/dev/null \
-  || echo -e '## airodump-ng \nalias airodump-ng="airodump-ng --manufacturer --wps --uptime"\n' >> "${file}"
-grep -q '^## metasploit' "${file}" 2>/dev/null \
-  || (echo -e '## metasploit\nalias msfc="systemctl start postgresql; msfdb start; msfconsole -q \"\$@\""' >> "${file}" \
-    && echo -e 'alias msfconsole="systemctl start postgresql; msfdb start; msfconsole \"\$@\""\n' >> "${file}" )
-[ "${openVAS}" != "false" ] \
-  && (grep -q '^## openvas' "${file}" 2>/dev/null \
-    || echo -e '## openvas\nalias openvas="openvas-stop; openvas-start; sleep 3s; xdg-open https://127.0.0.1:9392/ >/dev/null 2>&1"\n' >> "${file}")
-grep -q '^## mana-toolkit' "${file}" 2>/dev/null \
-  || (echo -e '## mana-toolkit\nalias mana-toolkit-start="a2ensite 000-mana-toolkit;a2dissite 000-default; systemctl restart apache2"' >> "${file}" \
-    && echo -e 'alias mana-toolkit-stop="a2dissite 000-mana-toolkit; a2ensite 000-default; systemctl restart apache2"\n' >> "${file}" )
-grep -q '^## ssh' "${file}" 2>/dev/null \
-  || echo -e '## ssh\nalias ssh-start="systemctl restart ssh"\nalias ssh-stop="systemctl stop ssh"\n' >> "${file}"
-grep -q '^## samba' "${file}" 2>/dev/null \
-  || echo -e '## samba\nalias smb-start="systemctl restart smbd nmbd"\nalias smb-stop="systemctl stop smbd nmbd"\n' >> "${file}"
-grep -q '^## rdesktop' "${file}" 2>/dev/null \
-  || echo -e '## rdesktop\nalias rdesktop="rdesktop -z -P -g 90% -r disk:local=\"/tmp/\""\n' >> "${file}"
-grep -q '^## python http' "${file}" 2>/dev/null \
-  || echo -e '## python http\nalias http="python2 -m SimpleHTTPServer"\n' >> "${file}"
-#--- Add in folders
-grep -q '^## www' "${file}" 2>/dev/null \
-  || echo -e '## www\nalias wwwroot="cd /var/www/html/"\n#alias www="cd /var/www/html/"\n' >> "${file}"
-grep -q '^## ftp' "${file}" 2>/dev/null \
-  || echo -e '## ftp\nalias ftproot="cd /var/ftp/"\n' >> "${file}"
-grep -q '^## tftp' "${file}" 2>/dev/null \
-  || echo -e '## tftp\nalias tftproot="cd /var/tftp/"\n' >> "${file}"
-grep -q '^## smb' "${file}" 2>/dev/null \
-  || echo -e '## smb\nalias smb="cd /var/samba/"\n#alias smbroot="cd /var/samba/"\n' >> "${file}"
-(dmidecode | grep -iq vmware) \
-  && (grep -q '^## vmware' "${file}" 2>/dev/null \
-    || echo -e '## vmware\nalias vmroot="cd /mnt/hgfs/"\n' >> "${file}")
-grep -q '^## edb' "${file}" 2>/dev/null \
-  || echo -e '## edb\nalias edb="cd /usr/share/exploitdb/platforms/"\nalias edbroot="cd /usr/share/exploitdb/platforms/"\n' >> "${file}"
-grep -q '^## wordlist' "${file}" 2>/dev/null \
-  || echo -e '## wordlist\nalias wordlists="cd /usr/share/wordlists/"\n' >> "${file}"
-#--- Apply new aliases
-#source "${file}" || source ~/.zshrc
-#--- Check
-#alias
-
-
 ##### Install (GNOME) Terminator
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing (GNOME) ${GREEN}Terminator${RESET} ~ multiple terminals in a single window"
 apt -y -qq install terminator \
@@ -588,92 +285,6 @@ cat <<EOF > "${file}" \
     show_titlebar = False
 
 EOF
-
-
-##### Install tmux - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}tmux${RESET} ~ multiplex virtual consoles"
-file=~/.tmux.conf; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/tmux.conf
-#--- Configure tmux
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-#-Settings---------------------------------------------------------------------
-## Make it like screen (use CTRL+a)
-#unbind C-b
-#set -g prefix C-a
-
-## Pane switching (SHIFT+ARROWS)
-bind-key -n S-Left select-pane -L
-bind-key -n S-Right select-pane -R
-bind-key -n S-Up select-pane -U
-bind-key -n S-Down select-pane -D
-
-## Windows switching (ALT+ARROWS)
-bind-key -n M-Left  previous-window
-bind-key -n M-Right next-window
-
-## Windows re-ording (SHIFT+ALT+ARROWS)
-bind-key -n M-S-Left swap-window -t -1
-bind-key -n M-S-Right swap-window -t +1
-
-## Activity Monitoring
-setw -g monitor-activity on
-set -g visual-activity on
-
-## Set defaults
-set -g default-terminal screen-256color
-set -g history-limit 5000
-
-## Default windows titles
-set -g set-titles on
-set -g set-titles-string '#(whoami)@#H - #I:#W'
-
-## Last window switch
-bind-key C-a last-window
-
-## Reload settings (CTRL+a -> r)
-unbind r
-bind r source-file /etc/tmux.conf
-
-## Load custom sources
-source ~/.bashrc   #(issues if you use /bin/bash & Debian)
-
-EOF
-[ -e /bin/zsh ] \
-  && echo -e '## Use ZSH as default shell\nset-option -g default-shell /bin/zsh\n' >> "${file}"
-cat <<EOF >> "${file}"
-## Show tmux messages for longer
-set -g display-time 3000
-
-## Status bar is redrawn every minute
-set -g status-interval 60
-
-
-#-Theme------------------------------------------------------------------------
-## Default colours
-set -g status-bg black
-set -g status-fg white
-
-## Left hand side
-set -g status-left-length '34'
-set -g status-left '#[fg=green,bold]#(whoami)#[default]@#[fg=yellow,dim]#H #[fg=green,dim][#[fg=yellow]#(cut -d " " -f 1-3 /proc/loadavg)#[fg=green,dim]]'
-
-## Inactive windows in status bar
-set-window-option -g window-status-format '#[fg=red,dim]#I#[fg=grey,dim]:#[default,dim]#W#[fg=grey,dim]'
-
-## Current or active window in status bar
-#set-window-option -g window-status-current-format '#[bg=white,fg=red]#I#[bg=white,fg=grey]:#[bg=white,fg=black]#W#[fg=dim]#F'
-set-window-option -g window-status-current-format '#[fg=red,bold](#[fg=white,bold]#I#[fg=red,dim]:#[fg=white,bold]#W#[fg=red,bold])'
-
-## Right hand side
-set -g status-right '#[fg=green][#[fg=yellow]%Y-%m-%d #[fg=white]%H:%M#[fg=green]]'
-EOF
-#--- Setup alias
-file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^alias tmux' "${file}" 2>/dev/null \
-  || echo -e '## tmux\nalias tmux="tmux attach || tmux new"\n' >> "${file}"    #alias tmux="tmux attach -t $HOST || tmux new -s $HOST"
-#--- Apply new alias
-source "${file}" || source ~/.zshrc
 
 
 ##### Install vim - all users
@@ -905,79 +516,6 @@ done
 #msfrpcd -U msf -P test -f -S -a 127.0.0.1
 
 
-##### Install OpenVAS
-if [[ "${openVAS}" != "false" ]]; then
-  (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}OpenVAS${RESET} ~ vulnerability scanner"
-  apt -y -qq install openvas \
-    || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-  openvas-setup
-  #--- Bug fix (target credentials creation)
-  mkdir -p /var/lib/openvas/gnupg/
-  #--- Bug fix (keys)
-  curl --progress -k -L -f "http://www.openvas.org/OpenVAS_TI.asc" | gpg --import - \
-    || echo -e ' '${RED}'[!]'${RESET}" Issue downloading OpenVAS_TI.asc" 1>&2
-  #--- Make sure all services are correct
-  openvas-start
-  #--- User control
-  username="root"
-  password="toor"
-  (openvasmd --get-users | grep -q ^admin$) \
-    && echo -n 'admin user: ' \
-    && openvasmd --delete-user=admin
-  (openvasmd --get-users | grep -q "^${username}$") \
-    || (echo -n "${username} user: "; openvasmd --create-user="${username}"; openvasmd --user="${username}" --new-password="${password}" >/dev/null)
-  echo -e " ${YELLOW}[i]${RESET} OpenVAS username: ${username}"
-  echo -e " ${YELLOW}[i]${RESET} OpenVAS password: ${password}   ***${BOLD}CHANGE THIS ASAP${RESET}***"
-  echo -e " ${YELLOW}[i]${RESET} Run: # openvasmd --user=root --new-password='<NEW_PASSWORD>'"
-  sleep 3s
-  openvas-check-setup
-  #--- Remove from start up
-  systemctl disable openvas-manager
-  systemctl disable openvas-scanner
-  systemctl disable greenbone-security-assistant
-  #--- Setup alias
-  file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-  grep -q '^## openvas' "${file}" 2>/dev/null \
-    || echo -e '## openvas\nalias openvas="openvas-stop; openvas-start; sleep 3s; xdg-open https://127.0.0.1:9392/ >/dev/null 2>&1"\n' >> "${file}"
-  source "${file}" || source ~/.zshrc
-else
-  echo -e "\n\n ${YELLOW}[i]${RESET} ${YELLOW}Skipping OpenVAS${RESET} (missing: '$0 ${BOLD}--openvas${RESET}')..." 1>&2
-fi
-
-
-##### Configure python console - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}python console${RESET} ~ tab complete & history support"
-export PYTHONSTARTUP=$HOME/.pythonstartup
-file=/etc/bash.bashrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.bashrc
-grep -q PYTHONSTARTUP "${file}" \
-  || echo 'export PYTHONSTARTUP=$HOME/.pythonstartup' >> "${file}"
-#--- Python start up file
-cat <<EOF > ~/.pythonstartup \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-import readline
-import rlcompleter
-import atexit
-import os
-
-## Tab completion
-readline.parse_and_bind('tab: complete')
-
-## History file
-histfile = os.path.join(os.environ['HOME'], '.pythonhistory')
-try:
-    readline.read_history_file(histfile)
-except IOError:
-    pass
-
-atexit.register(readline.write_history_file, histfile)
-
-## Quit
-del os, histfile, readline, rlcompleter
-EOF
-#--- Apply new configs
-source "${file}" || source ~/.zshrc
-
-
 ##### Install wireshark
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Wireshark${RESET} ~ GUI network protocol analyzer"
 #--- Hide running as root warning
@@ -1018,6 +556,7 @@ apt -y -qq install filezilla \
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}wafw00f${RESET} ~ WAF detector"
 git clone https://github.com/EnableSecurity/wafw00f.git /opt/wafw00f-git \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+
 
 ##### Install aria2c
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}aria2${RESET} ~ lightweight multi-protocol & multi-source command-line download utility"
@@ -1191,7 +730,7 @@ rm -rf "PLATLIB/" "SCRIPTS/"
 popd >/dev/null
 
 
-##### Install veil framework
+##### Install Veil framework
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}veil-evasion framework${RESET} ~ bypassing anti-virus"
 apt -y -qq install veil-evasion \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
@@ -1257,8 +796,15 @@ pipenv run python setup.py install
 
 ##### Install Empire
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Empire${RESET} ~ PowerShell post-exploitation"
-git clone -q -b master https://github.com/PowerShellEmpire/Empire.git /opt/empire-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+apt -y -qq install sudo apt install powershell-empire \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+
+
+##### Install Starkiller
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Starkiller${RESET} ~ Empire Frontend"
+mkdir /opt/starkiller
+wget https://github.com/BC-SECURITY/Starkiller/releases/download/v1.3.2/starkiller-1.3.2.AppImage -O /opt/starkiller/starkiller.AppImage \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install CMSmap
@@ -1328,37 +874,6 @@ chmod +x "${file}"
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}JuicyPotato${RESET} Abuse Golden Privileges"
 git clone -q https://github.com/ohpe/juicy-potato.git /opt/juicy-potato-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-
-
-###### Install apache2 & php
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}apache2${RESET} & ${GREEN}php${RESET} ~ web server"
-#touch /var/www/html/favicon.ico
-#grep -q '<title>Apache2 Debian Default Page: It works</title>' /var/www/html/index.html 2>/dev/null \
-#  && rm -f /var/www/html/index.html \
-#  && echo '<?php echo "Access denied for " . $_SERVER["REMOTE_ADDR"]; ?>' > /var/www/html/index.php \
-#  && echo -e 'User-agent: *n\Disallow: /\n' > /var/www/html/robots.txt
-##--- Setup alias
-#file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-#grep -q '^## www' "${file}" 2>/dev/null \
-#  || echo -e '## www\nalias wwwroot="cd /var/www/html/"\n' >> "${file}"
-##--- Apply new alias
-#source "${file}" || source ~/.zshrc
-
-
-###### Install mariadb
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MySQL${RESET} ~ database"
-#apt -y -qq install mariadb-server \
-#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#echo -e " ${YELLOW}[i]${RESET} MySQL username: root"
-#echo -e " ${YELLOW}[i]${RESET} MySQL password: <blank>   ***${BOLD}CHANGE THIS ASAP${RESET}***"
-#[[ -e ~/.my.cnf ]] \
-#  || cat <<EOF > ~/.my.cnf
-#[client]
-#user=root
-#host=localhost
-#password=
-#EOF
 
 
 ##### Install exiftool
@@ -1467,59 +982,6 @@ grep -q '^## ssh' "${file}" 2>/dev/null \
 source "${file}" || source ~/.zshrc
 
 
-###### Configure file   Note: need to restart xserver for effect
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}file${RESET} (Nautilus/Thunar) ~ GUI file system navigation"
-##--- Settings
-#mkdir -p ~/.config/gtk-2.0/
-#file=~/.config/gtk-2.0/gtkfilechooser.ini; [ -e "${file}" ] && cp -n $file{,.bkup}
-#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-#sed -i 's/^.*ShowHidden.*/ShowHidden=true/' "${file}" 2>/dev/null \
-#  || cat <<EOF > "${file}"
-#[Filechooser Settings]
-#LocationMode=path-bar
-#ShowHidden=true
-#ExpandFolders=false
-#ShowSizeColumn=true
-#GeometryX=66
-#GeometryY=39
-#GeometryWidth=780
-#GeometryHeight=618
-#SortColumn=name
-#SortOrder=ascending
-#EOF
-#dconf write /org/gnome/nautilus/preferences/show-hidden-files true
-##--- Bookmarks
-#file=~/.gtk-bookmarks; [ -e "${file}" ] && cp -n $file{,.bkup}
-#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-#grep -q '^file://~/Downloads ' "${file}" 2>/dev/null \
-#  || echo 'file://~/Downloads Downloads' >> "${file}"
-#(dmidecode | grep -iq vmware) \
-#  && (mkdir -p /mnt/hgfs/ 2>/dev/null; grep -q '^file:///mnt/hgfs ' "${file}" 2>/dev/null \
-#    || echo 'file:///mnt/hgfs VMShare' >> "${file}")
-#grep -q '^file:///tmp ' "${file}" 2>/dev/null \
-#  || echo 'file:///tmp /TMP' >> "${file}"
-#grep -q '^file:///usr/share ' "${file}" 2>/dev/null \
-#  || echo 'file:///usr/share Kali Tools' >> "${file}"
-#grep -q '^file:///opt ' "${file}" 2>/dev/null \
-#  || echo 'file:///opt /opt' >> "${file}"
-#grep -q '^file:///usr/local/src ' "${file}" 2>/dev/null \
-#  || echo 'file:///usr/local/src SRC' >> "${file}"
-#grep -q '^file:///var/ftp ' "${file}" 2>/dev/null \
-#  || echo 'file:///var/ftp FTP' >> "${file}"
-#grep -q '^file:///var/samba ' "${file}" 2>/dev/null \
-#  || echo 'file:///var/samba Samba' >> "${file}"
-#grep -q '^file:///var/tftp ' "${file}" 2>/dev/null \
-#  || echo 'file:///var/tftp TFTP' >> "${file}"
-#grep -q '^file:///var/www/html ' "${file}" 2>/dev/null \
-#  || echo 'file:///var/www/html WWW' >> "${file}"
-##--- Configure file browser - Thunar (need to re-login for effect)
-#mkdir -p ~/.config/Thunar/
-#file=~/.config/Thunar/thunarrc; [ -e "${file}" ] && cp -n $file{,.bkup}
-#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-#sed -i 's/LastShowHidden=.*/LastShowHidden=TRUE/' "${file}" 2>/dev/null \
-#  || echo -e "[Configuration]\nLastShowHidden=TRUE" > "${file}"
-
-
 ##### Install PhantomJS
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}phantomjs${RESET} ~ Full web stack, no browser"
 apt -y -qq install phantomjs \
@@ -1542,12 +1004,6 @@ git clone -q https://github.com/NullArray/RootHelper.git /opt/roothelper-git/ \
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Sn1per${RESET} ~ Automated Pentest Framework"
 git clone -q https://github.com/1N3/Sn1per.git /opt/sn1per-git/ \
   || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
-
-
-###### Install unix-privesc-check
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}unix-privesc-check${RESET} ~ Unix PrivEsc Checker"
-#git clone -q https://github.com/pentestmonkey/unix-privesc-check.git /opt/unix-privesc-check-git \
-#  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
 
 
 ##### Install dirsearch
@@ -1660,7 +1116,7 @@ git clone https://github.com/m0rph-1/revshellgen.git /opt/revshellgen-git \
 
 
 ##### Install SILENTTRINITY
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}RevShellGen${RESET} ~ Reverse Shell Generator"
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}SILENTTRINITY${RESET} ~ Reverse Shell Generator"
 git clone https://github.com/byt3bl33d3r/SILENTTRINITY.git /opt/silenttrinity-git \
   || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
 
