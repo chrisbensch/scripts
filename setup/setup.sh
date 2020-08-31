@@ -848,7 +848,7 @@ pipenv run python setup.py install
 
 ##### Install Empire
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Empire${RESET} ~ PowerShell post-exploitation"
-apt -y -qq install sudo apt install powershell-empire \
+apt -y -qq install powershell-empire \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
@@ -1034,12 +1034,6 @@ grep -q '^## ssh' "${file}" 2>/dev/null \
 source "${file}" || source ~/.zshrc
 
 
-##### Install PhantomJS
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}phantomjs${RESET} ~ Full web stack, no browser"
-apt -y -qq install phantomjs \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install LinEnum
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}LinEnum${RESET} ~ Linux PrivEsc Checker"
 git clone -q https://github.com/rebootuser/LinEnum.git /opt/linenum-git \
@@ -1173,8 +1167,10 @@ git clone https://github.com/byt3bl33d3r/SILENTTRINITY.git /opt/silenttrinity-gi
   || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
 
 
-##### Configure Java default jre
+##### Install & Configure Java default jre
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Java 8${RESET} ~ default JavaVM"
+apt -y -qq install openjdk-8-jdk \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
   || echo -e ' '${RED}'[!] Issue with configuration'${RESET} 1>&2
 
