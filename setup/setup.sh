@@ -267,11 +267,11 @@ chsh -s "$(which zsh)"
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k \
   || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
 #Installing PowerLevel10k fonts
-cd /usr/local/share/fonts || return
-wget "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Regular.ttf"
-wget "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold.ttf"
-wget "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Italic.ttf"
-wget "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold Italic.ttf"
+#cd /usr/local/share/fonts || return
+wget -P /usr/local/share/fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Regular.ttf"
+wget -P /usr/local/share/fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold.ttf"
+wget -P /usr/local/share/fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Italic.ttf"
+wget -P /usr/local/share/fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold Italic.ttf"
 fc-cache -rv
 #Configuring Konsole to use new fonts
 file=~/.local/share/konsole/Kali-Dark.profile
