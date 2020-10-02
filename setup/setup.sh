@@ -1,6 +1,6 @@
 #!/bin/bash
 #-Metadata----------------------------------------------------#
-#  Filename: setup.sh             (Update: 16-FEB-2020)       #
+#  Filename: setup.sh             (Update: 02-OCT-2020)       #
 #-Info--------------------------------------------------------#
 #  Personal post-install script for Kali Linux Rolling        #
 #-Author(s)---------------------------------------------------#
@@ -43,24 +43,11 @@ while [[ "${#}" -gt 0 && ."${1}" == .-* ]]; do
   case "$(echo ${opt} | tr '[:upper:]' '[:lower:]')" in
     -|-- ) break 2;;
 
-    -osx|--osx )
-      keyboardApple=true;;
-    -apple|--apple )
-      keyboardApple=true;;
-
-    -dns|--dns )
-      hardenDNS=true;;
-
     -openvas|--openvas )
       openVAS=true;;
 
     -burp|--burp )
       burpFree=true;;
-
-    -keyboard|--keyboard )
-      keyboardLayout="${1}"; shift;;
-    -keyboard=*|--keyboard=* )
-      keyboardLayout="${opt#*=}";;
 
     -timezone|--timezone )
       timezone="${1}"; shift;;
@@ -290,12 +277,6 @@ cp ./res/p10k.zsh ~/.p10k.zsh
 #Configuring zsh - cheating
 cp ./res/zshrc ~/.zshrc
 
-
-
-#
-
-
-
 ##### Install (GNOME) Terminator
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing (GNOME) ${GREEN}Terminator${RESET} ~ multiple terminals in a single window"
 apt -y -qq install terminator \
@@ -337,58 +318,6 @@ cat <<EOF > "${file}" \
     show_titlebar = False
 
 EOF
-
-
-##### Install vim - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}vim${RESET} ~ CLI text editor"
-#--- Configure vim
-file=/etc/vim/vimrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.vimrc
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-sed -i 's/.*syntax on/syntax on/' "${file}"
-sed -i 's/.*set background=dark/set background=dark/' "${file}"
-sed -i 's/.*set showcmd/set showcmd/' "${file}"
-sed -i 's/.*set showmatch/set showmatch/' "${file}"
-#sed -i 's/.*set ignorecase/set ignorecase/' "${file}"
-#sed -i 's/.*set smartcase/set smartcase/' "${file}"
-#sed -i 's/.*set incsearch/set incsearch/' "${file}"
-#sed -i 's/.*set autowrite/set autowrite/' "${file}"
-#sed -i 's/.*set hidden/set hidden/' "${file}"
-#sed -i 's/.*set mouse=.*/"set mouse=a/' "${file}"
-grep -q '^set number' "${file}" 2>/dev/null \
-  || echo 'set number' >> "${file}"                                                                      # Add line numbers
-grep -q '^set expandtab' "${file}" 2>/dev/null \
-  || echo -e 'set expandtab\nset smarttab' >> "${file}"                                                  # Set use spaces instead of tabs
-grep -q '^set softtabstop' "${file}" 2>/dev/null \
-  || echo -e 'set softtabstop=4\nset shiftwidth=4' >> "${file}"                                          # Set 4 spaces as a 'tab'
-grep -q '^set foldmethod=marker' "${file}" 2>/dev/null \
-  || echo 'set foldmethod=marker' >> "${file}"                                                           # Folding
-grep -q '^nnoremap <space> za' "${file}" 2>/dev/null \
-  || echo 'nnoremap <space> za' >> "${file}"                                                             # Space toggle folds
-grep -q '^set hlsearch' "${file}" 2>/dev/null \
-  || echo 'set hlsearch' >> "${file}"                                                                    # Highlight search results
-grep -q '^set laststatus' "${file}" 2>/dev/null \
-  || echo -e 'set laststatus=2\nset statusline=%F%m%r%h%w\ (%{&ff}){%Y}\ [%l,%v][%p%%]' >> "${file}"     # Status bar
-grep -q '^filetype on' "${file}" 2>/dev/null \
-  || echo -e 'filetype on\nfiletype plugin on\nsyntax enable\nset grepprg=grep\ -nH\ $*' >> "${file}"    # Syntax highlighting
-grep -q '^set wildmenu' "${file}" 2>/dev/null \
-  || echo -e 'set wildmenu\nset wildmode=list:longest,full' >> "${file}"                                 # Tab completion
-grep -q '^set invnumber' "${file}" 2>/dev/null \
-  || echo -e ':nmap <F8> :set invnumber<CR>' >> "${file}"                                                # Toggle line numbers
-#grep -q '^set pastetoggle=<F9>' "${file}" 2>/dev/null \
-#  || echo -e 'set pastetoggle=<F9>' >> "${file}"                                                         # Hotkey - turning off auto indent when pasting
-#grep -q '^:command Q q' "${file}" 2>/dev/null \
-#  || echo -e ':command Q q' >> "${file}"                                                                 # Fix stupid typo I always make
-#--- Set as default editor
-export EDITOR="vim"   #update-alternatives --config editor
-file=/etc/bash.bashrc; [ -e "${file}" ] && cp -n $file{,.bkup}
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^EDITOR' "${file}" 2>/dev/null \
-  || echo 'EDITOR="vim"' >> "${file}"
-git config --global core.editor "vim"
-#--- Set as default mergetool
-git config --global merge.tool vimdiff
-git config --global merge.conflictstyle diff3
-git config --global mergetool.prompt false
 
 
 ###### Setup firefox
@@ -504,48 +433,7 @@ use exploit/multi/handler
 set PAYLOAD windows/meterpreter/reverse_https
 EOF
 fi
-#--- Aliases time
-file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-#--- Aliases for console
-grep -q '^alias msfc=' "${file}" 2>/dev/null \
-  || echo -e 'alias msfc="systemctl start postgresql; msfdb start; msfconsole -q \"\$@\""' >> "${file}"
-grep -q '^alias msfconsole=' "${file}" 2>/dev/null \
-  || echo -e 'alias msfconsole="systemctl start postgresql; msfdb start; msfconsole \"\$@\""\n' >> "${file}"
-#--- Aliases to speed up msfvenom (create static output)
-grep -q "^alias msfvenom-list-all" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-all='cat ~/.msf5/msfvenom/all'" >> "${file}"
-grep -q "^alias msfvenom-list-nops" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-nops='cat ~/.msf5/msfvenom/nops'" >> "${file}"
-grep -q "^alias msfvenom-list-payloads" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-payloads='cat ~/.msf5/msfvenom/payloads'" >> "${file}"
-grep -q "^alias msfvenom-list-encoders" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-encoders='cat ~/.msf5/msfvenom/encoders'" >> "${file}"
-grep -q "^alias msfvenom-list-formats" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-formats='cat ~/.msf5/msfvenom/formats'" >> "${file}"
-grep -q "^alias msfvenom-list-generate" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-generate='_msfvenom-list-generate'" >> "${file}"
-grep -q "^function _msfvenom-list-generate" "${file}" 2>/dev/null \
-  || cat <<EOF >> "${file}" \
-    || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-function _msfvenom-list-generate {
-  mkdir -p ~/.msf5/msfvenom/
-  msfvenom --list all > ~/.msf5/msfvenom/all
-  msfvenom --list nops > ~/.msf5/msfvenom/nops
-  msfvenom --list payloads > ~/.msf5/msfvenom/payloads
-  msfvenom --list encoders > ~/.msf5/msfvenom/encoders
-  msfvenom --help-formats 2> ~/.msf5/msfvenom/formats
-}
-EOF
-#--- Apply new aliases
-source "${file}" || source ~/.zshrc
-#--- Generate (Can't call alias)
-mkdir -p ~/.msf5/msfvenom/
-msfvenom --list all > ~/.msf5/msfvenom/all
-msfvenom --list nops > ~/.msf5/msfvenom/nops
-msfvenom --list payloads > ~/.msf5/msfvenom/payloads
-msfvenom --list encoders > ~/.msf5/msfvenom/encoders
-msfvenom --help-formats 2> ~/.msf5/msfvenom/formats
+
 #--- First time run with Metasploit
 (( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Starting Metasploit for the first time${RESET} ~ this ${BOLD}will take a ~350 seconds${RESET} (~6 mintues)"
 echo "Started at: $(date)"
@@ -676,15 +564,6 @@ cat <<EOF > "${file}" \
 cd /opt/onetwopunch-git/ && bash onetwopunch.sh "\$@"
 EOF
 chmod +x "${file}"
-
-
-##### Install Babadook
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Babadook${RESET} ~ connection-less powershell Backdoor#"
-git clone -q -b master https://github.com/jseidl/Babadook.git /opt/babadook-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/babadook-git/ >/dev/null
-git pull -q
-popd >/dev/null
 
 
 ##### Install gobuster
@@ -830,20 +709,10 @@ apt -y -qq install bless \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install CrackMapExec 3.x
+##### Install CrackMapExec
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec 3.x${RESET} ~ Swiss army knife for Windows environments"
 apt -y -qq install crackmapexec \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install CrackMapExec 4.x
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec 4.x${RESET} ~ Swiss army knife for Windows environments"
-apt -y -qq install libssl-dev libffi-dev python-dev build-essential
-pip install pipenv
-git clone --recursive https://github.com/byt3bl33d3r/CrackMapExec.git /opt/crackmapexec-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-cd /opt/crackmapexec-git && pipenv install
-pipenv run python setup.py install
 
 
 ##### Install Empire
@@ -981,6 +850,7 @@ git clone -q -b master https://github.com/CoreSecurity/impacket.git /opt/impacke
 git clone -q -b master https://github.com/yudai/gotty.git /opt/gotty-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
+
 ##### Install nfs-common
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}nfs-common${RESET} ~ nfs common tools"
 apt -y -qq install \
@@ -1062,12 +932,6 @@ git clone -q https://github.com/maurosoria/dirsearch.git dirsearch-git \
 ##### Install nload
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}nload${RESET} ~ Network Traffic Monitor"
 apt -y -qq install nload \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install byobu
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}byobu${RESET} ~ text-based window manager and terminal multiplexer"
-apt -y -qq install byobu \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
@@ -1180,10 +1044,6 @@ update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
 git clone https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite.git /opt/peass-git \
   || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
 
-
-##### Configure Home perms, temp until split root and user functions
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Resetting my perms${RESET} ~ root->analyst"
-chown -R analyst:analyst /home/analyst
 
 ################################################################################
 
