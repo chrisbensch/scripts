@@ -594,71 +594,71 @@ for FILE in cc gcc g++ gcc-multilib make automake libc6 libc6-dev libc6-dev-amd6
 done
 
 
-##### Install MinGW ~ cross compiling suite
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MinGW${RESET} ~ cross compiling suite"
-for FILE in mingw-w64 binutils-mingw-w64 gcc-mingw-w64 cmake mingw-w64-x86-64-dev mingw-w64-tools gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 mingw32; do
-  apt -y -qq install "${FILE}" 2>/dev/null
-done
+###### Install MinGW ~ cross compiling suite
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MinGW${RESET} ~ cross compiling suite"
+#for FILE in mingw-w64 binutils-mingw-w64 gcc-mingw-w64 cmake mingw-w64-x86-64-dev mingw-w64-tools gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 mingw32; do
+#  apt -y -qq install "${FILE}" 2>/dev/null
+#done
 
 
-##### Install WINE
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WINE${RESET} ~ run Windows programs on *nix"
-apt -y -qq install wine wine64 \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#--- Using x64?
-if [[ "$(uname -m)" == 'x86_64' ]]; then
-  (( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}WINE (x64)${RESET}"
-  export WINEARCH=win32
-  rm -rf ~/.wine
-  dpkg --add-architecture i386
-  apt update
-  apt -y -qq install wine32 \
-    || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-fi
-
-#--- Run WINE for the first time
-export WINEARCH=win32
-rm -rf ~/.wine
-[ -e /usr/share/windows-binaries/whoami.exe ] && wine /usr/share/windows-binaries/whoami.exe &>/dev/null
-#--- Setup default file association for .exe
-file=~/.local/share/applications/mimeapps.list; [ -e "${file}" ] && cp -n $file{,.bkup}
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-echo -e 'application/x-ms-dos-executable=wine.desktop' >> "${file}"
-
-
-##### Install MinGW (Windows) ~ cross compiling suite
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MinGW (Windows)${RESET} ~ cross compiling suite"
-aria2c https://jaist.dl.sourceforge.net/project/mingw/Installer/mingw-get/mingw-get-0.6.2-beta-20131004-1/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip -d /tmp
-mv /tmp/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip /tmp/mingw-get.zip \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading mingw-get.zip" 1>&2       #***!!! hardcoded path!
-mkdir -p ~/.wine/drive_c/MinGW/bin/
-unzip -q -o -d ~/.wine/drive_c/MinGW/ /tmp/mingw-get.zip
-pushd ~/.wine/drive_c/MinGW/ >/dev/null
-for FILE in mingw32-base mingw32-gcc-g++ mingw32-gcc-objc; do   #msys-base
-  wine ./bin/mingw-get.exe install "${FILE}" 2>&1 | grep -v 'If something goes wrong, please rerun with\|for more detailed debugging output'
-done
-popd >/dev/null
-#--- Add to windows path
-grep -q '^"PATH"=.*C:\\\\MinGW\\\\bin' ~/.wine/system.reg \
-  || sed -i '/^"PATH"=/ s_"$_;C:\\\\MinGW\\\\bin"_' ~/.wine/system.reg
-
-
-##### Install Python (Windows via WINE)
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Python (Windows)${RESET}"
-echo -n '[1/2]'; aria2c https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi -d /tmp \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading python.msi" 1>&2       #***!!! hardcoded path!
-mv /tmp/python-2.7.9.msi /tmp/python.msi
-echo -n '[2/2]'; aria2c http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe/download -d /tmp \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading pywin32.exe" 1>&2      #***!!! hardcoded path!
-mv  /tmp/pywin32-219.win32-py2.7.exe /tmp/pywin32.exe
-wine msiexec /i /tmp/python.msi /qb 2>&1 | grep -v 'If something goes wrong, please rerun with\|for more detailed debugging output'
-pushd /tmp/ >/dev/null
-rm -rf "PLATLIB/" "SCRIPTS/"
-unzip -q -o /tmp/pywin32.exe
-cp -rf PLATLIB/* ~/.wine/drive_c/Python27/Lib/site-packages/
-cp -rf SCRIPTS/* ~/.wine/drive_c/Python27/Scripts/
-rm -rf "PLATLIB/" "SCRIPTS/"
-popd >/dev/null
+###### Install WINE
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WINE${RESET} ~ run Windows programs on *nix"
+#apt -y -qq install wine wine64 \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+##--- Using x64?
+#if [[ "$(uname -m)" == 'x86_64' ]]; then
+#  (( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}WINE (x64)${RESET}"
+#  export WINEARCH=win32
+#  rm -rf ~/.wine
+#  dpkg --add-architecture i386
+#  apt update
+#  apt -y -qq install wine32 \
+#    || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#fi
+#
+##--- Run WINE for the first time
+#export WINEARCH=win32
+#rm -rf ~/.wine
+#[ -e /usr/share/windows-binaries/whoami.exe ] && wine /usr/share/windows-binaries/whoami.exe &>/dev/null
+##--- Setup default file association for .exe
+#file=~/.local/share/applications/mimeapps.list; [ -e "${file}" ] && cp -n $file{,.bkup}
+#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+#echo -e 'application/x-ms-dos-executable=wine.desktop' >> "${file}"
+#
+#
+###### Install MinGW (Windows) ~ cross compiling suite
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MinGW (Windows)${RESET} ~ cross compiling suite"
+#aria2c https://jaist.dl.sourceforge.net/project/mingw/Installer/mingw-get/mingw-get-0.6.2-beta-20131004-1/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip -d /tmp
+#mv /tmp/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip /tmp/mingw-get.zip \
+#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading mingw-get.zip" 1>&2       #***!!! hardcoded path!
+#mkdir -p ~/.wine/drive_c/MinGW/bin/
+#unzip -q -o -d ~/.wine/drive_c/MinGW/ /tmp/mingw-get.zip
+#pushd ~/.wine/drive_c/MinGW/ >/dev/null
+#for FILE in mingw32-base mingw32-gcc-g++ mingw32-gcc-objc; do   #msys-base
+#  wine ./bin/mingw-get.exe install "${FILE}" 2>&1 | grep -v 'If something goes wrong, please rerun with\|for more detailed debugging output'
+#done
+#popd >/dev/null
+##--- Add to windows path
+#grep -q '^"PATH"=.*C:\\\\MinGW\\\\bin' ~/.wine/system.reg \
+#  || sed -i '/^"PATH"=/ s_"$_;C:\\\\MinGW\\\\bin"_' ~/.wine/system.reg
+#
+#
+###### Install Python (Windows via WINE)
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Python (Windows)${RESET}"
+#echo -n '[1/2]'; aria2c https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi -d /tmp \
+#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading python.msi" 1>&2       #***!!! hardcoded path!
+#mv /tmp/python-2.7.9.msi /tmp/python.msi
+#echo -n '[2/2]'; aria2c http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe/download -d /tmp \
+#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading pywin32.exe" 1>&2      #***!!! hardcoded path!
+#mv  /tmp/pywin32-219.win32-py2.7.exe /tmp/pywin32.exe
+#wine msiexec /i /tmp/python.msi /qb 2>&1 | grep -v 'If something goes wrong, please rerun with\|for more detailed debugging output'
+#pushd /tmp/ >/dev/null
+#rm -rf "PLATLIB/" "SCRIPTS/"
+#unzip -q -o /tmp/pywin32.exe
+#cp -rf PLATLIB/* ~/.wine/drive_c/Python27/Lib/site-packages/
+#cp -rf SCRIPTS/* ~/.wine/drive_c/Python27/Scripts/
+#rm -rf "PLATLIB/" "SCRIPTS/"
+#popd >/dev/null
 
 
 ##### Install Veil framework
