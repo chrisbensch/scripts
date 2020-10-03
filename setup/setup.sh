@@ -274,8 +274,10 @@ HistoryMode=2
 EOF
 #Configuring PowerLevel10k - cheating
 cp ./res/p10k.zsh ~/.p10k.zsh
+chmod 755 ~/.p10k.zsh
 #Configuring zsh - cheating
 cp ./res/zshrc ~/.zshrc
+chmod 755 ~/.zshrc
 
 ##### Install (GNOME) Terminator
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing (GNOME) ${GREEN}Terminator${RESET} ~ multiple terminals in a single window"
