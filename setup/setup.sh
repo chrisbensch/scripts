@@ -1031,12 +1031,12 @@ git clone https://github.com/byt3bl33d3r/SILENTTRINITY.git /opt/silenttrinity-gi
   || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
 
 
-##### Install & Configure Java default jre
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Java 8${RESET} ~ default JavaVM"
-apt -y -qq install openjdk-8-jdk \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
-  || echo -e ' '${RED}'[!] Issue with configuration'${RESET} 1>&2
+###### Install & Configure Java default jre
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Java 8${RESET} ~ default JavaVM"
+#apt -y -qq install openjdk-8-jdk \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
+#  || echo -e ' '${RED}'[!] Issue with configuration'${RESET} 1>&2
 
 
 ##### Install PEASS - Privilege Escalation Awesome Scripts SUITE (with colors) https://book.hacktricks.xyz
