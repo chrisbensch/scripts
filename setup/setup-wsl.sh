@@ -121,6 +121,14 @@ apt -y -qq install build-essential \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
+###### Install "kali headless" meta packages (default tool selection)
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}kali-linux-headless${RESET} meta-package"
+echo -e " ${YELLOW}[i]${RESET}  ...this ${BOLD}may take a while${RESET} depending on your Kali version (e.g. ARM, light, mini or docker...)"
+##--- Kali's default tools ~ https://www.kali.org/docs/general-use/metapackages/
+apt -y -qq install kali-linux-headless \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+
+
 ##### Install zsh
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}zsh${RESET} ~ zsh shell"
 apt -y -qq install zsh \
@@ -215,6 +223,7 @@ sqlite3 "${file}" ".restore /opt/scripts/misc/places.sqlite.backup"
 
 ##### Install metasploit ~ http://docs.kali.org/general-use/starting-metasploit-framework-in-kali
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}metasploit${RESET} ~ exploit framework"
+service postgresql start
 apt -y -qq install --reinstall metasploit-framework \
     || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 mkdir -p ~/.msf5/modules/{auxiliary,exploits,payloads,post}/
