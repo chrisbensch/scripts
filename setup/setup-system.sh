@@ -12,7 +12,7 @@
 
 
 ##### Location information
-timezone="Asia/Tokyo"       # Set timezone location                                     [ --timezone Europe/London ]
+timezone="America/Los_Angeles"       # Set timezone location          [ --timezone Europe/London ]
 
 ##### Optional steps
 burpFree=true              # Disable configuring Burp Suite (for Burp Pro users...)    [ --burp ]
@@ -142,21 +142,6 @@ APT_LISTCHANGES_FRONTEND=none apt-get -o Dpkg::Options::="--force-confnew" -y di
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 #--- Cleaning up temp stuff
 for FILE in clean autoremove; do apt -y -qq "${FILE}"; done         # Clean up - clean remove autoremove autoclean
-#--- Check kernel stuff
-_TMP=$(dpkg -l | grep linux-image- | grep -vc meta)
-if [[ "${_TMP}" -gt 1 ]]; then
-  echo -e "\n ${YELLOW}[i]${RESET} Detected ${YELLOW}multiple kernels${RESET}"
-  TMP=$(dpkg -l | grep linux-image | grep -v meta | sort -t '.' -k 2 -g | tail -n 1 | grep "$(uname -r)")
-  if [[ -z "${TMP}" ]]; then
-    echo -e '\n '${RED}'[!]'${RESET}' You are '${RED}'not using the latest kernel'${RESET} 1>&2
-    echo -e " ${YELLOW}[i]${RESET} You have it ${YELLOW}downloaded${RESET} & installed, just ${YELLOW}not USING IT${RESET}"
-    #echo -e "\n ${YELLOW}[i]${RESET} You ${YELLOW}NEED to REBOOT${RESET}, before re-running this script"
-    #exit 1
-    sleep 30s
-  else
-    echo -e " ${YELLOW}[i]${RESET} ${YELLOW}You're using the latest kernel${RESET} (Good to continue)"
-  fi
-fi
 
 
 ##### Install build essential tools
@@ -280,13 +265,13 @@ file=/etc/bash.bashrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.bashrc
 ##grep -q "CDPATH" "${file}" \
 ## || echo "CDPATH=/etc:/usr/share/:/opt" >> "${file}"  # Always CD into these folders
 grep -q "checkwinsize" "${file}" \
- || echo "shopt -sq checkwinsize" >> "${file}"         # Wrap lines correctly after resizing
+  || echo "shopt -sq checkwinsize" >> "${file}"         # Wrap lines correctly after resizing
 #grep -q "nocaseglob" "${file}" \
 # || echo "shopt -sq nocaseglob" >> "${file}"           # Case insensitive pathname expansion
 grep -q "HISTSIZE" "${file}" \
- || echo "HISTSIZE=10000" >> "${file}"                 # Bash history (memory scroll back)
+  || echo "HISTSIZE=10000" >> "${file}"                 # Bash history (memory scroll back)
 grep -q "HISTFILESIZE" "${file}" \
- || echo "HISTFILESIZE=10000" >> "${file}"             # Bash history (file .bash_history)
+  || echo "HISTFILESIZE=10000" >> "${file}"             # Bash history (file .bash_history)
 #--- Apply new configs
 source "${file}" || source ~/.zshrc
 
@@ -669,7 +654,7 @@ apt -y -qq install bless \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install CrackMapExec 3.x
+##### Install CrackMapExec
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec 3.x${RESET} ~ Swiss army knife for Windows environments"
 apt -y -qq install python-pip \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
@@ -760,12 +745,6 @@ apt -y -qq install dbeaver \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install gdebi
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}gdebi${RESET} ~ package installer"
-apt -y -qq install gdebi \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install BloodHound
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}BloodHound${RESET} ~ Six Degrees of Domain Admin"
 apt -y -qq install bloodhound \
@@ -783,11 +762,6 @@ apt -y -qq install putty-tools \
 git clone -q -b master https://github.com/CoreSecurity/impacket.git /opt/impacket-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
-
-##### Install gotty
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}gotty${RESET} ~ terminal via the web"
-git clone -q -b master https://github.com/yudai/gotty.git /opt/gotty-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 ##### Install nfs-common
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}nfs-common${RESET} ~ nfs common tools"
@@ -867,12 +841,6 @@ apt -y -qq install nload \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install byobu
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}byobu${RESET} ~ text-based window manager and terminal multiplexer"
-apt -y -qq install byobu \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install PCManFM
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pcmanfm${RESET} ~ PCMAN File Manager"
 apt -y -qq install pcmanfm \
@@ -935,10 +903,8 @@ git clone https://github.com/carlospolop/privilege-escalation-awesome-scripts-su
 
 ##### Install AutoRecon - AutoRecon is a multi-threaded network reconnaissance tool which performs automated enumeration of services. 
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}AutoRecon${RESET} ~ Multi-threaded Recond Tool"
-git clone https://github.com/Tib3rius/AutoRecon.git /opt/autorecon-git \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-cd /opt/autorecon-git
-pip3 install -r requirements.txt
+python3 -m pip install git+https://github.com/Tib3rius/AutoRecon.git \
+  || echo -e ' '${RED}'[!] Issue with pip3 install'${RESET} 1>&2
 
 
 ##### Install evil-winrm - WinRM shell
