@@ -1,6 +1,6 @@
 #!/bin/bash
 #-Metadata----------------------------------------------------#
-#  Filename: setup.sh             (Update: 16-FEB-2020)       #
+#  Filename: setup.sh             (Update: 18-AUG-2020)       #
 #-Info--------------------------------------------------------#
 #  Personal post-install script for Kali Linux Rolling        #
 #-Author(s)---------------------------------------------------#
@@ -255,65 +255,6 @@ apt update && apt install code \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Configure bash - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}bash${RESET} ~ CLI shell"
-file=/etc/bash.bashrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.bashrc
-#grep -q "cdspell" "${file}" \
-#  || echo "shopt -sq cdspell" >> "${file}"             # Spell check 'cd' commands
-#grep -q "autocd" "${file}" \
-# || echo "shopt -s autocd" >> "${file}"                # So you don't have to 'cd' before a folder
-##grep -q "CDPATH" "${file}" \
-## || echo "CDPATH=/etc:/usr/share/:/opt" >> "${file}"  # Always CD into these folders
-grep -q "checkwinsize" "${file}" \
-  || echo "shopt -sq checkwinsize" >> "${file}"         # Wrap lines correctly after resizing
-#grep -q "nocaseglob" "${file}" \
-# || echo "shopt -sq nocaseglob" >> "${file}"           # Case insensitive pathname expansion
-grep -q "HISTSIZE" "${file}" \
-  || echo "HISTSIZE=10000" >> "${file}"                 # Bash history (memory scroll back)
-grep -q "HISTFILESIZE" "${file}" \
-  || echo "HISTFILESIZE=10000" >> "${file}"             # Bash history (file .bash_history)
-#--- Apply new configs
-source "${file}" || source ~/.zshrc
-
-##### Install bash colour - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}bash colour${RESET} ~ colours shell output"
-file=/etc/bash.bashrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.bashrc
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-sed -i 's/.*force_color_prompt=.*/force_color_prompt=yes/' "${file}"
-grep -q '^force_color_prompt' "${file}" 2>/dev/null \
-  || echo 'force_color_prompt=yes' >> "${file}"
-sed -i 's#PS1='"'"'.*'"'"'#PS1='"'"'${debian_chroot:+($debian_chroot)}\\[\\033\[01;31m\\]\\u@\\h\\\[\\033\[00m\\]:\\[\\033\[01;34m\\]\\w\\[\\033\[00m\\]\\$ '"'"'#' "${file}"
-grep -q "^export LS_OPTIONS='--color=auto'" "${file}" 2>/dev/null \
-  || echo "export LS_OPTIONS='--color=auto'" >> "${file}"
-grep -q '^eval "$(dircolors)"' "${file}" 2>/dev/null \
-  || echo 'eval "$(dircolors)"' >> "${file}"
-grep -q "^alias ls='ls $LS_OPTIONS'" "${file}" 2>/dev/null \
-  || echo "alias ls='ls $LS_OPTIONS'" >> "${file}"
-grep -q "^alias ll='ls $LS_OPTIONS -l'" "${file}" 2>/dev/null \
-  || echo "alias ll='ls $LS_OPTIONS -l'" >> "${file}"
-grep -q "^alias l='ls $LS_OPTIONS -lA'" "${file}" 2>/dev/null \
-  || echo "alias l='ls $LS_OPTIONS -lA'" >> "${file}"
-#--- All other users that are made afterwards
-file=/etc/skel/.bashrc   #; [ -e "${file}" ] && cp -n $file{,.bkup}
-sed -i 's/.*force_color_prompt=.*/force_color_prompt=yes/' "${file}"
-#--- Apply new configs
-source "${file}" || source ~/.zshrc
-
-
-##### Install bash completion - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}bash completion${RESET} ~ tab complete CLI commands"
-file=/etc/bash.bashrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.bashrc
-sed -i '/# enable bash completion in/,+7{/enable bash completion/!s/^#//}' "${file}"
-#--- Apply new configs
-source "${file}" || source ~/.zshrc
-
-
-##### Install (GNOME) Terminator
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing (GNOME) ${GREEN}Terminator${RESET} ~ multiple terminals in a single window"
-apt -y -qq install terminator \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install vim - all users
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}vim${RESET} ~ CLI text editor"
 #--- Configure vim
@@ -376,7 +317,7 @@ find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'sessionstore.*' -
 
 ##### Configure metasploit ~ http://docs.kali.org/general-use/starting-metasploit-framework-in-kali
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}metasploit${RESET} ~ exploit framework"
-mkdir -p ~/.msf5/modules/{auxiliary,exploits,payloads,post}/
+mkdir -p ~/.msf4/modules/{auxiliary,exploits,payloads,post}/
 #--- Fix any port issues
 file=$(find /etc/postgresql/*/main/ -maxdepth 1 -type f -name postgresql.conf -print -quit);
 [ -e "${file}" ] && cp -n $file{,.bkup}
@@ -392,7 +333,7 @@ systemctl start postgresql
 msfdb reinit
 sleep 5s
 #--- Autorun Metasploit commands each startup
-file=~/.msf5/msf_autorunscript.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
+file=~/.msf4/msf_autorunscript.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
 if [[ -f "${file}" ]]; then
   echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
 else
@@ -406,7 +347,7 @@ else
 #run post/windows/gather/smart_hashdump
 EOF
 fi
-file=~/.msf5/msfconsole.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
+file=~/.msf4/msfconsole.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
 if [[ -f "${file}" ]]; then
   echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
 else
@@ -427,7 +368,7 @@ setg EnableStageEncoding true
 setg LHOST 0.0.0.0
 setg LPORT 443
 use exploit/multi/handler
-#setg AutoRunScript 'multi_console_command -rc "~/.msf5/msf_autorunscript.rc"'
+#setg AutoRunScript 'multi_console_command -rc "~/.msf4/msf_autorunscript.rc"'
 set PAYLOAD windows/meterpreter/reverse_https
 EOF
 fi
@@ -441,38 +382,38 @@ grep -q '^alias msfconsole=' "${file}" 2>/dev/null \
   || echo -e 'alias msfconsole="systemctl start postgresql; msfdb start; msfconsole \"\$@\""\n' >> "${file}"
 #--- Aliases to speed up msfvenom (create static output)
 grep -q "^alias msfvenom-list-all" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-all='cat ~/.msf5/msfvenom/all'" >> "${file}"
+  || echo "alias msfvenom-list-all='cat ~/.msf4/msfvenom/all'" >> "${file}"
 grep -q "^alias msfvenom-list-nops" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-nops='cat ~/.msf5/msfvenom/nops'" >> "${file}"
+  || echo "alias msfvenom-list-nops='cat ~/.msf4/msfvenom/nops'" >> "${file}"
 grep -q "^alias msfvenom-list-payloads" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-payloads='cat ~/.msf5/msfvenom/payloads'" >> "${file}"
+  || echo "alias msfvenom-list-payloads='cat ~/.msf4/msfvenom/payloads'" >> "${file}"
 grep -q "^alias msfvenom-list-encoders" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-encoders='cat ~/.msf5/msfvenom/encoders'" >> "${file}"
+  || echo "alias msfvenom-list-encoders='cat ~/.msf4/msfvenom/encoders'" >> "${file}"
 grep -q "^alias msfvenom-list-formats" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-formats='cat ~/.msf5/msfvenom/formats'" >> "${file}"
+  || echo "alias msfvenom-list-formats='cat ~/.msf4/msfvenom/formats'" >> "${file}"
 grep -q "^alias msfvenom-list-generate" "${file}" 2>/dev/null \
   || echo "alias msfvenom-list-generate='_msfvenom-list-generate'" >> "${file}"
 grep -q "^function _msfvenom-list-generate" "${file}" 2>/dev/null \
   || cat <<EOF >> "${file}" \
     || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
 function _msfvenom-list-generate {
-  mkdir -p ~/.msf5/msfvenom/
-  msfvenom --list all > ~/.msf5/msfvenom/all
-  msfvenom --list nops > ~/.msf5/msfvenom/nops
-  msfvenom --list payloads > ~/.msf5/msfvenom/payloads
-  msfvenom --list encoders > ~/.msf5/msfvenom/encoders
-  msfvenom --help-formats 2> ~/.msf5/msfvenom/formats
+  mkdir -p ~/.msf4/msfvenom/
+  msfvenom --list all > ~/.msf4/msfvenom/all
+  msfvenom --list nops > ~/.msf4/msfvenom/nops
+  msfvenom --list payloads > ~/.msf4/msfvenom/payloads
+  msfvenom --list encoders > ~/.msf4/msfvenom/encoders
+  msfvenom --help-formats 2> ~/.msf4/msfvenom/formats
 }
 EOF
 #--- Apply new aliases
 source "${file}" || source ~/.zshrc
 #--- Generate (Can't call alias)
-mkdir -p ~/.msf5/msfvenom/
-msfvenom --list all > ~/.msf5/msfvenom/all
-msfvenom --list nops > ~/.msf5/msfvenom/nops
-msfvenom --list payloads > ~/.msf5/msfvenom/payloads
-msfvenom --list encoders > ~/.msf5/msfvenom/encoders
-msfvenom --help-formats 2> ~/.msf5/msfvenom/formats
+mkdir -p ~/.msf4/msfvenom/
+msfvenom --list all > ~/.msf4/msfvenom/all
+msfvenom --list nops > ~/.msf4/msfvenom/nops
+msfvenom --list payloads > ~/.msf4/msfvenom/payloads
+msfvenom --list encoders > ~/.msf4/msfvenom/encoders
+msfvenom --help-formats 2> ~/.msf4/msfvenom/formats
 #--- First time run with Metasploit
 (( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Starting Metasploit for the first time${RESET} ~ this ${BOLD}will take a ~350 seconds${RESET} (~6 mintues)"
 echo "Started at: $(date)"
@@ -534,38 +475,6 @@ apt -y -qq install aria2 \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install aircrack-ng
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Aircrack-ng${RESET} ~ Wi-Fi cracking suite"
-apt -y -qq install aircrack-ng curl \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#--- Setup hardware database
-mkdir -p /etc/aircrack-ng/
-aria2c https://gitlab.com/wireshark/wireshark/raw/master/manuf -d /etc/aircrack-ng -o oui.txt
-[ -e /etc/aircrack-ng/oui.txt ] \
-  && (\grep "(hex)" /etc/aircrack-ng/oui.txt | sed 's/^[ \t]*//g;s/[ \t]*$//g' > /etc/aircrack-ng/airodump-ng-oui.txt)
-[[ ! -f /etc/aircrack-ng/airodump-ng-oui.txt ]] \
-  && echo -e ' '${RED}'[!]'${RESET}" Issue downloading oui.txt" 1>&2
-
-
-##### Install updated nmap-mac-prefixes based on above updated oui.txt
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}nmap-mac-prefixes${RESET} ~ updated from new oui.txt"
-cp /opt/scripts/misc/nmap-mac-prefixes /usr/share/nmap/ \
-  || echo -e ' '${RED}'[!] Issue downloading nmap-mac-prefixes'${RESET} 1>&2
-
-
-##### Install vulscan script for nmap
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}vulscan script for nmap${RESET} ~ vulnerability scanner add-on"
-apt -y -qq install nmap curl \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-mkdir -p /usr/share/nmap/scripts/vulscan/
-git clone https://github.com/scipag/vulscan.git /opt/vulscan-git \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue cloning repo" 1>&2      #***!!! hardcoded version! Need to manually check for updates
-cp /opt/vulscan-git/*.csv /usr/share/nmap/scripts/vulscan/
-cp /opt/vulscan-git/vulscan.nse /usr/share/nmap/scripts/vulscan/
-#--- Fix permissions (by default its 0777)
-chmod -R 0755 /usr/share/nmap/scripts/; find /usr/share/nmap/scripts/ -type f -exec chmod 0644 {} \;
-
-
 ##### Install onetwopunch
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}onetwopunch${RESET} ~ unicornscan & nmap wrapper"
 git clone -q -b master https://github.com/superkojiman/onetwopunch.git /opt/onetwopunch-git/ \
@@ -580,12 +489,6 @@ cat <<EOF > "${file}" \
 cd /opt/onetwopunch-git/ && bash onetwopunch.sh "\$@"
 EOF
 chmod +x "${file}"
-
-
-##### Install Babadook
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Babadook${RESET} ~ connection-less powershell Backdoor#"
-git clone -q -b master https://github.com/jseidl/Babadook.git /opt/babadook-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
 ##### Install gobuster
@@ -609,16 +512,16 @@ mkdir -p /usr/local/bin/
 ln -sf /usr/bin/proxychains4 /usr/local/bin/proxychains-ng
 
 
-##### Install veil framework
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}veil-evasion framework${RESET} ~ bypassing anti-virus"
-apt -y -qq install veil-evasion \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install shellter
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}shellter${RESET} ~ dynamic shellcode injector"
-apt -y -qq install shellter \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+###### Install veil framework
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}veil-evasion framework${RESET} ~ #bypassing anti-virus"
+#apt -y -qq install veil-evasion \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#
+#
+###### Install shellter
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}shellter${RESET} ~ dynamic #shellcode injector"
+#apt -y -qq install shellter \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install SecLists
@@ -654,17 +557,11 @@ apt -y -qq install bless \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install CrackMapExec
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CrackMapExec 3.x${RESET} ~ Swiss army knife for Windows environments"
-apt -y -qq install python-pip \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-sudo pip install crackmapexec
-
-
 ##### Install Empire
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Empire${RESET} ~ PowerShell post-exploitation"
-git clone -q -b master https://github.com/PowerShellEmpire/Empire.git /opt/empire-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+apt -y -qq powershell-empire
+#git clone -q -b master https://github.com/PowerShellEmpire/Empire.git /opt/empire-git/ \
+#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
 ##### Install CMSmap
@@ -733,12 +630,6 @@ apt -y -qq install jhead \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install sshpass
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}sshpass${RESET} ~ automating SSH connections"
-apt -y -qq install sshpass \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install DBeaver
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}DBeaver${RESET} ~ GUI DB manager"
 apt -y -qq install dbeaver \
@@ -804,10 +695,10 @@ sed -i 's/^PermitRootLogin .*/PermitRootLogin yes/g' "${file}"      # Accept pas
 sed -i 's/^#AuthorizedKeysFile /AuthorizedKeysFile /g' "${file}"    # Allow for key based login
 
 
-##### Install PhantomJS
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}phantomjs${RESET} ~ Full web stack, no browser"
-apt -y -qq install phantomjs \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+###### Install PhantomJS
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}phantomjs${RESET} ~ Full web stack, #no browser"
+#apt -y -qq install phantomjs \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install LinEnum
