@@ -150,9 +150,15 @@ apt -y -qq install build-essential \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
+##### Hide login message
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Hiding login message${RESET}"
+touch ~/.hushlogin \
+  || echo -e ' '${RED}'[!] Issue with shell command'${RESET} 1>&2
+
+
 ##### Install python and python3 essential tools
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}python(3) tools${RESET}"
-apt -y -qq install python-pip python3-pip \
+apt -y -qq install python3-pip \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 ##### Install kernel headers
@@ -559,7 +565,7 @@ apt -y -qq install bless \
 
 ##### Install Empire
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Empire${RESET} ~ PowerShell post-exploitation"
-apt -y -qq powershell-empire
+apt -y -qq install powershell-empire
 #git clone -q -b master https://github.com/PowerShellEmpire/Empire.git /opt/empire-git/ \
 #  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
@@ -780,10 +786,10 @@ git clone https://github.com/byt3bl33d3r/SILENTTRINITY.git /opt/silenttrinity-gi
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
-##### Configure Java default jre
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Java 8${RESET} ~ default JavaVM"
-update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
-  || echo -e ' '${RED}'[!] Issue with configuration'${RESET} 1>&2
+###### Configure Java default jre
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Java 8${RESET} ~ default #JavaVM"
+#update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
+#  || echo -e ' '${RED}'[!] Issue with configuration'${RESET} 1>&2
 
 
 ##### Install PEASS - Privilege Escalation Awesome Scripts SUITE (with colors) https://book.hacktricks.xyz
