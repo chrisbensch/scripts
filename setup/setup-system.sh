@@ -550,7 +550,7 @@ mkdir -p /usr/share/wordlists/
 [ -e /usr/share/dirb/wordlists ] \
   && ln -sf /usr/share/dirb/wordlists /usr/share/wordlists/dirb
 #--- Extract sqlmap wordlist
-unzip -o -d /usr/share/sqlmap/txt/ /usr/share/sqlmap/txt/wordlist.zip
+#unzip -o -d /usr/share/sqlmap/txt/ /usr/share/sqlmap/txt/wordlist.zip
 ln -sf /usr/share/sqlmap/txt/wordlist.txt /usr/share/wordlists/sqlmap.txt
 #--- Not enough? Want more? Check below!
 #apt search wordlist
