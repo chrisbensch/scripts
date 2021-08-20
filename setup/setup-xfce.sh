@@ -46,40 +46,40 @@ cat <<EOF > ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-power-manager.xml \
 </channel>
 EOF
 
-##### Setup XFCE Terminal settings
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Customizing ${GREEN}XFCE Terminal${RESET} settings"
-cat <<EOF > ~/.config/xfce4/terminal/terminalrc \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-[Configuration]
-BackgroundDarkness=0.850000
-MiscAlwaysShowTabs=FALSE
-MiscBell=FALSE
-MiscBellUrgent=FALSE
-MiscBordersDefault=TRUE
-MiscCursorBlinks=TRUE
-MiscCursorShape=TERMINAL_CURSOR_SHAPE_BLOCK
-MiscDefaultGeometry=100x38
-MiscInheritGeometry=FALSE
-MiscMenubarDefault=TRUE
-MiscMouseAutohide=FALSE
-MiscMouseWheelZoom=TRUE
-MiscToolbarDefault=FALSE
-MiscConfirmClose=TRUE
-MiscCycleTabs=TRUE
-MiscTabCloseButtons=TRUE
-MiscTabCloseMiddleClick=TRUE
-MiscTabPosition=GTK_POS_TOP
-MiscHighlightUrls=TRUE
-MiscMiddleClickOpensUri=FALSE
-MiscCopyOnSelect=TRUE
-MiscDefaultWorkingDir=
-MiscRewrapOnResize=TRUE
-MiscUseShiftArrowsToScroll=FALSE
-MiscSlimTabs=FALSE
-ScrollingUnlimited=TRUE
-ColorCursorUseDefault=FALSE
-ColorCursor=#8a8ae2e23434
-EOF
+###### Setup XFCE Terminal settings
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Customizing ${GREEN}XFCE Terminal${RESET} #settings"
+#cat <<EOF > ~/.config/xfce4/terminal/terminalrc \
+#  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+#[Configuration]
+#BackgroundDarkness=0.850000
+#MiscAlwaysShowTabs=FALSE
+#MiscBell=FALSE
+#MiscBellUrgent=FALSE
+#MiscBordersDefault=TRUE
+#MiscCursorBlinks=TRUE
+#MiscCursorShape=TERMINAL_CURSOR_SHAPE_BLOCK
+#MiscDefaultGeometry=100x38
+#MiscInheritGeometry=FALSE
+#MiscMenubarDefault=TRUE
+#MiscMouseAutohide=FALSE
+#MiscMouseWheelZoom=TRUE
+#MiscToolbarDefault=FALSE
+#MiscConfirmClose=TRUE
+#MiscCycleTabs=TRUE
+#MiscTabCloseButtons=TRUE
+#MiscTabCloseMiddleClick=TRUE
+#MiscTabPosition=GTK_POS_TOP
+#MiscHighlightUrls=TRUE
+#MiscMiddleClickOpensUri=FALSE
+#MiscCopyOnSelect=TRUE
+#MiscDefaultWorkingDir=
+#MiscRewrapOnResize=TRUE
+#MiscUseShiftArrowsToScroll=FALSE
+#MiscSlimTabs=FALSE
+#ScrollingUnlimited=TRUE
+#ColorCursorUseDefault=FALSE
+#ColorCursor=#8a8ae2e23434
+#EOF
 
 
 ###### Install XFCE4
@@ -194,8 +194,8 @@ cat <<EOF > ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-power-manager.xml \
 EOF
 # Mine
 xfconf-query --create --channel xfce4-panel --property /panels/panel-2/plugin-ids \
- -t int -s 6 -t int -s 8 -t int -s 9 -t int -s 16 -t int -s 18 -t int -s 20 -t int -s 19 -t int -s 17 \
- -t int -s 11 -t int -s 10
+  -t int -s 6 -t int -s 8 -t int -s 9 -t int -s 16 -t int -s 18 -t int -s 20 -t int -s 19 -t int -s 17 \
+  -t int -s 11 -t int -s 10
 xfconf-query -n -c xfce4-panel -p /panels/panel-2/position -t string -s "p=10;x=0;y=0"
 xfconf-query -n -c xfce4-panel -p /panels/panel-2/position-locked -t bool -s true
 xfconf-query -n -c xfce4-panel -p /plugins/plugin-10 -t string -s launcher
