@@ -425,7 +425,7 @@ msfvenom --help-formats 2> ~/.msf4/msfvenom/formats
 echo "Started at: $(date)"
 systemctl start postgresql
 msfdb start
-msfconsole -q -x 'version;db_status;sleep 310;exit'
+msfconsole -q -x 'version;db_status;sleep 60;exit'
 
 
 ##### Configuring armitage
