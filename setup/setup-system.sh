@@ -184,63 +184,63 @@ sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="vga=0x0318"
 update-grub
 
 
-##### Configure PCManFM
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}PCManFM${RESET} - GUI file system navigation"
-#--- Settings
-mkdir -p ~/.config/gtk-3.0/
-#--- Bookmarks
-file=~/.config/gtk-3.0/bookmarks; [ -e "${file}" ] && cp -n $file{,.bkup}
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^file://root/Downloads ' "${file}" 2>/dev/null \
-  || echo 'file://root/Downloads Downloads' >> "${file}"
-(dmidecode | grep -iq vmware) \
-  && (mkdir -p /mnt/hgfs/ 2>/dev/null; grep -q '^file:///mnt/hgfs ' "${file}" 2>/dev/null \
-    || echo 'file:///mnt/hgfs VMShare' >> "${file}")
-grep -q '^file:///tmp ' "${file}" 2>/dev/null \
-  || echo 'file:///tmp /tmp' >> "${file}"
-grep -q '^file:///usr/share ' "${file}" 2>/dev/null \
-  || echo 'file:///usr/share Kali Tools' >> "${file}"
-grep -q '^file:///opt ' "${file}" 2>/dev/null \
-  || echo 'file:///opt /opt' >> "${file}"
-grep -q '^file:///var/ftp ' "${file}" 2>/dev/null \
-  || echo 'file:///var/ftp ftp' >> "${file}"
-grep -q '^file:///var/samba ' "${file}" 2>/dev/null \
-  || echo 'file:///var/samba Samba' >> "${file}"
-grep -q '^file:///var/tftp ' "${file}" 2>/dev/null \
-  || echo 'file:///var/tftp tftp' >> "${file}"
-grep -q '^file:///var/www/html ' "${file}" 2>/dev/null \
-  || echo 'file:///var/www/html www' >> "${file}"
-  #--- Settings
-file=~/.config/pcmanfm/default/pcmanfm.conf; [ -e "${file}" ] && cp -n $file{,.bkup}
-cat <<EOF > "${file}"
-[config]
-bm_open_method=0
-
-[volume]
-mount_on_startup=1
-mount_removable=1
-autorun=1
-
-[ui]
-always_show_tabs=1
-max_tab_chars=32
-win_width=1160
-win_height=792
-splitter_pos=184
-media_in_new_tab=0
-desktop_folder_new_win=0
-change_tab_on_drop=1
-close_on_unmount=1
-focus_previous=0
-side_pane_mode=places
-view_mode=list
-show_hidden=0
-sort=name;ascending;
-columns=name:200;size;mtime;
-toolbar=newtab;navigation;home;
-show_statusbar=1
-pathbar_mode_buttons=0
-EOF
+###### Configure PCManFM
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}PCManFM${RESET} - GUI file #system navigation"
+##--- Settings
+#mkdir -p ~/.config/gtk-3.0/
+##--- Bookmarks
+#file=~/.config/gtk-3.0/bookmarks; [ -e "${file}" ] && cp -n $file{,.bkup}
+#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+#grep -q '^file://root/Downloads ' "${file}" 2>/dev/null \
+#  || echo 'file://root/Downloads Downloads' >> "${file}"
+#(dmidecode | grep -iq vmware) \
+#  && (mkdir -p /mnt/hgfs/ 2>/dev/null; grep -q '^file:///mnt/hgfs ' "${file}" 2>/dev/null \
+#    || echo 'file:///mnt/hgfs VMShare' >> "${file}")
+#grep -q '^file:///tmp ' "${file}" 2>/dev/null \
+#  || echo 'file:///tmp /tmp' >> "${file}"
+#grep -q '^file:///usr/share ' "${file}" 2>/dev/null \
+#  || echo 'file:///usr/share Kali Tools' >> "${file}"
+#grep -q '^file:///opt ' "${file}" 2>/dev/null \
+#  || echo 'file:///opt /opt' >> "${file}"
+#grep -q '^file:///var/ftp ' "${file}" 2>/dev/null \
+#  || echo 'file:///var/ftp ftp' >> "${file}"
+#grep -q '^file:///var/samba ' "${file}" 2>/dev/null \
+#  || echo 'file:///var/samba Samba' >> "${file}"
+#grep -q '^file:///var/tftp ' "${file}" 2>/dev/null \
+#  || echo 'file:///var/tftp tftp' >> "${file}"
+#grep -q '^file:///var/www/html ' "${file}" 2>/dev/null \
+#  || echo 'file:///var/www/html www' >> "${file}"
+#  #--- Settings
+#file=~/.config/pcmanfm/default/pcmanfm.conf; [ -e "${file}" ] && cp -n $file{,.bkup}
+#cat <<EOF > "${file}"
+#[config]
+#bm_open_method=0
+#
+#[volume]
+#mount_on_startup=1
+#mount_removable=1
+#autorun=1
+#
+#[ui]
+#always_show_tabs=1
+#max_tab_chars=32
+#win_width=1160
+#win_height=792
+#splitter_pos=184
+#media_in_new_tab=0
+#desktop_folder_new_win=0
+#change_tab_on_drop=1
+#close_on_unmount=1
+#focus_previous=0
+#side_pane_mode=places
+#view_mode=list
+#show_hidden=0
+#sort=name;ascending;
+#columns=name:200;size;mtime;
+#toolbar=newtab;navigation;home;
+#show_statusbar=1
+#pathbar_mode_buttons=0
+#EOF
 
 
 #### Install Sublime Text
@@ -810,6 +810,17 @@ git clone https://github.com/Hackplayers/evil-winrm.git /opt/evil-winrm-git \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 cd /opt/evil-winrm-git
 gem install winrm winrm-fs stringio
+
+
+##### Install Volatility3
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Volatility3${RESET} ~ Memory Forensics"
+pip3 install https://github.com/volatilityfoundation/volatility3/releases/download/v1.0.1/volatility3-1.0.1-py3-none-any.whl
+mkdir -p /usr/lib/volatility3/volatility/symbols/
+wget -P /usr/lib/volatility3/volatility/symbols/ https://downloads.volatilityfoundation.org/volatility3/symbols/windows.zip \
+  && wget -P /usr/lib/volatility3/volatility/symbols/ https://downloads.volatilityfoundation.org/volatility3/symbols/mac.zip \
+  && wget -P /usr/lib/volatility3/volatility/symbols/ https://downloads.volatilityfoundation.org/volatility3/symbols/linux.zip
+pip3 install capstone
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
 ################################################################################
