@@ -806,10 +806,11 @@ python3 -m pip install git+https://github.com/Tib3rius/AutoRecon.git \
 
 ##### Install evil-winrm - WinRM shell
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}evil-winrm${RESET} ~ The ultimate WinRM shell for hacking/pentesting "
-git clone https://github.com/Hackplayers/evil-winrm.git /opt/evil-winrm-git \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+git clone https://github.com/Hackplayers/evil-winrm.git /opt/evil-winrm-git
 cd /opt/evil-winrm-git
-gem install winrm winrm-fs stringio
+gem install winrm winrm-fs stringio \
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+
 
 
 ##### Install Volatility3
@@ -819,7 +820,7 @@ mkdir -p /usr/lib/volatility3/volatility/symbols/
 wget -P /usr/lib/volatility3/volatility/symbols/ https://downloads.volatilityfoundation.org/volatility3/symbols/windows.zip \
   && wget -P /usr/lib/volatility3/volatility/symbols/ https://downloads.volatilityfoundation.org/volatility3/symbols/mac.zip \
   && wget -P /usr/lib/volatility3/volatility/symbols/ https://downloads.volatilityfoundation.org/volatility3/symbols/linux.zip
-pip3 install capstone
+pip3 install capstone \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
