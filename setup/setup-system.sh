@@ -812,7 +812,6 @@ gem install winrm winrm-fs stringio \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
-
 ##### Install Volatility3
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Volatility3${RESET} ~ Memory Forensics"
 pip3 install https://github.com/volatilityfoundation/volatility3/releases/download/v1.0.1/volatility3-1.0.1-py3-none-any.whl
