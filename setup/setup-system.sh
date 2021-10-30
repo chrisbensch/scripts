@@ -424,7 +424,7 @@ msfvenom --help-formats 2> ~/.msf4/msfvenom/formats
 #--- First time run with Metasploit
 (( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Starting Metasploit for the first time${RESET} ~ this ${BOLD}will take a ~350 seconds${RESET} (~6 mintues)"
 echo "Started at: $(date)"
-systemctl start postgresql
+/etc/init.d/postgresql restart
 msfdb start
 msfconsole -q -x 'version;db_status;sleep 60;exit'
 
