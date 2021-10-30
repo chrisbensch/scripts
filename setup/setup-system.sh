@@ -334,8 +334,9 @@ chmod 0644 /etc/hosts
 cd /usr/share/metasploit-framework/
 gem install bundler:1.17.3
 #--- Start services
-systemctl stop postgresql
-systemctl start postgresql
+#systemctl stop postgresql
+#systemctl start postgresql
+/etc/init.d/postgresql restart
 msfdb reinit
 sleep 5s
 #--- Autorun Metasploit commands each startup

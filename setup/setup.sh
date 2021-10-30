@@ -274,7 +274,7 @@ HistoryMode=2
 EOF
 #Configuring PowerLevel10k - cheating
 cp ./res/p10k.zsh ~/.p10k.zsh
-chmod 755 ~/.p10k.zsh
+chmod 775 ~/.p10k.zsh
 #Configuring zsh - cheating
 cp ./res/zshrc ~/.zshrc
 chmod 755 ~/.zshrc
