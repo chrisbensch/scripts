@@ -125,9 +125,7 @@ apt -y -qq install ntpdate \
 #--- Update time
 ntpdate -b -s -u pool.ntp.org
 #--- Start service
-systemctl restart ntp
-#--- Remove from start up
-systemctl disable ntp 2>/dev/null
+/etc/init.d/ntp restart
 #--- Only used for stats at the end
 start_time=$(date +%s)
 
@@ -334,8 +332,6 @@ chmod 0644 /etc/hosts
 cd /usr/share/metasploit-framework/
 gem install bundler:1.17.3
 #--- Start services
-#systemctl stop postgresql
-#systemctl start postgresql
 /etc/init.d/postgresql restart
 msfdb reinit
 sleep 5s
@@ -384,9 +380,9 @@ file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_
 ([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
 #--- Aliases for console
 grep -q '^alias msfc=' "${file}" 2>/dev/null \
-  || echo -e 'alias msfc="systemctl start postgresql; msfdb start; msfconsole -q \"\$@\""' >> "${file}"
+  || echo -e 'alias msfc="/etc/init.d/postgresql restart; msfdb start; msfconsole -q \"\$@\""' >> "${file}"
 grep -q '^alias msfconsole=' "${file}" 2>/dev/null \
-  || echo -e 'alias msfconsole="systemctl start postgresql; msfdb start; msfconsole \"\$@\""\n' >> "${file}"
+  || echo -e 'alias msfconsole="/etc/init.d/postgresql restart; msfdb start; msfconsole \"\$@\""\n' >> "${file}"
 #--- Aliases to speed up msfvenom (create static output)
 grep -q "^alias msfvenom-list-all" "${file}" 2>/dev/null \
   || echo "alias msfvenom-list-all='cat ~/.msf4/msfvenom/all'" >> "${file}"
