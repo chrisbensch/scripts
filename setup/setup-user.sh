@@ -117,46 +117,6 @@ cat <<EOF > "${file}" \
 EOF
 
 
-##### Install (GNOME) Terminator
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring (GNOME) ${GREEN}Terminator${RESET} ~ multiple terminals in a single window"
-#--- Configure terminator
-mkdir -p ~/.config/terminator/
-file=~/.config/terminator/config; [ -e "${file}" ] && cp -n $file{,.bkup}
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-[global_config]
-  enabled_plugins = TerminalShot, LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
-  geometry_hinting = True
-[keybindings]
-[layouts]
-  [[default]]
-    [[[child0]]]
-      fullscreen = False
-      last_active_term = a8ddd1c9-44db-44fe-9b76-7d95c8249ca2
-      last_active_window = True
-      maximised = False
-      order = 0
-      parent = ""
-      size = 960, 667
-      type = Window
-    [[[terminal1]]]
-      order = 0
-      parent = child0
-      profile = default
-      type = Terminal
-      uuid = a8ddd1c9-44db-44fe-9b76-7d95c8249ca2
-[plugins]
-[profiles]
-  [[default]]
-    background_darkness = 0.9
-    copy_on_selection = True
-    cursor_color = "#8ae234"
-    cursor_color_fg = False
-    scrollback_infinite = True
-    show_titlebar = False
-
-EOF
-
 
 ##### Install tmux - all users
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}tmux${RESET} ~ multiplex virtual consoles"
@@ -301,60 +261,6 @@ cp /opt/scripts/misc/places.sqlite.backup /tmp
 sqlite3 "${file}" ".restore /tmp/places.sqlite.backup"
 
 
-###### Install WINE
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}WINE${RESET} ~ run Windows programs on *nix"
-##--- Using x64?
-#if [[ "$(uname -m)" == 'x86_64' ]]; then
-#  (( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}WINE (x64)${RESET}"
-#  export WINEARCH=win32
-#  rm -rf ~/.wine
-#fi
-##--- Run WINE for the first time
-#export WINEARCH=win32
-#rm -rf ~/.wine
-#[ -e /usr/share/windows-binaries/whoami.exe ] && wine /usr/share/windows-binaries/whoami.exe &>/dev/null
-##--- Setup default file association for .exe
-#mkdir -p ~/.local/share/applications/
-#file=~/.local/share/applications/mimeapps.list; [ -e "${file}" ]
-#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-#echo -e 'application/x-ms-dos-executable=wine.desktop' >> "${file}"
-#
-#
-###### Install MinGW (Windows) ~ cross compiling suite
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MinGW (Windows)${RESET} ~ cross compiling suite"
-#aria2c https://jaist.dl.sourceforge.net/project/mingw/Installer/mingw-get/mingw-get-0.6.2-beta-20131004-1/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip -#d /tmp
-#mv /tmp/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip /tmp/mingw-get.zip \
-#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading mingw-get.zip" 1>&2       #***!!! hardcoded path!
-#mkdir -p ~/.wine/drive_c/MinGW/bin/
-#unzip -q -o -d ~/.wine/drive_c/MinGW/ /tmp/mingw-get.zip
-#pushd ~/.wine/drive_c/MinGW/ >/dev/null
-#for FILE in mingw32-base mingw32-gcc-g++ mingw32-gcc-objc; do   #msys-base
-#  wine ./bin/mingw-get.exe install "${FILE}" 2>&1 | grep -v 'If something goes wrong, please rerun with\|for more detailed debugging output'
-#done
-#popd >/dev/null
-##--- Add to windows path
-#grep -q '^"PATH"=.*C:\\\\MinGW\\\\bin' ~/.wine/system.reg \
-#  || sed -i '/^"PATH"=/ s_"$_;C:\\\\MinGW\\\\bin"_' ~/.wine/system.reg
-#
-#
-###### Install Python (Windows via WINE)
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Python (Windows)${RESET}"
-#echo -n '[1/2]'; aria2c https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi -d /tmp \
-#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading python.msi" 1>&2       #***!!! hardcoded path!
-#mv /tmp/python-2.7.9.msi /tmp/python.msi
-#echo -n '[2/2]'; aria2c http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe/download -d /tmp \
-#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading pywin32.exe" 1>&2      #***!!! hardcoded path!
-#mv  /tmp/pywin32-219.win32-py2.7.exe /tmp/pywin32.exe
-#wine msiexec /i /tmp/python.msi /qb 2>&1 | grep -v 'If something goes wrong, please rerun with\|for more detailed debugging output'
-#pushd /tmp/ >/dev/null
-#rm -rf "PLATLIB/" "SCRIPTS/"
-#unzip -q -o /tmp/pywin32.exe
-#cp -rf PLATLIB/* ~/.wine/drive_c/Python27/Lib/site-packages/
-#cp -rf SCRIPTS/* ~/.wine/drive_c/Python27/Scripts/
-#rm -rf "PLATLIB/" "SCRIPTS/"
-#popd >/dev/null
-
-
 ##### Setup SSH
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}SSH${RESET} ~ CLI access"
 find ~/.ssh/ -type f ! -name authorized_keys -delete 2>/dev/null
@@ -363,42 +269,34 @@ find ~/.ssh/ -type f ! -name authorized_keys -delete 2>/dev/null
 ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa -P "" >/dev/null
 
 
-##### Install PCManFM
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}pcmanfm${RESET} ~ PCMAN File Manager"
-#--- Configure pcmanfm
-mkdir -p ~/.config/pcmanfm/default/
-file=~/.config/pcmanfm/default/pcmanfm.conf; [ -e "${file}" ] && cp -n $file{,.bkup}
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-[config]
-bm_open_method=0
+##### Install oh-my-zsh
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}oh-my-zsh${RESET} ~ zsh customization"
+wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh \
+  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+#Installing zsh plugins
+git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting
 
-[volume]
-mount_on_startup=1
-mount_removable=1
-autorun=1
 
-[ui]
-always_show_tabs=1
-max_tab_chars=32
-win_width=871
-win_height=632
-splitter_pos=184
-media_in_new_tab=0
-desktop_folder_new_win=0
-change_tab_on_drop=1
-close_on_unmount=1
-focus_previous=0
-side_pane_mode=places
-view_mode=compact
-show_hidden=0
-sort=name;ascending;
-toolbar=newtab;navigation;home;
-show_statusbar=1
-pathbar_mode_buttons=0
+##### Install PowerLevel10k
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PowerLevel10k${RESET} ~ zsh customization"
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k \
+  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
+#Installing PowerLevel10k fonts
+#cd /usr/local/share/fonts || return
+mkdir $HOME/.fonts
+wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Regular.ttf"
+wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold.ttf"
+wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Italic.ttf"
+wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold Italic.ttf"
+fc-cache -rv
 
-EOF
-
+#Configuring PowerLevel10k - cheating
+cp ./res/p10k.zsh ~/.p10k.zsh
+chmod 775 ~/.p10k.zsh
+#Configuring zsh - cheating
+cp ./res/zshrc ~/.zshrc
+chmod 755 ~/.zshrc
 
 ################################################################################
 

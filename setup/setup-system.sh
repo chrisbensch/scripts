@@ -1,6 +1,6 @@
 #!/bin/bash
 #-Metadata----------------------------------------------------#
-#  Filename: setup.sh             (Update: 18-AUG-2020)       #
+#  Filename: setup.sh             (Update: 05-APR-2022)       #
 #-Info--------------------------------------------------------#
 #  Personal post-install script for Kali Linux Rolling        #
 #-Author(s)---------------------------------------------------#
@@ -12,7 +12,7 @@
 
 
 ##### Location information
-timezone="America/Los_Angeles"       # Set timezone location          [ --timezone Europe/London ]
+timezone="Europe/London"       # Set timezone location          [ --timezone Europe/London ]
 
 ##### Optional steps
 burpFree=true              # Disable configuring Burp Suite (for Burp Pro users...)    [ --burp ]
@@ -182,65 +182,6 @@ sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="vga=0x0318"
 update-grub
 
 
-###### Configure PCManFM
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}PCManFM${RESET} - GUI file #system navigation"
-##--- Settings
-#mkdir -p ~/.config/gtk-3.0/
-##--- Bookmarks
-#file=~/.config/gtk-3.0/bookmarks; [ -e "${file}" ] && cp -n $file{,.bkup}
-#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-#grep -q '^file://root/Downloads ' "${file}" 2>/dev/null \
-#  || echo 'file://root/Downloads Downloads' >> "${file}"
-#(dmidecode | grep -iq vmware) \
-#  && (mkdir -p /mnt/hgfs/ 2>/dev/null; grep -q '^file:///mnt/hgfs ' "${file}" 2>/dev/null \
-#    || echo 'file:///mnt/hgfs VMShare' >> "${file}")
-#grep -q '^file:///tmp ' "${file}" 2>/dev/null \
-#  || echo 'file:///tmp /tmp' >> "${file}"
-#grep -q '^file:///usr/share ' "${file}" 2>/dev/null \
-#  || echo 'file:///usr/share Kali Tools' >> "${file}"
-#grep -q '^file:///opt ' "${file}" 2>/dev/null \
-#  || echo 'file:///opt /opt' >> "${file}"
-#grep -q '^file:///var/ftp ' "${file}" 2>/dev/null \
-#  || echo 'file:///var/ftp ftp' >> "${file}"
-#grep -q '^file:///var/samba ' "${file}" 2>/dev/null \
-#  || echo 'file:///var/samba Samba' >> "${file}"
-#grep -q '^file:///var/tftp ' "${file}" 2>/dev/null \
-#  || echo 'file:///var/tftp tftp' >> "${file}"
-#grep -q '^file:///var/www/html ' "${file}" 2>/dev/null \
-#  || echo 'file:///var/www/html www' >> "${file}"
-#  #--- Settings
-#file=~/.config/pcmanfm/default/pcmanfm.conf; [ -e "${file}" ] && cp -n $file{,.bkup}
-#cat <<EOF > "${file}"
-#[config]
-#bm_open_method=0
-#
-#[volume]
-#mount_on_startup=1
-#mount_removable=1
-#autorun=1
-#
-#[ui]
-#always_show_tabs=1
-#max_tab_chars=32
-#win_width=1160
-#win_height=792
-#splitter_pos=184
-#media_in_new_tab=0
-#desktop_folder_new_win=0
-#change_tab_on_drop=1
-#close_on_unmount=1
-#focus_previous=0
-#side_pane_mode=places
-#view_mode=list
-#show_hidden=0
-#sort=name;ascending;
-#columns=name:200;size;mtime;
-#toolbar=newtab;navigation;home;
-#show_statusbar=1
-#pathbar_mode_buttons=0
-#EOF
-
-
 #### Install Sublime Text
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Sublime Text${RESET} ~ Awesome Editor"
 wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
@@ -259,58 +200,6 @@ apt update && apt install code \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install vim - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}vim${RESET} ~ CLI text editor"
-#--- Configure vim
-file=/etc/vim/vimrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #~/.vimrc
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-sed -i 's/.*syntax on/syntax on/' "${file}"
-sed -i 's/.*set background=dark/set background=dark/' "${file}"
-sed -i 's/.*set showcmd/set showcmd/' "${file}"
-sed -i 's/.*set showmatch/set showmatch/' "${file}"
-#sed -i 's/.*set ignorecase/set ignorecase/' "${file}"
-#sed -i 's/.*set smartcase/set smartcase/' "${file}"
-#sed -i 's/.*set incsearch/set incsearch/' "${file}"
-#sed -i 's/.*set autowrite/set autowrite/' "${file}"
-#sed -i 's/.*set hidden/set hidden/' "${file}"
-#sed -i 's/.*set mouse=.*/"set mouse=a/' "${file}"
-grep -q '^set number' "${file}" 2>/dev/null \
-  || echo 'set number' >> "${file}"                                                                      # Add line numbers
-grep -q '^set expandtab' "${file}" 2>/dev/null \
-  || echo -e 'set expandtab\nset smarttab' >> "${file}"                                                  # Set use spaces instead of tabs
-grep -q '^set softtabstop' "${file}" 2>/dev/null \
-  || echo -e 'set softtabstop=4\nset shiftwidth=4' >> "${file}"                                          # Set 4 spaces as a 'tab'
-grep -q '^set foldmethod=marker' "${file}" 2>/dev/null \
-  || echo 'set foldmethod=marker' >> "${file}"                                                           # Folding
-grep -q '^nnoremap <space> za' "${file}" 2>/dev/null \
-  || echo 'nnoremap <space> za' >> "${file}"                                                             # Space toggle folds
-grep -q '^set hlsearch' "${file}" 2>/dev/null \
-  || echo 'set hlsearch' >> "${file}"                                                                    # Highlight search results
-grep -q '^set laststatus' "${file}" 2>/dev/null \
-  || echo -e 'set laststatus=2\nset statusline=%F%m%r%h%w\ (%{&ff}){%Y}\ [%l,%v][%p%%]' >> "${file}"     # Status bar
-grep -q '^filetype on' "${file}" 2>/dev/null \
-  || echo -e 'filetype on\nfiletype plugin on\nsyntax enable\nset grepprg=grep\ -nH\ $*' >> "${file}"    # Syntax highlighting
-grep -q '^set wildmenu' "${file}" 2>/dev/null \
-  || echo -e 'set wildmenu\nset wildmode=list:longest,full' >> "${file}"                                 # Tab completion
-grep -q '^set invnumber' "${file}" 2>/dev/null \
-  || echo -e ':nmap <F8> :set invnumber<CR>' >> "${file}"                                                # Toggle line numbers
-#grep -q '^set pastetoggle=<F9>' "${file}" 2>/dev/null \
-#  || echo -e 'set pastetoggle=<F9>' >> "${file}"                                                         # Hotkey - turning off auto indent when pasting
-#grep -q '^:command Q q' "${file}" 2>/dev/null \
-#  || echo -e ':command Q q' >> "${file}"                                                                 # Fix stupid typo I always make
-#--- Set as default editor
-export EDITOR="vim"   #update-alternatives --config editor
-file=/etc/bash.bashrc; [ -e "${file}" ] && cp -n $file{,.bkup}
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^EDITOR' "${file}" 2>/dev/null \
-  || echo 'EDITOR="vim"' >> "${file}"
-git config --global core.editor "vim"
-#--- Set as default mergetool
-git config --global merge.tool vimdiff
-git config --global merge.conflictstyle diff3
-git config --global mergetool.prompt false
-
-
 ###### Setup firefox
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}firefox${RESET} ~ GUI web browser"
 timeout 15 firefox >/dev/null 2>&1                # Start and kill. Files needed for first time run
@@ -321,18 +210,6 @@ find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'sessionstore.*' -
 
 ##### Configure metasploit ~ http://docs.kali.org/general-use/starting-metasploit-framework-in-kali
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}metasploit${RESET} ~ exploit framework"
-mkdir -p ~/.msf4/modules/{auxiliary,exploits,payloads,post}/
-#--- Fix any port issues
-file=$(find /etc/postgresql/*/main/ -maxdepth 1 -type f -name postgresql.conf -print -quit);
-[ -e "${file}" ] && cp -n $file{,.bkup}
-sed -i 's/port = .* #/port = 5432 /' "${file}"
-#--- Fix permissions - 'could not translate host name "localhost", service "5432" to address: Name or service not known'
-chmod 0644 /etc/hosts
-#--- Fix 'bundler' issues - 'could not locate gemfile'
-cd /usr/share/metasploit-framework/
-gem install bundler:1.17.3
-#--- Start services
-/etc/init.d/postgresql restart
 msfdb reinit
 sleep 5s
 #--- Autorun Metasploit commands each startup
@@ -375,55 +252,6 @@ use exploit/multi/handler
 set PAYLOAD windows/meterpreter/reverse_https
 EOF
 fi
-#--- Aliases time
-file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-#--- Aliases for console
-grep -q '^alias msfc=' "${file}" 2>/dev/null \
-  || echo -e 'alias msfc="/etc/init.d/postgresql restart; msfdb start; msfconsole -q \"\$@\""' >> "${file}"
-grep -q '^alias msfconsole=' "${file}" 2>/dev/null \
-  || echo -e 'alias msfconsole="/etc/init.d/postgresql restart; msfdb start; msfconsole \"\$@\""\n' >> "${file}"
-#--- Aliases to speed up msfvenom (create static output)
-grep -q "^alias msfvenom-list-all" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-all='cat ~/.msf4/msfvenom/all'" >> "${file}"
-grep -q "^alias msfvenom-list-nops" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-nops='cat ~/.msf4/msfvenom/nops'" >> "${file}"
-grep -q "^alias msfvenom-list-payloads" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-payloads='cat ~/.msf4/msfvenom/payloads'" >> "${file}"
-grep -q "^alias msfvenom-list-encoders" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-encoders='cat ~/.msf4/msfvenom/encoders'" >> "${file}"
-grep -q "^alias msfvenom-list-formats" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-formats='cat ~/.msf4/msfvenom/formats'" >> "${file}"
-grep -q "^alias msfvenom-list-generate" "${file}" 2>/dev/null \
-  || echo "alias msfvenom-list-generate='_msfvenom-list-generate'" >> "${file}"
-grep -q "^function _msfvenom-list-generate" "${file}" 2>/dev/null \
-  || cat <<EOF >> "${file}" \
-    || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-function _msfvenom-list-generate {
-  mkdir -p ~/.msf4/msfvenom/
-  msfvenom --list all > ~/.msf4/msfvenom/all
-  msfvenom --list nops > ~/.msf4/msfvenom/nops
-  msfvenom --list payloads > ~/.msf4/msfvenom/payloads
-  msfvenom --list encoders > ~/.msf4/msfvenom/encoders
-  msfvenom --help-formats 2> ~/.msf4/msfvenom/formats
-}
-EOF
-#--- Apply new aliases
-source "${file}" || source ~/.zshrc
-#--- Generate (Can't call alias)
-mkdir -p ~/.msf4/msfvenom/
-msfvenom --list all > ~/.msf4/msfvenom/all
-msfvenom --list nops > ~/.msf4/msfvenom/nops
-msfvenom --list payloads > ~/.msf4/msfvenom/payloads
-msfvenom --list encoders > ~/.msf4/msfvenom/encoders
-msfvenom --help-formats 2> ~/.msf4/msfvenom/formats
-#--- First time run with Metasploit
-(( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Starting Metasploit for the first time${RESET} ~ this ${BOLD}will take a ~350 seconds${RESET} (~6 mintues)"
-echo "Started at: $(date)"
-/etc/init.d/postgresql restart
-msfdb start
-msfconsole -q -x 'version;db_status;sleep 60;exit'
-
 
 ##### Configuring armitage
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}armitage${RESET} ~ GUI Metasploit UI"
@@ -435,12 +263,6 @@ for file in /etc/bash.bashrc ~/.zshrc; do     #~/.bashrc
   grep -q 'MSF_DATABASE_CONFIG' "${file}" 2>/dev/null \
     || echo -e 'MSF_DATABASE_CONFIG=/usr/share/metasploit-framework/config/database.yml\n' >> "${file}"
 done
-
-
-##### Install wireshark
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Wireshark${RESET} ~ GUI network protocol analyzer"
-apt -y -qq install wireshark \
-    || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install flameshot
@@ -455,43 +277,10 @@ apt -y -qq install htop \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install iotop
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}iotop${RESET} ~ CLI I/O usage"
-apt -y -qq install iotop \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install filezilla
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}FileZilla${RESET} ~ GUI file transfer"
 apt -y -qq install filezilla \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install wafw00f
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}wafw00f${RESET} ~ WAF detector"
-git clone https://github.com/EnableSecurity/wafw00f.git /opt/wafw00f-git \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-##### Install aria2c
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}aria2${RESET} ~ lightweight multi-protocol & multi-source command-line download utility"
-apt -y -qq install aria2 \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install onetwopunch
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}onetwopunch${RESET} ~ unicornscan & nmap wrapper"
-git clone -q -b master https://github.com/superkojiman/onetwopunch.git /opt/onetwopunch-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-#--- Add to path
-mkdir -p /usr/local/bin/
-file=/usr/local/bin/onetwopunch-git
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-#!/bin/bash
-
-cd /opt/onetwopunch-git/ && bash onetwopunch.sh "\$@"
-EOF
-chmod +x "${file}"
 
 
 ##### Install gobuster
@@ -513,18 +302,6 @@ popd >/dev/null
 #--- Add to path (with a 'better' name)
 mkdir -p /usr/local/bin/
 ln -sf /usr/bin/proxychains4 /usr/local/bin/proxychains-ng
-
-
-###### Install veil framework
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}veil-evasion framework${RESET} ~ #bypassing anti-virus"
-#apt -y -qq install veil-evasion \
-#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#
-#
-###### Install shellter
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}shellter${RESET} ~ dynamic #shellcode injector"
-#apt -y -qq install shellter \
-#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install SecLists
@@ -554,17 +331,9 @@ ln -sf /usr/share/sqlmap/txt/wordlist.txt /usr/share/wordlists/sqlmap.txt
 #find / \( -iname '*wordlist*' -or -iname '*passwords*' \) #-exec ls -l {} \;
 
 
-##### Install bless
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}bless${RESET} ~ GUI hex editor"
-apt -y -qq install bless \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install Empire
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Empire${RESET} ~ PowerShell post-exploitation"
-apt -y -qq install powershell-empire
-#git clone -q -b master https://github.com/PowerShellEmpire/Empire.git /opt/empire-git/ \
-#  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+apt -y -qq install powershell-empire starkiller
 
 
 ##### Install CMSmap
@@ -645,12 +414,6 @@ apt -y -qq install bloodhound \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install PuTTY Tools
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PuTTY Tools${RESET} ~ PuTTY CLI Tools"
-apt -y -qq install putty-tools \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install impacket
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}impacket${RESET} ~ network protocols via python"
 git clone -q -b master https://github.com/CoreSecurity/impacket.git /opt/impacket-git/ \
@@ -698,12 +461,6 @@ sed -i 's/^PermitRootLogin .*/PermitRootLogin yes/g' "${file}"      # Accept pas
 sed -i 's/^#AuthorizedKeysFile /AuthorizedKeysFile /g' "${file}"    # Allow for key based login
 
 
-###### Install PhantomJS
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}phantomjs${RESET} ~ Full web stack, #no browser"
-#apt -y -qq install phantomjs \
-#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install LinEnum
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}LinEnum${RESET} ~ Linux PrivEsc Checker"
 git clone -q https://github.com/rebootuser/LinEnum.git /opt/linenum-git \
@@ -716,35 +473,11 @@ git clone -q https://github.com/NullArray/RootHelper.git /opt/roothelper-git/ \
   || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
 
 
-##### Install Sn1per
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Sn1per${RESET} ~ Automated Pentest Framework"
-git clone -q https://github.com/1N3/Sn1per.git /opt/sn1per-git/ \
-  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
-
-
 ##### Install dirsearch
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dirsearch${RESET} ~ Directory Bruteforcer"
 cd /opt
 git clone -q https://github.com/maurosoria/dirsearch.git dirsearch-git \
   || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
-
-
-##### Install nload
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}nload${RESET} ~ Network Traffic Monitor"
-apt -y -qq install nload \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install PCManFM
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pcmanfm${RESET} ~ PCMAN File Manager"
-apt -y -qq install pcmanfm \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install winetricks
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WINE${RESET} ~ run Windows programs on *nix"
-apt -y -qq install winetricks \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install Powerless
@@ -777,28 +510,16 @@ git clone https://github.com/m0rph-1/revshellgen.git /opt/revshellgen-git \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
-##### Install SILENTTRINITY
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}RevShellGen${RESET} ~ Reverse Shell Generator"
-git clone https://github.com/byt3bl33d3r/SILENTTRINITY.git /opt/silenttrinity-git \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-
-
-###### Configure Java default jre
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Java 8${RESET} ~ default #JavaVM"
-#update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
-#  || echo -e ' '${RED}'[!] Issue with configuration'${RESET} 1>&2
-
-
 ##### Install PEASS - Privilege Escalation Awesome Scripts SUITE (with colors) https://book.hacktricks.xyz
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PEASS${RESET} ~ Privilege Escalation Awesome Scripts SUITE"
 git clone https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite.git /opt/peass-git \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
-##### Install AutoRecon - AutoRecon is a multi-threaded network reconnaissance tool which performs automated enumeration of services. 
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}AutoRecon${RESET} ~ Multi-threaded Recond Tool"
-python3 -m pip install git+https://github.com/Tib3rius/AutoRecon.git \
-  || echo -e ' '${RED}'[!] Issue with pip3 install'${RESET} 1>&2
+###### Install AutoRecon - AutoRecon is a multi-threaded network reconnaissance tool which performs automated #enumeration of services. 
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}AutoRecon${RESET} ~ #Multi-threaded Recond Tool"
+#python3 -m pip install git+https://github.com/Tib3rius/AutoRecon.git \
+#  || echo -e ' '${RED}'[!] Issue with pip3 install'${RESET} 1>&2
 
 
 ##### Install evil-winrm - WinRM shell
@@ -806,17 +527,6 @@ python3 -m pip install git+https://github.com/Tib3rius/AutoRecon.git \
 git clone https://github.com/Hackplayers/evil-winrm.git /opt/evil-winrm-git
 cd /opt/evil-winrm-git
 gem install winrm winrm-fs stringio \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-
-
-##### Install Volatility3
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Volatility3${RESET} ~ Memory Forensics"
-pip3 install https://github.com/volatilityfoundation/volatility3/releases/download/v1.0.1/volatility3-1.0.1-py3-none-any.whl
-mkdir -p /usr/lib/volatility3/volatility/symbols/
-wget -P /usr/lib/volatility3/volatility/symbols/ https://downloads.volatilityfoundation.org/volatility3/symbols/windows.zip \
-  && wget -P /usr/lib/volatility3/volatility/symbols/ https://downloads.volatilityfoundation.org/volatility3/symbols/mac.zip \
-  && wget -P /usr/lib/volatility3/volatility/symbols/ https://downloads.volatilityfoundation.org/volatility3/symbols/linux.zip
-pip3 install capstone \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
@@ -845,19 +555,5 @@ echo -e "\n\n ${YELLOW}[i]${RESET} Time (roughly) taken: ${YELLOW}$(( $(( finish
 
 
 #-Done-----------------------------------------------------------------#
-
-
-##### Done!
-echo -e "\n ${YELLOW}[i]${RESET} Don't forget to:"
-echo -e " ${YELLOW}[i]${RESET} + Check the above output (Did everything install? Any errors? (${RED}HINT: What's in RED${RESET}?)"
-echo -e " ${YELLOW}[i]${RESET} + Manually install: Nessus, Nexpose, and/or Metasploit Community"
-echo -e " ${YELLOW}[i]${RESET} + Agree/Accept to: Maltego, OWASP ZAP, w3af, etc"
-echo -e " ${YELLOW}[i]${RESET} + Setup git:   ${YELLOW}git config --global user.name <name>;git config --global user.email <email>${RESET}"
-echo -e " ${YELLOW}[i]${RESET} + ${BOLD}Change default passwords${RESET}: Samba, Pure-FTPd, PostgreSQL/MSF, MySQL, OpenVAS, BeEF XSS, etc"
-echo -e " ${YELLOW}[i]${RESET} + ${YELLOW}Reboot${RESET}"
-(dmidecode | grep -iq virtual) \
-  && echo -e " ${YELLOW}[i]${RESET} + Take a snapshot   (Virtual machine detected)"
-
-
 echo -e '\n'${BLUE}'[*]'${RESET}' '${BOLD}'Done!'${RESET}'\n\a'
 exit 0
