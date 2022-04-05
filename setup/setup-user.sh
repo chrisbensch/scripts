@@ -77,7 +77,7 @@ sleep 60
 killall -9 -q -w sublime_text >/dev/null
 
 # Configure special settings
-file=~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings; [ -e "${file}" ]
+file=~/.config/sublime-text/Packages/User/Preferences.sublime-settings; [ -e "${file}" ]
 cat <<EOF > "${file}" \
   || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
 {
