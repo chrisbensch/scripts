@@ -42,8 +42,8 @@ sleep 5
 killall -9 -q -w sublime_text >/dev/null
 
 # Install Package Control
-mkdir -p ~/.config/sublime-text-3/Installed Packages/
-cd ~/.config/sublime-text-3/Installed\ Packages/
+mkdir -p ~/.config/sublime-text/Installed Packages/
+cd ~/.config/sublime-text/Installed\ Packages/
 curl --progress-bar -k -L -f "https://packagecontrol.io/Package%20Control.sublime-package" --output "Package Control.sublime-package" 2>/dev/null
 
 # Configure Install Packages
