@@ -333,7 +333,7 @@ ln -sf /usr/share/sqlmap/txt/wordlist.txt /usr/share/wordlists/sqlmap.txt
 
 ##### Install Empire
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Empire${RESET} ~ PowerShell post-exploitation"
-apt -y -qq install powershell-empire starkiller
+apt -y -qq install powershell-empire starkiller 
 
 
 ##### Install CMSmap
