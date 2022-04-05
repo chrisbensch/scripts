@@ -1,6 +1,6 @@
 #!/bin/bash
 #-Metadata----------------------------------------------------#
-#  Filename: setup.sh             (Update: 02-OCT-2020)       #
+#  Filename: setup.sh             (Update: 03-APR-2022)       #
 #-Info--------------------------------------------------------#
 #  Personal post-install script for Kali Linux Rolling        #
 #-Author(s)---------------------------------------------------#
@@ -12,7 +12,7 @@
 
 
 ##### Location information
-timezone="US/Pacific"       # Set timezone location                                     [ --timezone Europe/London ]
+timezone="Europe/London"       # Set timezone location                                     [ --timezone Europe/London ]
 
 ##### Optional steps
 burpFree=true              # Disable configuring Burp Suite (for Burp Pro users...)    [ --burp ]
@@ -227,16 +227,8 @@ grubTimeout=5
 (dmidecode | grep -iq virtual) && grubTimeout=1   # Much less if we are in a VM
 file=/etc/default/grub; [ -e "${file}" ] && cp -n $file{,.bkup}
 sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT='${grubTimeout}'/' "${file}"                           # Time out (lower if in a virtual machine, else possible dual booting)
-sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="vga=0x0318"/' "${file}"   # TTY resolution
+#sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="vga=0x0318"/' "${file}"   # TTY resolution
 update-grub
-
-
-##### Install zsh
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}zsh${RESET} ~ zsh shell"
-apt -y -qq install zsh \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-chsh -s "$(which zsh)"
-
 
 ##### Install oh-my-zsh
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}oh-my-zsh${RESET} ~ zsh customization"
@@ -253,73 +245,19 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$
   || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
 #Installing PowerLevel10k fonts
 #cd /usr/local/share/fonts || return
-wget -P /usr/local/share/fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Regular.ttf"
-wget -P /usr/local/share/fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold.ttf"
-wget -P /usr/local/share/fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Italic.ttf"
-wget -P /usr/local/share/fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold Italic.ttf"
+mkdir $HOME/.fonts
+wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Regular.ttf"
+wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold.ttf"
+wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Italic.ttf"
+wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold Italic.ttf"
 fc-cache -rv
-#Configuring Konsole to use new fonts
-file=~/.local/share/konsole/Kali-Dark.profile
-cat <<EOF > "${file}"
-[Appearance]
-ColorScheme=Kali-Dark
 
-[General]
-Name=Kali-Dark
-Parent=FALLBACK/
-
-[Scrolling]
-HistoryMode=2
-
-EOF
 #Configuring PowerLevel10k - cheating
 cp ./res/p10k.zsh ~/.p10k.zsh
 chmod 775 ~/.p10k.zsh
 #Configuring zsh - cheating
 cp ./res/zshrc ~/.zshrc
 chmod 755 ~/.zshrc
-
-##### Install (GNOME) Terminator
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing (GNOME) ${GREEN}Terminator${RESET} ~ multiple terminals in a single window"
-apt -y -qq install terminator \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#--- Configure terminator
-mkdir -p ~/.config/terminator/
-file=~/.config/terminator/config; [ -e "${file}" ] && cp -n $file{,.bkup}
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-[global_config]
-  enabled_plugins = TerminalShot, LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
-  geometry_hinting = True
-[keybindings]
-[layouts]
-  [[default]]
-    [[[child0]]]
-      fullscreen = False
-      last_active_term = a8ddd1c9-44db-44fe-9b76-7d95c8249ca2
-      last_active_window = True
-      maximised = False
-      order = 0
-      parent = ""
-      size = 960, 667
-      type = Window
-    [[[terminal1]]]
-      order = 0
-      parent = child0
-      profile = default
-      type = Terminal
-      uuid = a8ddd1c9-44db-44fe-9b76-7d95c8249ca2
-[plugins]
-[profiles]
-  [[default]]
-    background_darkness = 0.9
-    copy_on_selection = True
-    cursor_color = "#8ae234"
-    cursor_color_fg = False
-    scrollback_infinite = True
-    show_titlebar = False
-
-EOF
 
 
 ###### Setup firefox
@@ -410,7 +348,7 @@ else
 #run post/windows/gather/smart_hashdump
 EOF
 fi
-file=~/.msf5/msfconsole.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
+file=~/.msf4/msfconsole.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
 if [[ -f "${file}" ]]; then
   echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
 else
@@ -441,7 +379,7 @@ fi
 echo "Started at: $(date)"
 systemctl start postgresql
 msfdb start
-msfconsole -q -x 'version;db_status;sleep 310;exit'
+msfconsole -q -x 'version;db_status;sleep 15;exit'
 
 
 ##### Configuring armitage
@@ -457,19 +395,6 @@ done
 #--- Test
 #msfrpcd -U msf -P test -f -S -a 127.0.0.1
 
-
-##### Install wireshark
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Wireshark${RESET} ~ GUI network protocol analyzer"
-#--- Hide running as root warning
-mkdir -p ~/.wireshark/
-file=~/.wireshark/recent_common;   #[ -e "${file}" ] && cp -n $file{,.bkup}
-[ -e "${file}" ] \
-  || echo "privs.warn_if_elevated: FALSE" > "${file}"
-#--- Disable lua warning
-[ -e "/usr/share/wireshark/init.lua" ] \
-  && mv -f /usr/share/wireshark/init.lua{,.disabled}
-
-
 ##### Install flameshot
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}flameshot${RESET} ~ Powerful yet simple to use screenshot software"
 apt -y -qq install flameshot \
@@ -479,12 +404,6 @@ apt -y -qq install flameshot \
 ##### Install htop
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}htop${RESET} ~ CLI process viewer"
 apt -y -qq install htop \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install iotop
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}iotop${RESET} ~ CLI I/O usage"
-apt -y -qq install iotop \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
@@ -536,19 +455,6 @@ cp /opt/scripts/misc/nmap-mac-prefixes /usr/share/nmap/ \
   || echo -e ' '${RED}'[!] Issue downloading nmap-mac-prefixes'${RESET} 1>&2
 
 
-##### Install vulscan script for nmap
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}vulscan script for nmap${RESET} ~ vulnerability scanner add-on"
-apt -y -qq install nmap curl \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-mkdir -p /usr/share/nmap/scripts/vulscan/
-git clone https://github.com/scipag/vulscan.git /opt/vulscan-git \
-  || echo -e ' '${RED}'[!]'${RESET}" Issue cloning repo" 1>&2      #***!!! hardcoded version! Need to manually check for updates
-cp /opt/vulscan-git/*.csv /usr/share/nmap/scripts/vulscan/
-cp /opt/vulscan-git/vulscan.nse /usr/share/nmap/scripts/vulscan/
-#--- Fix permissions (by default its 0777)
-chmod -R 0755 /usr/share/nmap/scripts/; find /usr/share/nmap/scripts/ -type f -exec chmod 0644 {} \;
-
-
 ##### Install onetwopunch
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}onetwopunch${RESET} ~ unicornscan & nmap wrapper"
 git clone -q -b master https://github.com/superkojiman/onetwopunch.git /opt/onetwopunch-git/ \
@@ -594,85 +500,6 @@ ln -sf /usr/bin/proxychains4 /usr/local/bin/proxychains-ng
 for FILE in cc gcc g++ gcc-multilib make automake libc6 libc6-dev libc6-dev-amd64 libc6-i386 libc6-dev-i386 libc6-i686 libc6-dev-i686 build-essential dpkg-dev; do
   apt -y -qq install "${FILE}" 2>/dev/null
 done
-
-
-###### Install MinGW ~ cross compiling suite
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MinGW${RESET} ~ cross compiling suite"
-#for FILE in mingw-w64 binutils-mingw-w64 gcc-mingw-w64 cmake mingw-w64-x86-64-dev mingw-w64-tools gcc-mingw-w64-i686 gcc-mingw-w64-x86-64 mingw32; do
-#  apt -y -qq install "${FILE}" 2>/dev/null
-#done
-
-
-###### Install WINE
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WINE${RESET} ~ run Windows programs on *nix"
-#apt -y -qq install wine wine64 \
-#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-##--- Using x64?
-#if [[ "$(uname -m)" == 'x86_64' ]]; then
-#  (( STAGE++ )); echo -e " ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}WINE (x64)${RESET}"
-#  export WINEARCH=win32
-#  rm -rf ~/.wine
-#  dpkg --add-architecture i386
-#  apt update
-#  apt -y -qq install wine32 \
-#    || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#fi
-#
-##--- Run WINE for the first time
-#export WINEARCH=win32
-#rm -rf ~/.wine
-#[ -e /usr/share/windows-binaries/whoami.exe ] && wine /usr/share/windows-binaries/whoami.exe &>/dev/null
-##--- Setup default file association for .exe
-#file=~/.local/share/applications/mimeapps.list; [ -e "${file}" ] && cp -n $file{,.bkup}
-#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-#echo -e 'application/x-ms-dos-executable=wine.desktop' >> "${file}"
-#
-#
-###### Install MinGW (Windows) ~ cross compiling suite
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}MinGW (Windows)${RESET} ~ cross compiling suite"
-#aria2c https://jaist.dl.sourceforge.net/project/mingw/Installer/mingw-get/mingw-get-0.6.2-beta-20131004-1/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip -d /tmp
-#mv /tmp/mingw-get-0.6.2-mingw32-beta-20131004-1-bin.zip /tmp/mingw-get.zip \
-#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading mingw-get.zip" 1>&2       #***!!! hardcoded path!
-#mkdir -p ~/.wine/drive_c/MinGW/bin/
-#unzip -q -o -d ~/.wine/drive_c/MinGW/ /tmp/mingw-get.zip
-#pushd ~/.wine/drive_c/MinGW/ >/dev/null
-#for FILE in mingw32-base mingw32-gcc-g++ mingw32-gcc-objc; do   #msys-base
-#  wine ./bin/mingw-get.exe install "${FILE}" 2>&1 | grep -v 'If something goes wrong, please rerun with\|for more detailed debugging output'
-#done
-#popd >/dev/null
-##--- Add to windows path
-#grep -q '^"PATH"=.*C:\\\\MinGW\\\\bin' ~/.wine/system.reg \
-#  || sed -i '/^"PATH"=/ s_"$_;C:\\\\MinGW\\\\bin"_' ~/.wine/system.reg
-#
-#
-###### Install Python (Windows via WINE)
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Python (Windows)${RESET}"
-#echo -n '[1/2]'; aria2c https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi -d /tmp \
-#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading python.msi" 1>&2       #***!!! hardcoded path!
-#mv /tmp/python-2.7.9.msi /tmp/python.msi
-#echo -n '[2/2]'; aria2c http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe/download -d /tmp \
-#  || echo -e ' '${RED}'[!]'${RESET}" Issue downloading pywin32.exe" 1>&2      #***!!! hardcoded path!
-#mv  /tmp/pywin32-219.win32-py2.7.exe /tmp/pywin32.exe
-#wine msiexec /i /tmp/python.msi /qb 2>&1 | grep -v 'If something goes wrong, please rerun with\|for more detailed debugging output'
-#pushd /tmp/ >/dev/null
-#rm -rf "PLATLIB/" "SCRIPTS/"
-#unzip -q -o /tmp/pywin32.exe
-#cp -rf PLATLIB/* ~/.wine/drive_c/Python27/Lib/site-packages/
-#cp -rf SCRIPTS/* ~/.wine/drive_c/Python27/Scripts/
-#rm -rf "PLATLIB/" "SCRIPTS/"
-#popd >/dev/null
-
-
-##### Install Veil framework
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}veil-evasion framework${RESET} ~ bypassing anti-virus"
-apt -y -qq install veil-evasion \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install shellter
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}shellter${RESET} ~ dynamic shellcode injector"
-apt -y -qq install shellter \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
 ##### Install SecLists
@@ -762,21 +589,6 @@ EOF
 chmod +x "${file}"
 
 
-##### Configure BeEF XSS
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}BeEF XSS${RESET} ~ XSS framework"
-#--- Configure beef
-file=/usr/share/beef-xss/config.yaml; [ -e "${file}" ] && cp -n $file{,.bkup}
-username="root"
-password="toor"
-sed -i 's/user:.*".*"/user:   "'${username}'"/' "${file}"
-sed -i 's/passwd:.*".*"/passwd:  "'${password}'"/'  "${file}"
-echo -e " ${YELLOW}[i]${RESET} BeEF username: ${username}"
-echo -e " ${YELLOW}[i]${RESET} BeEF password: ${password}   ***${BOLD}CHANGE THIS ASAP${RESET}***"
-echo -e " ${YELLOW}[i]${RESET} Edit: /usr/share/beef-xss/config.yaml"
-#--- Example
-#<script src="http://192.168.155.175:3000/hook.js" type="text/javascript"></script>
-
-
 ##### Install patator (GIT)
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}patator${RESET} (GIT) ~ brute force"
 git clone -q -b master https://github.com/lanjelot/patator.git /opt/patator-git/ \
@@ -823,33 +635,15 @@ apt -y -qq install dbeaver \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install gdebi
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}gdebi${RESET} ~ package installer"
-apt -y -qq install gdebi \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install BloodHound
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}BloodHound${RESET} ~ Six Degrees of Domain Admin"
 apt -y -qq install bloodhound \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install PuTTY Tools
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PuTTY Tools${RESET} ~ PuTTY CLI Tools"
-apt -y -qq install putty-tools \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
 ##### Install impacket
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}impacket${RESET} ~ network protocols via python"
 git clone -q -b master https://github.com/CoreSecurity/impacket.git /opt/impacket-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-
-
-##### Install gotty
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}gotty${RESET} ~ terminal via the web"
-git clone -q -b master https://github.com/yudai/gotty.git /opt/gotty-git/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
@@ -918,12 +712,6 @@ git clone -q https://github.com/NullArray/RootHelper.git /opt/roothelper-git/ \
   || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
 
 
-##### Install Sn1per
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Sn1per${RESET} ~ Automated Pentest Framework"
-git clone -q https://github.com/1N3/Sn1per.git /opt/sn1per-git/ \
-  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
-
-
 ##### Install dirsearch
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dirsearch${RESET} ~ Directory Bruteforcer"
 cd /opt
@@ -935,62 +723,6 @@ git clone -q https://github.com/maurosoria/dirsearch.git dirsearch-git \
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}nload${RESET} ~ Network Traffic Monitor"
 apt -y -qq install nload \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install PCManFM
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pcmanfm${RESET} ~ PCMAN File Manager"
-apt -y -qq install pcmanfm \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#--- Configure pcmanfm
-mkdir -p ~/.config/pcmanfm/default/
-file=~/.config/pcmanfm/default/pcmanfm.conf; [ -e "${file}" ] && cp -n $file{,.bkup}
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-[config]
-bm_open_method=0
-
-[volume]
-mount_on_startup=1
-mount_removable=1
-autorun=1
-
-[ui]
-always_show_tabs=1
-max_tab_chars=32
-win_width=871
-win_height=632
-splitter_pos=184
-media_in_new_tab=0
-desktop_folder_new_win=0
-change_tab_on_drop=1
-close_on_unmount=1
-focus_previous=0
-side_pane_mode=places
-view_mode=compact
-show_hidden=0
-sort=name;ascending;
-toolbar=newtab;navigation;home;
-show_statusbar=1
-pathbar_mode_buttons=0
-
-EOF
-
-
-##### Install winetricks
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WINE${RESET} ~ run Windows programs on *nix"
-apt -y -qq install winetricks \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install Vanquish
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Vanquish${RESET} ~ automated enumeration orchestrator"
-apt -y -qq install nbtscan-unixwiz \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-git clone -q https://github.com/frizb/Vanquish.git /opt/vanquish/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-#--- Vanquish install
-cd /opt/vanquish/
-python Vanquish2.py -install
 
 
 ##### Install Powerless
@@ -1031,14 +763,6 @@ git clone https://github.com/m0rph-1/revshellgen.git /opt/revshellgen-git \
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}SILENTTRINITY${RESET} ~ Reverse Shell Generator"
 git clone https://github.com/byt3bl33d3r/SILENTTRINITY.git /opt/silenttrinity-git \
   || echo -e ' '${RED}'[!] Issue with intall'${RESET} 1>&2
-
-
-###### Install & Configure Java default jre
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Java 8${RESET} ~ default JavaVM"
-#apt -y -qq install openjdk-8-jdk \
-#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#update-java-alternatives --jre --set java-1.8.0-openjdk-amd64 \
-#  || echo -e ' '${RED}'[!] Issue with configuration'${RESET} 1>&2
 
 
 ##### Install PEASS - Privilege Escalation Awesome Scripts SUITE (with colors) https://book.hacktricks.xyz
