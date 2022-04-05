@@ -155,7 +155,7 @@ touch ~/.hushlogin \
 
 
 ##### Install python and python3 essential tools
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}python(3) tools${RESET}"
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}python3 tools${RESET}"
 apt -y -qq install python3-pip \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
@@ -393,12 +393,6 @@ git clone -q https://github.com/ohpe/juicy-potato.git /opt/juicy-potato-git/ \
 ##### Install exiftool
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}exiftool${RESET} ~ image file metadata editor"
 apt -y -qq install exiftool \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install jhead
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}jhead${RESET} ~ jpeg metadata editor"
-apt -y -qq install jhead \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
