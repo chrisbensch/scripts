@@ -42,10 +42,7 @@ ln -sf "${file}" ~/Desktop/restart-vm-tools.sh
 mkdir -p /home/analyst/.msf4/
 touch ~/.msf4/msf_autorunscript.rc
 file=~/.msf4/msf_autorunscript.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
-if [[ -f "${file}" ]]; then
-  echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
-else
-  cat <<EOF > "${file}"
+cat <<EOF > "${file}"
 #run post/windows/escalate/getsystem
 
 #run migrate -f -k
@@ -53,13 +50,7 @@ else
 
 #run post/windows/manage/smart_migrate
 #run post/windows/gather/smart_hashdump
-EOF
-fi
-file=~/.msf4/msfconsole.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
-if [[ -f "${file}" ]]; then
-  echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
-else
-  cat <<EOF > "${file}"
+
 load auto_add_route
 
 load alias
@@ -79,7 +70,6 @@ use exploit/multi/handler
 #setg AutoRunScript 'multi_console_command -rc "~/.msf4/msf_autorunscript.rc"'
 set PAYLOAD windows/meterpreter/reverse_https
 EOF
-fi
 
 
 #### Configuring Sublime Text
@@ -305,7 +295,7 @@ sed -i 's#^WebBrowser=.*#WebBrowser=firefox#' "${file}" 2>/dev/null \
 
 #--- Restore Bookmarks
 file=$(find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'places.sqlite' -print -quit)
-cp ./misc/places.sqlite.backup /tmp
+cp ../misc/places.sqlite.backup /tmp
 sqlite3 "${file}" ".restore /tmp/places.sqlite.backup"
 
 
