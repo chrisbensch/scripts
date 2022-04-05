@@ -26,7 +26,7 @@ start_time=$(date +%s)
 
 #--- Get current Dir
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-echo $SCRIPT_DIR;
+#echo $SCRIPT_DIR;
 
 ##### Configure User Settings
 
@@ -39,6 +39,7 @@ ln -sf "${file}" ~/Desktop/restart-vm-tools.sh
 
 
 #--- Autorun Metasploit commands each startup
+mkdir -p /home/analyst/.msf4/
 touch ~/.msf4/msf_autorunscript.rc
 file=~/.msf4/msf_autorunscript.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
 if [[ -f "${file}" ]]; then
@@ -339,6 +340,7 @@ wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master
 fc-cache -rv
 
 #Configuring PowerLevel10k - cheating
+cd $SCRIPT_DIR
 cp ./res/p10k.zsh ~/.p10k.zsh
 chmod 775 ~/.p10k.zsh
 cp ./res/zshrc ~/.zshrc
