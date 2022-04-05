@@ -42,13 +42,13 @@ sleep 5
 killall -9 -q -w sublime_text >/dev/null
 
 # Install Package Control
-mkdir -p ~/.config/sublime-text/Installed Packages/
-cd ~/.config/sublime-text/Installed\ Packages/
+mkdir -p "~/.config/sublime-text/Installed Packages/"
+cd "~/.config/sublime-text/Installed Packages/"
 curl --progress-bar -k -L -f "https://packagecontrol.io/Package%20Control.sublime-package" --output "Package Control.sublime-package" 2>/dev/null
 
 # Configure Install Packages
-mkdir -p ~/.config/sublime-text-3/Packages/User/
-cd ~/.config/sublime-text-3/Packages/User/
+mkdir -p ~/.config/sublime-text/Packages/User/
+cd ~/.config/sublime-text/Packages/User/
 touch "Package Control.sublime-settings"
 file="Package Control.sublime-settings"
 cat <<EOF > "${file}" \
@@ -294,7 +294,6 @@ fc-cache -rv
 #Configuring PowerLevel10k - cheating
 cp ./res/p10k.zsh ~/.p10k.zsh
 chmod 775 ~/.p10k.zsh
-#Configuring zsh - cheating
 cp ./res/zshrc ~/.zshrc
 chmod 755 ~/.zshrc
 
