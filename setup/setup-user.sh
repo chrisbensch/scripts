@@ -34,6 +34,59 @@ file=/usr/local/sbin/restart-vm-tools; [ -e "${file}" ]
 ln -sf "${file}" ~/Desktop/restart-vm-tools.sh
 
 
+#--- Autorun Metasploit commands each startup
+file=~/.msf4/msf_autorunscript.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
+if [[ -f "${file}" ]]; then
+  echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
+else
+  cat <<EOF > "${file}"
+#run post/windows/escalate/getsystem
+
+#run migrate -f -k
+#run migrate -n "explorer.exe" -k    # Can trigger AV alerts by touching explorer.exe...
+
+#run post/windows/manage/smart_migrate
+#run post/windows/gather/smart_hashdump
+EOF
+fi
+file=~/.msf4/msfconsole.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
+if [[ -f "${file}" ]]; then
+  echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
+else
+  cat <<EOF > "${file}"
+load auto_add_route
+
+load alias
+alias del rm
+alias handler use exploit/multi/handler
+
+load sounds
+
+setg TimestampOutput true
+setg VERBOSE true
+
+setg ExitOnSession false
+setg EnableStageEncoding true
+setg LHOST 0.0.0.0
+setg LPORT 443
+use exploit/multi/handler
+#setg AutoRunScript 'multi_console_command -rc "~/.msf4/msf_autorunscript.rc"'
+set PAYLOAD windows/meterpreter/reverse_https
+EOF
+fi
+
+##### Configuring armitage
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}armitage${RESET} ~ GUI Metasploit UI"
+export MSF_DATABASE_CONFIG=/usr/share/metasploit-framework/config/database.yml
+for file in /etc/bash.bashrc ~/.zshrc; do     #~/.bashrc
+  [ ! -e "${file}" ] && continue
+  [ -e "${file}" ] && cp -n $file{,.bkup}
+  ([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+  grep -q 'MSF_DATABASE_CONFIG' "${file}" 2>/dev/null \
+    || echo -e 'MSF_DATABASE_CONFIG=/usr/share/metasploit-framework/config/database.yml\n' >> "${file}"
+done
+
+
 #### Configuring Sublime Text
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Sublime Text${RESET} ~ Awesome Editor"
 # Run once to do basic setup

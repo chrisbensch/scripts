@@ -205,64 +205,13 @@ apt update && apt install code \
 timeout 15 firefox >/dev/null 2>&1                # Start and kill. Files needed for first time run
 timeout 5 killall -9 -q -w firefox-esr >/dev/null
 #--- Wipe session (due to force close)
-find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'sessionstore.*' -delete
+#find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'sessionstore.*' -delete
 
 
 ##### Configure metasploit ~ http://docs.kali.org/general-use/starting-metasploit-framework-in-kali
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}metasploit${RESET} ~ exploit framework"
 msfdb reinit
 sleep 5s
-#--- Autorun Metasploit commands each startup
-file=~/.msf4/msf_autorunscript.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
-if [[ -f "${file}" ]]; then
-  echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
-else
-  cat <<EOF > "${file}"
-#run post/windows/escalate/getsystem
-
-#run migrate -f -k
-#run migrate -n "explorer.exe" -k    # Can trigger AV alerts by touching explorer.exe...
-
-#run post/windows/manage/smart_migrate
-#run post/windows/gather/smart_hashdump
-EOF
-fi
-file=~/.msf4/msfconsole.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
-if [[ -f "${file}" ]]; then
-  echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
-else
-  cat <<EOF > "${file}"
-load auto_add_route
-
-load alias
-alias del rm
-alias handler use exploit/multi/handler
-
-load sounds
-
-setg TimestampOutput true
-setg VERBOSE true
-
-setg ExitOnSession false
-setg EnableStageEncoding true
-setg LHOST 0.0.0.0
-setg LPORT 443
-use exploit/multi/handler
-#setg AutoRunScript 'multi_console_command -rc "~/.msf4/msf_autorunscript.rc"'
-set PAYLOAD windows/meterpreter/reverse_https
-EOF
-fi
-
-##### Configuring armitage
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}armitage${RESET} ~ GUI Metasploit UI"
-export MSF_DATABASE_CONFIG=/usr/share/metasploit-framework/config/database.yml
-for file in /etc/bash.bashrc ~/.zshrc; do     #~/.bashrc
-  [ ! -e "${file}" ] && continue
-  [ -e "${file}" ] && cp -n $file{,.bkup}
-  ([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-  grep -q 'MSF_DATABASE_CONFIG' "${file}" 2>/dev/null \
-    || echo -e 'MSF_DATABASE_CONFIG=/usr/share/metasploit-framework/config/database.yml\n' >> "${file}"
-done
 
 
 ##### Install flameshot
@@ -438,7 +387,7 @@ apt -y -qq install openssh-server \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 #--- Wipe current keys
 rm -f /etc/ssh/ssh_host_*
-find ~/.ssh/ -type f ! -name authorized_keys -delete 2>/dev/null
+#find ~/.ssh/ -type f ! -name authorized_keys -delete 2>/dev/null
 #--- Generate new keys
 #ssh-keygen -b 4096 -t rsa1 -f /etc/ssh/ssh_host_key -P "" >/dev/null
 ssh-keygen -b 4096 -t rsa -f /etc/ssh/ssh_host_rsa_key -P "" >/dev/null
