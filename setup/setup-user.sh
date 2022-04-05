@@ -24,6 +24,10 @@ TOTAL=$(grep '(${STAGE}/${TOTAL})' $0 | wc -l);(( TOTAL-- ))  # How many things 
 #--- Only used for stats at the end
 start_time=$(date +%s)
 
+#--- Get current Dir
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+echo $SCRIPT_DIR;
+
 ##### Configure User Settings
 
 ## Shared folders support for Open-VM-Tools
@@ -35,6 +39,7 @@ ln -sf "${file}" ~/Desktop/restart-vm-tools.sh
 
 
 #--- Autorun Metasploit commands each startup
+touch ~/.msf4/msf_autorunscript.rc
 file=~/.msf4/msf_autorunscript.rc; [ -e "${file}" ] && cp -n $file{,.bkup}
 if [[ -f "${file}" ]]; then
   echo -e ' '${RED}'[!]'${RESET}" ${file} detected. Skipping..." 1>&2
@@ -74,17 +79,6 @@ use exploit/multi/handler
 set PAYLOAD windows/meterpreter/reverse_https
 EOF
 fi
-
-##### Configuring armitage
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}armitage${RESET} ~ GUI Metasploit UI"
-export MSF_DATABASE_CONFIG=/usr/share/metasploit-framework/config/database.yml
-for file in /etc/bash.bashrc ~/.zshrc; do     #~/.bashrc
-  [ ! -e "${file}" ] && continue
-  [ -e "${file}" ] && cp -n $file{,.bkup}
-  ([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-  grep -q 'MSF_DATABASE_CONFIG' "${file}" 2>/dev/null \
-    || echo -e 'MSF_DATABASE_CONFIG=/usr/share/metasploit-framework/config/database.yml\n' >> "${file}"
-done
 
 
 #### Configuring Sublime Text
@@ -310,7 +304,7 @@ sed -i 's#^WebBrowser=.*#WebBrowser=firefox#' "${file}" 2>/dev/null \
 
 #--- Restore Bookmarks
 file=$(find ~/.mozilla/firefox/*.default*/ -maxdepth 1 -type f -name 'places.sqlite' -print -quit)
-cp /opt/scripts/misc/places.sqlite.backup /tmp
+cp ./misc/places.sqlite.backup /tmp
 sqlite3 "${file}" ".restore /tmp/places.sqlite.backup"
 
 
