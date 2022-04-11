@@ -1,0 +1,3 @@
+docker create -v /empire --name data bcsecurity/empire
+docker run -ti --network host --volumes-from data bcsecurity/empire server
+docker run -ti --network host bcsecurity/empire client
