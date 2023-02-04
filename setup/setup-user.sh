@@ -102,7 +102,7 @@ setw -g monitor-activity on
 set -g visual-activity on
 
 ## Set defaults
-set -g default-terminal screen-256color
+set -g default-terminal linux
 set -g history-limit 5000
 
 ## Default windows titles
@@ -114,20 +114,19 @@ bind-key C-a last-window
 
 ## Reload settings (CTRL+a -> r)
 unbind r
-bind r source-file ~/.tmux.conf
+bind r source-file ~/.tmux.conf \; display-message "Config reloaded".
 
 ## Load custom sources
-source ~/.zshrc   #(issues if you use /bin/bash & Debian)
+#source ~/.zshrc   #(issues if you use /bin/bash & Debian)
 
-EOF
-[ -e /bin/zsh ] \
-  && echo -e '## Use ZSH as default shell\nset-option -g default-shell /bin/zsh\n' >> "${file}"
-cat <<EOF >> "${file}"
+## Use ZSH as default shell
+set-option -g default-shell /bin/zsh
+
 ## Show tmux messages for longer
 set -g display-time 3000
 
 ## Status bar is redrawn every minute
-set -g status-interval 60
+set -g status-interval 5
 
 
 #-Theme------------------------------------------------------------------------
@@ -137,7 +136,7 @@ set -g status-fg white
 
 ## Left hand side
 set -g status-left-length '34'
-set -g status-left '#[fg=green,bold]#(whoami)#[default]@#[fg=yellow,dim]#H #[fg=green,dim][#[fg=yellow]#(cut -d " " -f 1-3 /proc/loadavg)#[fg=green,dim]]'
+set -g status-left '#[fg=green,bold]#(whoami)]'
 
 ## Inactive windows in status bar
 set-window-option -g window-status-format '#[fg=red,dim]#I#[fg=grey,dim]:#[default,dim]#W#[fg=grey,dim]'
@@ -147,7 +146,9 @@ set-window-option -g window-status-format '#[fg=red,dim]#I#[fg=grey,dim]:#[defau
 set-window-option -g window-status-current-format '#[fg=red,bold](#[fg=white,bold]#I#[fg=red,dim]:#[fg=white,bold]#W#[fg=red,bold])'
 
 ## Right hand side
-set -g status-right '#[fg=green][#[fg=yellow]%Y-%m-%d #[fg=white]%H:%M#[fg=green]]'
+#set -g status-right '#[fg=green][#[fg=yellow]%Y-%m-%d #[fg=white]%H:%M#[fg=green]]'
+set -g status-right-length '60'
+set -g status-right "#[fg=green]: #(date +'%a %Y-%m-%d %R') #[fg=yellow]: #(~/get-ips.sh) #[fg=red]#(~/get-vpn.sh) "
 EOF
 #--- Setup alias
 #file=~/.zshrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
