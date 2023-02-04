@@ -161,6 +161,42 @@ EOF
 #source "${file}" || source ~/.zshrc
 
 
+##### Install VMware Helpers
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}VMware Tools Helper${RESET} ~ mount shared folders"
+file=~/Desktop/Mount\ Shared\ Folders.desktop
+#--- Configure shortcut
+cat <<EOF > "${file}" \
+  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Mount Shared Folders
+Comment=
+Exec=pkexec /usr/local/sbin/mount-shared-folders
+Icon=vmware-workstation
+Path=
+Terminal=false
+StartupNotify=false
+EOF
+
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}VMware Tools Helper${RESET} ~ restart vmtoolsd"
+file=~/Desktop/Restart\ VMware\ Tools.desktop
+#--- Configure shortcut
+cat <<EOF > "${file}" \
+  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Restart VMware Tools
+Comment=
+Exec=pkexec /usr/local/sbin/restart-vm-tools
+Icon=vmware-workstation
+Path=
+Terminal=false
+StartupNotify=false
+EOF
+
+
 ###### Setup firefox
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}firefox${RESET} ~ GUI web browser"
 timeout 15 firefox >/dev/null 2>&1                # Start and kill. Files needed for first time run
