@@ -347,7 +347,7 @@ git clone https://github.com/ropnop/kerbrute.git /opt/kerbrute-git \
 
 ##### Install pyKerbrute
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pyKerbrute${RESET} ~ Python to perform Kerberos pre-auth bruteforcing "
-git clone https://github.com/3gstudent/pyKerbrute.git /opt/pyKerbrute-git \
+git clone https://github.com/3gstudent/pyKerbrute.git /opt/pykerbrute-git \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 ################################################################################
