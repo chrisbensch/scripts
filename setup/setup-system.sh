@@ -1,6 +1,6 @@
 #!/bin/bash
 #-Metadata----------------------------------------------------#
-#  Filename: setup.sh             (Update: 05-APR-2022)       #
+#  Filename: setup.sh             (Update: 04-FEB-2023)       #
 #-Info--------------------------------------------------------#
 #  Personal post-install script for Kali Linux Rolling        #
 #-Author(s)---------------------------------------------------#

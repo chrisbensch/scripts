@@ -114,10 +114,10 @@ bind-key C-a last-window
 
 ## Reload settings (CTRL+a -> r)
 unbind r
-bind r source-file /etc/tmux.conf
+bind r source-file ~/.tmux.conf
 
 ## Load custom sources
-source ~/.bashrc   #(issues if you use /bin/bash & Debian)
+source ~/.zshrc   #(issues if you use /bin/bash & Debian)
 
 EOF
 [ -e /bin/zsh ] \
@@ -150,12 +150,12 @@ set-window-option -g window-status-current-format '#[fg=red,bold](#[fg=white,bol
 set -g status-right '#[fg=green][#[fg=yellow]%Y-%m-%d #[fg=white]%H:%M#[fg=green]]'
 EOF
 #--- Setup alias
-file=~/.bash_aliases; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
-([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
-grep -q '^alias tmux' "${file}" 2>/dev/null \
-  || echo -e '## tmux\nalias tmux="tmux attach || tmux new"\n' >> "${file}"    #alias tmux="tmux attach -t $HOST || tmux new -s $HOST"
-#--- Apply new alias
-source "${file}" || source ~/.zshrc
+#file=~/.zshrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
+#([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
+#grep -q '^alias tmux' "${file}" 2>/dev/null \
+#  || echo -e '## tmux\nalias tmux="tmux attach || tmux new"\n' >> "${file}"    #alias tmux="tmux attach -t $HOST || tmux new -s $HOST"
+##--- Apply new alias
+#source "${file}" || source ~/.zshrc
 
 
 ###### Setup firefox
