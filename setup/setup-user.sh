@@ -65,95 +65,11 @@ setg VERBOSE true
 setg ExitOnSession false
 setg EnableStageEncoding true
 setg LHOST 0.0.0.0
-setg LPORT 443
+setg LPORT 5000
 use exploit/multi/handler
 #setg AutoRunScript 'multi_console_command -rc "~/.msf4/msf_autorunscript.rc"'
 set PAYLOAD windows/meterpreter/reverse_https
 EOF
-
-
-#### Configuring Sublime Text
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}Sublime Text${RESET} ~ Awesome Editor"
-# Run once to do basic setup
-subl >/dev/null 2>&1                # Start and kill. Files/folders needed for first time run
-sleep 5
-killall -9 -q -w sublime_text >/dev/null
-
-# Install Package Control
-mkdir -p "~/.config/sublime-text/Installed Packages/"
-cd "~/.config/sublime-text/Installed Packages/"
-curl --progress-bar -k -L -f "https://packagecontrol.io/Package%20Control.sublime-package" --output "Package Control.sublime-package" 2>/dev/null
-
-# Configure Install Packages
-mkdir -p ~/.config/sublime-text/Packages/User/
-cd ~/.config/sublime-text/Packages/User/
-touch "Package Control.sublime-settings"
-file="Package Control.sublime-settings"
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-{
-  "installed_packages":
-  [
-    "GitGutter",
-    "Package Control",
-    "PowerShell",
-    "SideBarEnhancements",
-    "Theme - Cobalt2",
-    "WordCount"
-  ]
-}
-EOF
-
-# Run ST3 once to get Package Control set up
-subl >/dev/null 2>&1
-sleep 30
-killall -9 -q -w sublime_text >/dev/null
-
-# Run ST3 once again to get packages installed
-subl >/dev/null 2>&1
-sleep 60
-killall -9 -q -w sublime_text >/dev/null
-
-# Configure special settings
-file=~/.config/sublime-text/Packages/User/Preferences.sublime-settings; [ -e "${file}" ]
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-{
-  "auto_complete": false,
-  "bold_folder_labels": true,
-  "caret_extra_bottom": 2,
-  "caret_extra_top": 2,
-  "caret_extra_width": 8,
-  "caret_style": "phase",
-  "color_scheme": "Packages/Theme - Cobalt2/cobalt2.tmTheme",
-  "font_size": 12,
-  "highlight_line": true,
-  "highlight_modified_tabs": true,
-  "hot_exit": false,
-  "ignored_packages":
-  [
-    "Vintage"
-  ],
-  "indent_guide_options":
-  [
-    "draw_normal",
-    "draw_active"
-  ],
-  "line_padding_bottom": 1,
-  "line_padding_top": 1,
-  "remember_open_files": false,
-  "sidebar_font_big": true,
-  "theme": "Cobalt2.sublime-theme",
-  "theme_bar": true,
-  "theme_sidebar_disclosure": true,
-  "theme_sidebar_indent_sm": true,
-  "theme_statusbar_colored": true,
-  "theme_tab_highlight_text_only": true,
-  "wide_caret": true,
-  "word_wrap": true
-}
-EOF
-
 
 
 ##### Install tmux - all users
@@ -164,8 +80,8 @@ cat <<EOF > "${file}" \
   || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
 #-Settings---------------------------------------------------------------------
 ## Make it like screen (use CTRL+a)
-#unbind C-b
-#set -g prefix C-a
+unbind C-b
+set -g prefix C-a
 
 ## Pane switching (SHIFT+ARROWS)
 bind-key -n S-Left select-pane -L
@@ -308,33 +224,33 @@ ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa -P "" >/dev/null
 
 
 ##### Install oh-my-zsh
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}oh-my-zsh${RESET} ~ zsh customization"
-wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh \
-  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-#Installing zsh plugins
-git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}oh-my-zsh${RESET} ~ zsh customization"
+#wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh \
+#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
+##Installing zsh plugins
+#git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions
+#git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting
 
 
 ##### Install PowerLevel10k
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PowerLevel10k${RESET} ~ zsh customization"
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k \
-  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
-#Installing PowerLevel10k fonts
-#cd /usr/local/share/fonts || return
-mkdir $HOME/.fonts
-wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Regular.ttf"
-wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold.ttf"
-wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Italic.ttf"
-wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold Italic.ttf"
-fc-cache -rv
-
-#Configuring PowerLevel10k - cheating
-cd $SCRIPT_DIR
-cp ./res/p10k.zsh ~/.p10k.zsh
-chmod 775 ~/.p10k.zsh
-cp ./res/zshrc ~/.zshrc
-chmod 755 ~/.zshrc
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PowerLevel10k${RESET} ~ zsh customization"
+#git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k \
+#  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
+##Installing PowerLevel10k fonts
+##cd /usr/local/share/fonts || return
+#mkdir $HOME/.fonts
+#wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Regular.ttf"
+#wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold.ttf"
+#wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Italic.ttf"
+#wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold Italic.ttf"
+#fc-cache -rv
+#
+##Configuring PowerLevel10k - cheating
+#cd $SCRIPT_DIR
+#cp ./res/p10k.zsh ~/.p10k.zsh
+#chmod 775 ~/.p10k.zsh
+#cp ./res/zshrc ~/.zshrc
+#chmod 755 ~/.zshrc
 
 ################################################################################
 

@@ -88,28 +88,6 @@ elif (dmidecode | grep -iq virtualbox); then
 fi
 
 
-###### Check to see if there is a second Ethernet card (if so, set an static IP address)
-ip addr show eth1 &>/dev/null
-if [[ "$?" == 0 ]]; then
-  ##### Set a static IP address (192.168.155.175/24) on eth1
-  (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${S TAGE}/${TOTAL}) Setting a ${GREEN}static IP ddress${RESET}# (${BOLD}192.168.155.175/24${RESET}) on ${BOLD}eth1${RESET}"
-  ip addr add 192.168.155.175/24 dev eth1 2>/dev/null
-  route delete default gw 192.168.155.1 2>/dev/null
-  file=/etc/network/interfaces.d/eth1.cfg; [ -e "${file}" ] && cp -n $file{,.bkup}
-  grep -q '^iface eth1 inet static' "${file}" 2>/dev/null \
-    || cat <<EOF > "${file}"
-auto eth1
-iface eth1 inet static
-    address 192.168.155.175
-    netmask 255.255.255.0
-    gateway 192.168.155.1
-    post-up route delete default gw 192.168.155.1
-EOF
-else
-  echo -e "\n\n ${YELLOW}[i]${RESET} ${YELLOW}Skipping eth1${RESET} (missing nic)..." 1>&2
-fi
-
-
 #--- Changing time zone
 if [[ -n "${timezone}" ]]; then
   (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Updating ${GREEN}location information${RESET} ~ time zone (${BOLD}${timezone}${RESET})"
@@ -180,15 +158,6 @@ file=/etc/default/grub; [ -e "${file}" ] && cp -n $file{,.bkup}
 sed -i 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT='${grubTimeout}'/' "${file}"                           # Time out (lower if in a virtual machine, else possible dual booting)
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="vga=0x0318"/' "${file}"   # TTY resolution
 update-grub
-
-
-#### Install Sublime Text
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Sublime Text${RESET} ~ Awesome Editor"
-wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
-apt -y -qq install apt-transport-https
-echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
-apt -y -qq update
-apt -y -qq install sublime-text
 
 
 ##### Install Visual Studio Code
@@ -285,60 +254,6 @@ ln -sf /usr/share/sqlmap/txt/wordlist.txt /usr/share/wordlists/sqlmap.txt
 apt -y -qq install powershell-empire starkiller 
 
 
-##### Install CMSmap
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}CMSmap${RESET} ~ CMS detection"
-git clone -q -b master https://github.com/Dionach/CMSmap.git /opt/cmsmap-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-#--- Add to path
-mkdir -p /usr/local/bin/
-file=/usr/local/bin/cmsmap-git
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-#!/bin/bash
-
-cd /opt/cmsmap-git/ && python cmsmap.py "\$@"
-EOF
-chmod +x "${file}"
-
-
-##### Install droopescan
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}DroopeScan${RESET} ~ Drupal vulnerability scanner"
-git clone -q -b master https://github.com/droope/droopescan.git /opt/droopescan-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-#--- Add to path
-mkdir -p /usr/local/bin/
-file=/usr/local/bin/droopescan-git
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-#!/bin/bash
-
-cd /opt/droopescan-git/ && python droopescan "\$@"
-EOF
-chmod +x "${file}"
-
-
-##### Install patator (GIT)
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}patator${RESET} (GIT) ~ brute force tool"
-git clone -q -b master https://github.com/lanjelot/patator.git /opt/patator-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-#--- Add to path
-mkdir -p /usr/local/bin/
-file=/usr/local/bin/patator-git
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-#!/bin/bash
-
-cd /opt/patator-git/ && python patator.py "\$@"
-EOF
-chmod +x "${file}"
-
-
-##### Install JuicyPotato (GIT)
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}JuicyPotato${RESET} Abuse Golden Privileges"
-git clone -q https://github.com/ohpe/juicy-potato.git /opt/juicy-potato-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-
-
 ##### Install exiftool
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}exiftool${RESET} ~ image file metadata editor"
 apt -y -qq install exiftool \
@@ -369,18 +284,6 @@ apt -y -qq install nfs-common \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 
 
-##### Install LinuxSmartEnumeration
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}LinuxSmartEnumeration${RESET} ~ Linux Enumeration Tool"
-git clone -q -b master https://github.com/diego-treitos/linux-smart-enumeration.git /opt/linux-smart-enumeration-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-
-
-##### Install Sitadel
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Sitadel${RESET} ~ Web Application Security Scanner"
-git clone -q -b master https://github.com/shenril/Sitadel.git /opt/sitadel-git/ \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-
-
 ##### Setup SSH
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Setting up ${GREEN}SSH${RESET} ~ CLI access"
 apt -y -qq install openssh-server \
@@ -399,28 +302,9 @@ apt -y -qq install cowsay \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
 echo "Moo" | /usr/games/cowsay > /etc/motd
 #--- Change SSH settings
-file=/etc/ssh/sshd_config; [ -e "${file}" ] && cp -n $file{,.bkup}
-sed -i 's/^PermitRootLogin .*/PermitRootLogin yes/g' "${file}"      # Accept password login (overwrite Debian 8+'s more secure default option...)
-sed -i 's/^#AuthorizedKeysFile /AuthorizedKeysFile /g' "${file}"    # Allow for key based login
-
-
-##### Install LinEnum
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}LinEnum${RESET} ~ Linux PrivEsc Checker"
-git clone -q https://github.com/rebootuser/LinEnum.git /opt/linenum-git \
-  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
-
-
-##### Install RootHelper
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}RootHelper${RESET} ~ Linux PrivEsc Checker"
-git clone -q https://github.com/NullArray/RootHelper.git /opt/roothelper-git/ \
-  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
-
-
-##### Install dirsearch
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}dirsearch${RESET} ~ Directory Bruteforcer"
-cd /opt
-git clone -q https://github.com/maurosoria/dirsearch.git dirsearch-git \
-  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
+#file=/etc/ssh/sshd_config; [ -e "${file}" ] && cp -n $file{,.bkup}
+#sed -i 's/^PermitRootLogin .*/PermitRootLogin yes/g' "${file}"      # Accept password login (overwrite Debian 8+'s more secure default option...)
+#sed -i 's/^#AuthorizedKeysFile /AuthorizedKeysFile /g' "${file}"    # Allow for key based login
 
 
 ##### Install Powerless
@@ -435,34 +319,16 @@ git clone https://github.com/PowerShellMafia/PowerSploit.git /opt/powersploit-gi
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
-##### Install Linux Exploit Suggester
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Linux Exploit Suggester${RESET} ~ Linux Exploit Suggester"
-git clone https://github.com/mzet-/linux-exploit-suggester.git /opt/linux-exploit-suggester-git \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-
-
-##### Install Windows Exploit Suggester - Next Generation
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}WES-NG${RESET} ~ Windows PrivEsc Checker"
-git clone https://github.com/bitsadmin/wesng.git /opt/wesng-git  \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-
-
-##### Install RevShellGen
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}RevShellGen${RESET} ~ Reverse Shell Generator"
-git clone https://github.com/m0rph-1/revshellgen.git /opt/revshellgen-git \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-
-
 ##### Install PEASS - Privilege Escalation Awesome Scripts SUITE (with colors) https://book.hacktricks.xyz
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PEASS${RESET} ~ Privilege Escalation Awesome Scripts SUITE"
 git clone https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite.git /opt/peass-git \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
-###### Install AutoRecon - AutoRecon is a multi-threaded network reconnaissance tool which performs automated #enumeration of services. 
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}AutoRecon${RESET} ~ #Multi-threaded Recond Tool"
-#python3 -m pip install git+https://github.com/Tib3rius/AutoRecon.git \
-#  || echo -e ' '${RED}'[!] Issue with pip3 install'${RESET} 1>&2
+##### Install AutoRecon - AutoRecon is a multi-threaded network reconnaissance tool which performs automated #enumeration of services. 
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}AutoRecon${RESET} ~ #Multi-threaded Recond Tool"
+python3 -m pip install git+https://github.com/Tib3rius/AutoRecon.git \
+  || echo -e ' '${RED}'[!] Issue with pip3 install'${RESET} 1>&2
 
 
 ##### Install evil-winrm - WinRM shell
@@ -472,6 +338,17 @@ cd /opt/evil-winrm-git
 gem install winrm winrm-fs stringio \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
+
+##### Install kerbrute
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}kerbrute${RESET} ~ Kerberos pre-auth bruteforcing "
+git clone https://github.com/ropnop/kerbrute.git /opt/kerbrute-git \
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+
+
+##### Install pyKerbrute
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pyKerbrute${RESET} ~ Python to perform Kerberos pre-auth bruteforcing "
+git clone https://github.com/3gstudent/pyKerbrute.git /opt/pyKerbrute-git \
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 ################################################################################
 
