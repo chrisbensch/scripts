@@ -74,6 +74,8 @@ EOF
 
 ##### Install tmux - all users
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}tmux${RESET} ~ multiplex virtual consoles"
+cp get* ~/.config/
+chmod +x ~/.config/get*
 file=~/.tmux.conf; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/tmux.conf
 #--- Configure tmux
 cat <<EOF > "${file}" \
@@ -126,7 +128,7 @@ set-option -g default-shell /bin/zsh
 set -g display-time 3000
 
 ## Status bar is redrawn every minute
-set -g status-interval 5
+set -g status-interval 10
 
 
 #-Theme------------------------------------------------------------------------
@@ -136,7 +138,7 @@ set -g status-fg white
 
 ## Left hand side
 set -g status-left-length '34'
-set -g status-left '#[fg=green,bold]#(whoami)]'
+set -g status-left '#[fg=green,bold]#(whoami)'
 
 ## Inactive windows in status bar
 set-window-option -g window-status-format '#[fg=red,dim]#I#[fg=grey,dim]:#[default,dim]#W#[fg=grey,dim]'
@@ -148,7 +150,7 @@ set-window-option -g window-status-current-format '#[fg=red,bold](#[fg=white,bol
 ## Right hand side
 #set -g status-right '#[fg=green][#[fg=yellow]%Y-%m-%d #[fg=white]%H:%M#[fg=green]]'
 set -g status-right-length '60'
-set -g status-right "#[fg=green]: #(date +'%a %Y-%m-%d %R') #[fg=yellow]: #(~/get-ips.sh) #[fg=red]#(~/get-vpn.sh) "
+set -g status-right "#[fg=green]: #(date +'%a %Y-%m-%d %R') #[fg=yellow]: #(~/.config/get-ips.sh) #[fg=red]#(~/.config/get-vpn.sh) "
 EOF
 #--- Setup alias
 #file=~/.zshrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
@@ -222,38 +224,6 @@ find ~/.ssh/ -type f ! -name authorized_keys -delete 2>/dev/null
 #--- Generate new keys
 #ssh-keygen -b 4096 -t rsa1 -f /etc/ssh/ssh_host_key -P "" >/dev/null
 ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa -P "" >/dev/null
-
-
-##### Install oh-my-zsh
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}oh-my-zsh${RESET} ~ zsh customization"
-#wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh \
-#  || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-##Installing zsh plugins
-#git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions
-#git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting
-
-
-##### Install PowerLevel10k
-#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PowerLevel10k${RESET} ~ zsh customization"
-#git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k \
-#  || echo -e ' '${RED}'[!] Issue with git clone'${RESET} 1>&2
-##Installing PowerLevel10k fonts
-##cd /usr/local/share/fonts || return
-#mkdir $HOME/.fonts
-#wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Regular.ttf"
-#wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold.ttf"
-#wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Italic.ttf"
-#wget -P $HOME/.fonts/ "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS NF Bold Italic.ttf"
-#fc-cache -rv
-#
-##Configuring PowerLevel10k - cheating
-#cd $SCRIPT_DIR
-#cp ./res/p10k.zsh ~/.p10k.zsh
-#chmod 775 ~/.p10k.zsh
-#cp ./res/zshrc ~/.zshrc
-#chmod 755 ~/.zshrc
-
-################################################################################
 
 
 ##### Clean the system
