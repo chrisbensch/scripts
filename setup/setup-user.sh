@@ -31,11 +31,11 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 ##### Configure User Settings
 
 ## Shared folders support for Open-VM-Tools
-file=/usr/local/sbin/mount-shared-folders; [ -e "${file}" ]
-ln -sf "${file}" ~/Desktop/mount-shared-folders.sh
+#file=/usr/local/sbin/mount-shared-folders; [ -e "${file}" ]
+#ln -sf "${file}" ~/Desktop/mount-shared-folders.sh
  ## Restart Open-VM-Tools
-file=/usr/local/sbin/restart-vm-tools; [ -e "${file}" ]
-ln -sf "${file}" ~/Desktop/restart-vm-tools.sh
+#file=/usr/local/sbin/restart-vm-tools; [ -e "${file}" ]
+#ln -sf "${file}" ~/Desktop/restart-vm-tools.sh
 
 
 #--- Autorun Metasploit commands each startup
