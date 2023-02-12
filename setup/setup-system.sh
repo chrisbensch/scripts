@@ -209,9 +209,9 @@ apt -y -qq install gobuster \
 
 ##### Install proxychains-ng (https://bugs.kali.org/view.php?id=2037)
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}proxychains-ng${RESET} ~ Proxifier"
-git clone -q -b master https://github.com/rofl0r/proxychains-ng.git /opt/proxychains-ng-git/ \
+git clone -q -b master https://github.com/rofl0r/proxychains-ng.git /opt/proxychains-ng/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-pushd /opt/proxychains-ng-git/ >/dev/null
+pushd /opt/proxychains-ng/ >/dev/null
 git pull -q
 make -s clean
 ./configure --prefix=/usr --sysconfdir=/etc >/dev/null
@@ -274,7 +274,7 @@ apt -y -qq install bloodhound \
 
 ##### Install impacket
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}impacket${RESET} ~ network protocols via python"
-git clone -q -b master https://github.com/CoreSecurity/impacket.git /opt/impacket-git/ \
+git clone -q -b master https://github.com/CoreSecurity/impacket.git /opt/impacket/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
@@ -309,19 +309,19 @@ echo "Moo" | /usr/games/cowsay > /etc/motd
 
 ##### Install Powerless
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Powerless${RESET} ~ Windows PrivEsc Checker"Powerless
-git clone https://github.com/M4ximuss/Powerless.git /opt/powerless-git/ \
+git clone https://github.com/M4ximuss/Powerless.git /opt/powerless/ \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
 ##### Install PowerSploit
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PowerSploit${RESET} ~ Windows Post-Exploitation Framework"
-git clone https://github.com/PowerShellMafia/PowerSploit.git /opt/powersploit-git \
+git clone https://github.com/PowerShellMafia/PowerSploit.git /opt/powersploit \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
 ##### Install PEASS - Privilege Escalation Awesome Scripts SUITE (with colors) https://book.hacktricks.xyz
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PEASS${RESET} ~ Privilege Escalation Awesome Scripts SUITE"
-git clone https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite.git /opt/peass-git \
+git clone https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite.git /opt/peass \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
@@ -333,21 +333,21 @@ python3 -m pip install git+https://github.com/Tib3rius/AutoRecon.git \
 
 ##### Install evil-winrm - WinRM shell
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}evil-winrm${RESET} ~ The ultimate WinRM shell for hacking/pentesting "
-git clone https://github.com/Hackplayers/evil-winrm.git /opt/evil-winrm-git
-cd /opt/evil-winrm-git
+git clone https://github.com/Hackplayers/evil-winrm.git /opt/evil-winrm
+cd /opt/evil-winrm
 gem install winrm winrm-fs stringio \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
 ##### Install kerbrute
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}kerbrute${RESET} ~ Kerberos pre-auth bruteforcing "
-git clone https://github.com/ropnop/kerbrute.git /opt/kerbrute-git \
+git clone https://github.com/ropnop/kerbrute.git /opt/kerbrute \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
 ##### Install pyKerbrute
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pyKerbrute${RESET} ~ Python to perform Kerberos pre-auth bruteforcing "
-git clone https://github.com/3gstudent/pyKerbrute.git /opt/pykerbrute-git \
+git clone https://github.com/3gstudent/pyKerbrute.git /opt/pykerbrute \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 ################################################################################
