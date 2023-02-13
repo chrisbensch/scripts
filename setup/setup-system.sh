@@ -345,19 +345,13 @@ git clone https://github.com/ropnop/kerbrute.git /opt/kerbrute \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
-##### Install PowerSploit
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}PowerSploit${RESET} ~ PowerShell Post-Exploitation Framework "
-git clone https://github.com/PowerShellMafia/PowerSploit.git /opt/powersploit \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
-
-
 ##### Install pyKerbrute
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}pyKerbrute${RESET} ~ Python to perform Kerberos pre-auth bruteforcing "
 git clone https://github.com/3gstudent/pyKerbrute.git /opt/pykerbrute \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
-##### Install pyKerbrute
+##### Install Covenant
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Covenant${RESET} ~ Collaborative .NET C2 framework "
 git clone https://github.com/cobbr/Covenant.git /opt/covenant \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
@@ -379,12 +373,6 @@ apt -y -qq install kali-tools-post-exploitation \
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Windows Resources${RESET} ~ Kali Windows Tools Resources"
 apt -y -qq install kali-tools-windows-resources \
   || echo -e ' '${RED}'[!] Issue with apt install'${RESET} 1>&2
-
-
-##### Install Covenant
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}Covenant${RESET} ~ Collaborative .NET C2 framework "
-git clone https://github.com/cobbr/Covenant.git /opt/covenant \
-  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
 ##### Install SafetyKatz
