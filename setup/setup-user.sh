@@ -72,86 +72,86 @@ set PAYLOAD windows/meterpreter/reverse_https
 EOF
 
 
-##### Install tmux - all users
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}tmux${RESET} ~ multiplex virtual consoles"
-cp get* ~/.config/
-chmod +x ~/.config/get*
-file=~/.tmux.conf; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/tmux.conf
-#--- Configure tmux
-cat <<EOF > "${file}" \
-  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
-#-Settings---------------------------------------------------------------------
-## Make it like screen (use CTRL+a)
-unbind C-b
-set -g prefix C-a
-
-## Pane switching (SHIFT+ARROWS)
-bind-key -n S-Left select-pane -L
-bind-key -n S-Right select-pane -R
-bind-key -n S-Up select-pane -U
-bind-key -n S-Down select-pane -D
-
-## Windows switching (ALT+ARROWS)
-bind-key -n M-Left  previous-window
-bind-key -n M-Right next-window
-
-## Windows re-ording (SHIFT+ALT+ARROWS)
-bind-key -n M-S-Left swap-window -t -1
-bind-key -n M-S-Right swap-window -t +1
-
-## Activity Monitoring
-setw -g monitor-activity on
-set -g visual-activity on
-
-## Set defaults
-set -g default-terminal linux
-set -g history-limit 5000
-
-## Default windows titles
-set -g set-titles on
-set -g set-titles-string '#(whoami)@#H - #I:#W'
-
-## Last window switch
-bind-key C-a last-window
-
-## Reload settings (CTRL+a -> r)
-unbind r
-bind r source-file ~/.tmux.conf \; display-message "Config reloaded".
-
-## Load custom sources
-#source ~/.zshrc   #(issues if you use /bin/bash & Debian)
-
-## Use ZSH as default shell
-set-option -g default-shell /bin/zsh
-
-## Show tmux messages for longer
-set -g display-time 3000
-
-## Status bar is redrawn every minute
-set -g status-interval 10
-
-
-#-Theme------------------------------------------------------------------------
-## Default colours
-set -g status-bg black
-set -g status-fg white
-
-## Left hand side
-set -g status-left-length '34'
-set -g status-left '#[fg=green,bold]#(whoami)'
-
-## Inactive windows in status bar
-set-window-option -g window-status-format '#[fg=red,dim]#I#[fg=grey,dim]:#[default,dim]#W#[fg=grey,dim]'
-
-## Current or active window in status bar
-#set-window-option -g window-status-current-format '#[bg=white,fg=red]#I#[bg=white,fg=grey]:#[bg=white,fg=black]#W#[fg=dim]#F'
-set-window-option -g window-status-current-format '#[fg=red,bold](#[fg=white,bold]#I#[fg=red,dim]:#[fg=white,bold]#W#[fg=red,bold])'
-
-## Right hand side
-#set -g status-right '#[fg=green][#[fg=yellow]%Y-%m-%d #[fg=white]%H:%M#[fg=green]]'
-set -g status-right-length '60'
-set -g status-right "#[fg=green]: #(date +'%a %Y-%m-%d %R') #[fg=yellow]: #(~/.config/get-ips.sh) #[fg=red]#(~/.config/get-vpn.sh) "
-EOF
+###### Install tmux - all users
+#(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}tmux${RESET} ~ #multiplex virtual consoles"
+#cp get* ~/.config/
+#chmod +x ~/.config/get*
+#file=~/.tmux.conf; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/tmux.conf
+##--- Configure tmux
+#cat <<EOF > "${file}" \
+#  || echo -e ' '${RED}'[!] Issue with writing file'${RESET} 1>&2
+##-Settings---------------------------------------------------------------------
+### Make it like screen (use CTRL+a)
+#unbind C-b
+#set -g prefix C-a
+#
+### Pane switching (SHIFT+ARROWS)
+#bind-key -n S-Left select-pane -L
+#bind-key -n S-Right select-pane -R
+#bind-key -n S-Up select-pane -U
+#bind-key -n S-Down select-pane -D
+#
+### Windows switching (ALT+ARROWS)
+#bind-key -n M-Left  previous-window
+#bind-key -n M-Right next-window
+#
+### Windows re-ording (SHIFT+ALT+ARROWS)
+#bind-key -n M-S-Left swap-window -t -1
+#bind-key -n M-S-Right swap-window -t +1
+#
+### Activity Monitoring
+#setw -g monitor-activity on
+#set -g visual-activity on
+#
+### Set defaults
+#set -g default-terminal linux
+#set -g history-limit 5000
+#
+### Default windows titles
+#set -g set-titles on
+#set -g set-titles-string '#(whoami)@#H - #I:#W'
+#
+### Last window switch
+#bind-key C-a last-window
+#
+### Reload settings (CTRL+a -> r)
+#unbind r
+#bind r source-file ~/.tmux.conf \; display-message "Config reloaded".
+#
+### Load custom sources
+##source ~/.zshrc   #(issues if you use /bin/bash & Debian)
+#
+### Use ZSH as default shell
+#set-option -g default-shell /bin/zsh
+#
+### Show tmux messages for longer
+#set -g display-time 3000
+#
+### Status bar is redrawn every minute
+#set -g status-interval 10
+#
+#
+##-Theme------------------------------------------------------------------------
+### Default colours
+#set -g status-bg black
+#set -g status-fg white
+#
+### Left hand side
+#set -g status-left-length '34'
+#set -g status-left '#[fg=green,bold]#(whoami)'
+#
+### Inactive windows in status bar
+#set-window-option -g window-status-format '#[fg=red,dim]#I#[fg=grey,dim]:#[default,dim]#W#[fg=grey,dim]'
+#
+### Current or active window in status bar
+##set-window-option -g window-status-current-format '#[bg=white,fg=red]#I#[bg=white,fg=grey]:#[bg=white,#fg=black]#W#[fg=dim]#F'
+#set-window-option -g window-status-current-format '#[fg=red,bold](#[fg=white,bold]#I#[fg=red,dim]:#[fg=white,#bold]#W#[fg=red,bold])'
+#
+### Right hand side
+##set -g status-right '#[fg=green][#[fg=yellow]%Y-%m-%d #[fg=white]%H:%M#[fg=green]]'
+#set -g status-right-length '60'
+#set -g status-right "#[fg=green]: #(date +'%a %Y-%m-%d %R') #[fg=yellow]: #(~/.config/get-ips.sh) #[fg=red]##(~/.config/get-vpn.sh) "
+#EOF
 #--- Setup alias
 #file=~/.zshrc; [ -e "${file}" ] && cp -n $file{,.bkup}   #/etc/bash.bash_aliases
 #([[ -e "${file}" && "$(tail -c 1 ${file})" != "" ]]) && echo >> "${file}"
@@ -178,6 +178,8 @@ Path=
 Terminal=false
 StartupNotify=false
 EOF
+chmod +x "${file}"
+
 
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}VMware Tools Helper${RESET} ~ restart vmtoolsd"
 file=~/Desktop/Restart\ VMware\ Tools.desktop
@@ -195,7 +197,7 @@ Path=
 Terminal=false
 StartupNotify=false
 EOF
-
+chmod +x "${file}"
 
 ###### Setup firefox
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}firefox${RESET} ~ GUI web browser"
