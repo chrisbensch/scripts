@@ -392,6 +392,12 @@ git clone https://github.com/GhostPack/SharpDump.git /opt/sharpdump \
 git clone https://github.com/GhostPack/Rubeus.git /opt/rubeus \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
+
+##### Install LAPSToolkit
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}LAPSToolkit${RESET} ~ Audit and attack LAPS "
+git clone https://github.com/leoloobeek/LAPSToolkit.git /opt/lapstoolkit \
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+
 ################################################################################
 
 ##### Clean the system
