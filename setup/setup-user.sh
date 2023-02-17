@@ -265,7 +265,7 @@ ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa -P "" >/dev/null
 
 
 ##### Clean the system
-(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Cleaning${RESET} the system"
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) ${GREEN}Cleaning Up${RESET} "
 #--- Reset folder location
 cd ~/ &>/dev/null
 #--- Remove any history files (as they could contain sensitive info)
