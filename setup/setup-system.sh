@@ -399,6 +399,12 @@ git clone https://github.com/leoloobeek/LAPSToolkit.git /opt/lapstoolkit \
   || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
 
 
+##### Install LAPSToolkit
+(( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}offsec-tools${RESET} ~ Precompiled Tools "
+git clone https://github.com/Syslifters/offsec-tools /opt/offsec-tools \
+  || echo -e ' '${RED}'[!] Issue when git cloning'${RESET} 1>&2
+
+
 ##### Install GitHub CLI Tool gh
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Installing ${GREEN}GitHub CLI${RESET} ~ gh for cli "
 type -p curl >/dev/null || sudo apt install curl -y
