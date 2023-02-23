@@ -169,7 +169,7 @@ ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa -P "" >/dev/null
 
 ##### Setup panels & launchers
 (( STAGE++ )); echo -e "\n\n ${GREEN}[+]${RESET} (${STAGE}/${TOTAL}) Configuring ${GREEN}XFCE${RESET} ~ panels and launchers"
-xfce4-panel-profiles load ./res/pentest-config.tar.bz2
+xfce4-panel-profiles load ./res/pentest-panel-config.tar.bz2
 
 
 
