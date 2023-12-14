@@ -12,7 +12,7 @@
 
 
 ##### Location information
-timezone="Europe/London"       # Set timezone location          [ --timezone Europe/London ]
+timezone="America/Los_Angeles"       # Set timezone location          [ --timezone Europe/London ]
 
 ##### Optional steps
 burpFree=true              # Disable configuring Burp Suite (for Burp Pro users...)    [ --burp ]
